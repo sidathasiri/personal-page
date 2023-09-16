@@ -1,0 +1,4 @@
+baseURL = "https://sidathasiri.github.io/"
+languageCode = "en-us"
+title = "Sidath Asiri"
+theme = "hugo-theme-cleanwhite"
