@@ -2,3 +2,6 @@ baseURL = "https://sidathasiri.github.io/"
 languageCode = "en-us"
 title = "Sidath Asiri"
 theme = "hugo-theme-cleanwhite"
+
+[params]
+  header_image = "https://www.zhaohuabing.com/img/background.webp"
