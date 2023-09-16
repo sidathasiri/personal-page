@@ -2,6 +2,15 @@ baseURL = "https://sidathasiri.github.io/"
 languageCode = "en-us"
 title = "Sidath Asiri"
 theme = "hugo-theme-cleanwhite"
+paginate = 5 #frontpage pagination
 
 [params]
   header_image = "https://www.zhaohuabing.com/img/background.webp"
+  sidebar_about_description = "Software Developer, Open Source Enthusiast and Life Adventurer"
+  [params.social]
+  email          = "sidathasiri@gmail.com"
+  linkedin       = "https://www.linkedin.com/in/sidath-asiri"
+
+  [[params.addtional_menus]]
+  title =  "About"
+  href =  "/about/"
