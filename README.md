@@ -1,3 +1,3 @@
 ## Create new Post
 
-`hugo new posts/sample_post.md`
+Build - `hugo -t hugo-theme-cleanwhite`
