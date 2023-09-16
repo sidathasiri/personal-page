@@ -8,3 +8,10 @@
 ## Build static files
 
 `hugo -t hugo-theme-cleanwhite`
+
+## Deploy
+
+1. `cd public`
+2. Add, commit and push `git push origin main`
+3. cd ..
+4. Add, commit and push `git push origin main`
