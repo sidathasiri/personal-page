@@ -1,6 +1,14 @@
-+++
-title = 'Sample Post'
-date = 2023-09-16T23:45:40+05:30
-+++
+---
+layout:     post 
+title:      "Sample Post"
+subtitle:   "Hello World, Hello Blog"
+date:       2023-09-17
+author:     "Sidath Asiri"
+URL: "/2023/09/17/sample-post/"
+image:      "/img/sample.jpeg"
+---
 
-# This is sample post
+> “Yeah It's on. ”
+
+
+## Hello World!
