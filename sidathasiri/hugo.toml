@@ -5,7 +5,7 @@ theme = "hugo-theme-cleanwhite"
 paginate = 5 #frontpage pagination
 
 [params]
-  header_image = "https://www.zhaohuabing.com/img/background.webp"
+  header_image = "img/header_image.jpeg"
   sidebar_about_description = "Software Developer, Open Source Enthusiast and Life Adventurer"
   [params.social]
   email          = "sidathasiri@gmail.com"
