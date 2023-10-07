@@ -15,4 +15,4 @@ paginate = 5 #frontpage pagination
 
   [[params.addtional_menus]]
   title =  "About"
-  href =  "/about/"
+  href =  "/about"
