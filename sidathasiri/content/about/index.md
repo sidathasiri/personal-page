@@ -1,6 +1,7 @@
 +++
 title = 'About'
-date = 2023-09-16T23:45:40+05:30
+date = 2023-10-08
+author = "Sidath Asiri"
 +++
 
 Hey there! I'm Sidath Munasinghe, and I'm excited to welcome you to my personal blog. In this space, I want to give you a little glimpse into my tech journey, my passions, and what you can expect from this blog.
