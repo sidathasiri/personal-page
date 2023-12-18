@@ -54,7 +54,7 @@ link = "plugins/hugrid/hugrid.min.js"
 # main menu
 [[menu.main]]
 name = "Home"
-URL = "#home"
+URL = "/"
 weight = 1
 
 [[menu.main]]
