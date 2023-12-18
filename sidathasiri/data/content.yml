@@ -1,0 +1,110 @@
+########################## hero area ##########################
+hero:
+  title: "I'm Sidath Munasinghe"
+
+  # animated text loop
+  occupations:
+    - 'Technical Lead'
+    - 'AWS Certified Solutions Architect'
+    - 'Technical Content Writer'
+    - 'Data Science Strategist: Holder of an MSc in Data Science'
+    - 'AWS Community Builder'
+
+  # hero background image
+  bg_image: 'images/background.jpg'
+  # optional mobile breakpoint background
+  mobile_bg_image: 'images/gus_small.jpg'
+
+########################### About ##################################
+about:
+  enable: true
+  image: 'images/profile.png'
+  title: 'THIS IS ME'
+  content: A dedicated Technical Lead passionate about enterprise software design and architecture, where I excel at creating efficient and scalable solutions. With a strong expertise in AWS (Amazon Web Services), I leverage its capabilities to drive innovation and deliver robust applications. In addition to my technical role, I have a deep love for tech blogging. Sharing my knowledge and experiences with the tech community is a rewarding way for me to contribute and help others in their professional journeys. I enjoy exploring new concepts and emerging technologies. Through my blog, I strive to provide valuable insights and practical guidance. Continuously staying at the forefront of technology is a priority for me. I always seek new challenges and opportunities to enhance my software development and architecture skills. With a commitment to delivering high-quality solutions and a drive to push boundaries, I aim to impact the tech industry significantly.
+  # button:
+  #   enable: true
+  #   label: 'DOWNLOAD MY RESUME'
+  #   link: #
+  #   icon: 'fa-download'
+
+###########################3 Experience ##############################
+experience:
+  enable: true
+  title: 'EXPERIENCE'
+  experience_list:
+    - name: Technical Lead
+      company: 99x
+      duration: 'Jul 2023 - Present'
+      content: Leading a team to deliver innovative solutions through strategic planning and effective architecture. With a focus on excellence, I bring expertise in AWS and a proven track record in aligning technology with business goals.
+
+    - name: Associate Technical Lead
+      company: 99x
+      duration: 'Dec 2022 - Jul 2023'
+      content: Adept at fostering collaboration and contributing to strategic planning. Committed to delivering high-quality outcomes and continuous improvement in a dynamic technical environment.
+
+    - name: Associate Technical Lead
+      company: Sysco LABS Sri Lanka
+      duration: 'Aug 2021 - Dec 2022'
+      content: Empowered by a proactive approach, I assumed ownership of critical epics, orchestrating their end-to-end lifecycle to ensure successful delivery. My proactive approach and commitment to excellence played a pivotal role in surpassing project expectations.
+
+    - name: Senior Software Engineer
+      company: Sysco LABS Sri Lanka
+      duration: 'Sep 2020 - Aug 2021'
+      content: Spearheaded contributions to Research and Development projects, and successfully kickstarted initiatives
+
+    - name: Software Engineer
+      company: Sysco LABS Sri Lanka
+      duration: 'Jan 2019 - Sep 2020'
+      content: Known for my collaborative spirit, I have been a steadfast support to teammates, consistently lending a helping hand to ensure collective success. As a strong problem solver, I've made significant contributions by tackling challenges head-on, offering innovative solutions, and fostering a culture of shared success within the team.
+
+############################### Skill #################################
+skill:
+  enable: true
+  title: 'SOME SKILLS'
+  showpercent: false
+  skill_list:
+    - name: 'NodeJS'
+      percentage: '90%'
+
+    - name: 'JavaScript'
+      percentage: '90%'
+
+    - name: 'AWS'
+      percentage: '90%'
+
+    - name: 'React'
+      percentage: '85%'
+
+    - name: 'CI/CD'
+      percentage: '85%'
+
+    - name: 'IaaC'
+      percentage: '85%'
+
+    - name: 'DevOps'
+      percentage: '80%'
+
+    - name: 'Java'
+      percentage: '80%'
+
+    - name: 'GraphQL'
+      percentage: '75%'
+
+    - name: 'Machine Learning'
+      percentage: '75%'
+
+######################### funfacts #############################3
+funfacts:
+  enable: true
+  funfacts_list:
+    - name: 'AWS Certifications'
+      image: 'images/icons/aws_certified.png'
+      count: '1'
+
+    - name: 'Tech Blogs'
+      image: 'images/icons/write.png'
+      count: '20'
+
+    - name: 'Research Publications'
+      image: 'images/icons/publication.png'
+      count: '2'

@@ -1,0 +1,108 @@
+# baseURL: "https://sidathasiri.github.io/"
+# languageCode: "en-us"
+# title: "Hello"
+# theme: "hugo-theme-cleanwhite"
+# paginate: 5 #frontpage pagination
+
+# params:
+#   header_image: "img/header_image.jpeg"
+#   SEOTitle: "Sidath Asiri"
+#   slogan: "Welcome to my Personal Blog"
+#   sidebar_about_description: 'Tech Lead'
+#   sidebar_avatar: img/sample.jpeg
+#   social:
+#   email: "sidathasiri@gmail.com"
+#   linkedin: "https://www.linkedin.com/in/sidath-asiri"
+
+#   addtional_menus:
+#     - title: About
+#       href: /about
+######################## default configuration ####################
+baseURL = "https://sidathasiri.github.io/"
+title = "Sidath Munasinghe"
+theme = "port-hugo"
+
+############################# Plugins ##############################
+
+# CSS Plugins
+[[params.plugins.css]]
+link = "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+[[params.plugins.css]]
+link = "https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+[[params.plugins.css]]
+link = "https://cdnjs.cloudflare.com/ajax/libs/hover.css/2.1.0/css/hover-min.css"
+[[params.plugins.css]]
+link = "https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900&display=swap"
+[[params.plugins.css]]
+link = "plugins/text-animation/text-animation.css"
+[[params.plugins.css]]
+link = "plugins/hugrid/hugrid.css"
+
+# JS Plugins
+[[params.plugins.js]]
+link = "https://code.jquery.com/jquery-3.5.1.min.js"
+[[params.plugins.js]]
+link = "https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.js"
+[[params.plugins.js]]
+link = "plugins/text-animation/text-animation.js"
+[[params.plugins.js]]
+link = "plugins/hugrid/hugrid.min.js"
+
+
+############################## navigation ###############################
+
+# main menu
+[[menu.main]]
+name = "Home"
+URL = "#home"
+weight = 1
+
+[[menu.main]]
+name = "About me"
+URL = "#about"
+weight = 2
+
+# [[menu.main]]
+# name = "Portfolio"
+# URL = "#portfolio"
+# weight = 3
+
+
+#################### default parameters ################################
+[params]
+logo_light = "images/S_logo_white.png"
+logo_dark = "images/S_logo_dark.png"
+copyright = "Copyright Sidath Munasinghe &copy;"
+# Meta data
+description = "Personal Portfolio"
+author = "Sidath Munasinghe"
+favicon = "images/favicon.ico"
+google_analytics = "G-ABCDEFG123"
+
+
+# Preloader
+[params.preloader]
+enable = true
+preloader = "images/preloader.gif" # use jpg, png, svg or gif format.
+
+############################# social site ########################
+
+[[params.social]]
+icon = "fab fa-github"
+link = "https://github.com/sidathasiri"
+
+[[params.social]]
+icon = "fab fa-linkedin"
+link = "https://www.linkedin.com/in/sidath-asiri/"
+
+[[params.social]]
+icon = "fas fa-envelope"
+link = "mailto:sidathasiri@gmail.com"
+
+[[params.social]]
+icon = "fab fa-medium"
+link = "https://medium.com/@sidathasiri"
+
+contentDir = "content/english"
+weight = 1
+home = "Home"
