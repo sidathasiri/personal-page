@@ -74,7 +74,7 @@ logo_light = "images/S_logo_white.png"
 logo_dark = "images/S_logo_dark.png"
 copyright = "Copyright Sidath Munasinghe &copy;"
 # Meta data
-description = "Personal Portfolio"
+description = "Sidath Munasinghe is a dedicated Technical Lead passionate about enterprise software design and architecture, where he excel at creating efficient and scalable solutions. With a strong expertise in AWS (Amazon Web Services), he leverage its capabilities to drive innovation and deliver robust applications."
 author = "Sidath Munasinghe"
 favicon = "images/favicon.ico"
 google_analytics = "G-ABCDEFG123"
@@ -102,6 +102,10 @@ link = "mailto:sidathasiri@gmail.com"
 [[params.social]]
 icon = "fab fa-medium"
 link = "https://medium.com/@sidathasiri"
+
+[[params.social]]
+icon = "fab fa-dev"
+link = "https://dev.to/sidathasiri"
 
 contentDir = "content/english"
 weight = 1

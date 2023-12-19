@@ -60,7 +60,7 @@ experience:
 ############################### Skill #################################
 skill:
   enable: true
-  title: 'SOME SKILLS'
+  title: 'TOP SKILLS'
   showpercent: false
   skill_list:
     - name: 'NodeJS'
