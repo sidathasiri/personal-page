@@ -78,7 +78,7 @@ skill:
     - name: 'CI/CD'
       percentage: '85%'
 
-    - name: 'IaaC'
+    - name: 'IaC (CDK/Terraform/Serverless Framework/CloudFormation)'
       percentage: '85%'
 
     - name: 'DevOps'
@@ -103,7 +103,7 @@ funfacts:
 
     - name: 'Tech Blogs'
       image: 'images/icons/write.png'
-      count: '20'
+      count: '21'
 
     - name: 'Research Publications'
       image: 'images/icons/publication.png'
