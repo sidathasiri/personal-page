@@ -75,7 +75,7 @@ skill:
     - name: 'React'
       percentage: '85%'
 
-    - name: 'CI/CD'
+    - name: 'Software Architectural Design'
       percentage: '85%'
 
     - name: 'IaC (CDK/Terraform/Serverless Framework/CloudFormation)'
