@@ -103,7 +103,7 @@ funfacts:
 
     - name: 'Tech Blogs'
       image: 'images/icons/write.png'
-      count: '21'
+      count: '22'
 
     - name: 'Research Publications'
       image: 'images/icons/publication.png'
