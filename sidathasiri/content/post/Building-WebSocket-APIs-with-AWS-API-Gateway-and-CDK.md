@@ -5,8 +5,8 @@ title: 'Building WebSocket APIs with AWS API Gateway and CDK'
 date: 2023-10-15
 author: 'Sidath Munasinghe'
 URL: '/2023/10/15/Building-WebSocket-APIs-with-AWS-API-Gateway-and-CDK/'
-image: '/images/posts/web-sockets-api-gateway.png'
-relcanonical: "https://medium.com/aws-in-plain-english/real-time-magic-building-websocket-apis-with-aws-api-gateway-and-cdk-5b76734a518a"
+image: '/images/posts/Building-WebSocket-APIs-with-AWS-API-Gateway-and-CDK/web-sockets-api-gateway.png'
+relcanonical: 'https://medium.com/aws-in-plain-english/real-time-magic-building-websocket-apis-with-aws-api-gateway-and-cdk-5b76734a518a'
 ---
 
 ## Introduction
@@ -21,7 +21,7 @@ WebSocket is a protocol that allows full duplex communication between a client a
 
 Unlike the short-lived stateless connections in HTTP, WebSocket leverages long-lived opened connections to exchange messages with each other independently. This feature allows WebSocket connections to go beyond the traditional request and response model, making it the ideal solution for use cases like chat applications, live broadcasts, and extremely fast data synchronization.
 
-![WebSockets vs HTTP](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/6oxb3vsp705jcfdbm34q.png)
+![WebSockets vs HTTP](/images/posts/Building-WebSocket-APIs-with-AWS-API-Gateway-and-CDK/comparison-table.png)
 
 However, when implementing a WebSockets API, some of the crucial areas that we need to pay extra attention to are,
 
@@ -32,7 +32,7 @@ However, when implementing a WebSockets API, some of the crucial areas that we n
 
 ## AWS API Gateway for WebSocket APIs
 
-![AWS API Gateway](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/byjz25vqut1blrlpjzfl.png)
+![AWS API Gateway](/images/posts/Building-WebSocket-APIs-with-AWS-API-Gateway-and-CDK/api-gateway.png)
 
 Amazon API Gateway is a fully managed service that makes it easy for developers to create, publish, maintain, monitor, and secure APIs at any scale. Apart from the HTTP-based restful APIs, it allows creating and managing WebSocket APIs as well by simplifying the areas we discussed above while allowing developers to focus on the core functionality of the real-time applications. Here are the key benefits of using AWS API Gateway for building your next WebSocket API.
 
@@ -88,7 +88,7 @@ Now let’s create a very simple WebSocket API using AWS CDK with Typescript to 
 5. Grant any required permissions
 6. Test the API
 
-###Lambda functions
+### Lambda functions
 Let’s first create the three lambda functions so we can directly integrate them when creating the WebSockets API routes. The below code snippet shows how to create the mentioned Lambda functions using the NodejsFunction construct in CDK.
 
 ```
