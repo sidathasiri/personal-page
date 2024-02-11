@@ -32,7 +32,9 @@
 
   {{ "<!--Favicon-->" | safeHTML }}
 
-  {{ if isset .Site.Params "special_favicon" }}
+  <link rel="icon" type="image/png" href="/images/favicon.ico" />
+
+  <!-- {{ if isset .Site.Params "special_favicon" }}
     <link
       rel="apple-touch-icon"
       sizes="180x180"
@@ -62,7 +64,7 @@
     />
     {{ else }}
     <link rel="icon" type="image/png" href="{{ .Site.Params.favicon }}" />
-  {{ end }}
+  {{ end }} -->
   {{ with .Site.Params.google_analytics }}
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ . }}"></script>
     <script>
