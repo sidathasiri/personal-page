@@ -47,7 +47,7 @@ Amazon API Gateway is a fully managed service that makes it easy for developers 
 
 AWS API Gateway service utilizes its fundamental concepts, such as models, authorizers, and stages for WebSocket APIs as well. Below are the additional concepts we need to know when using WebSocket APIs.
 
-###Routes
+### Routes
 In a WebSocket API, incoming JSON messages are directed to backend integrations based on routes you configure, similar to the endpoints in RestFul APIs. API Gateway provides three predefined routes as below.
 
 - **$connect:** Triggers when a persistent connection between the client and a WebSocket API is initiated.
