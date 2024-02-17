@@ -13,7 +13,7 @@ hero:
   # hero background image
   bg_image: 'images/background.jpg'
   # optional mobile breakpoint background
-  mobile_bg_image: 'images/background_m.jpg'
+  mobile_bg_image: 'images/background.jpg'
 
 ########################### About ##################################
 about:
