@@ -3,6 +3,8 @@ layout: post
 title: 'Building WebSocket APIs with AWS API Gateway and CDK'
 # subtitle:   "Hello World, Hello Blog"
 date: 2023-10-15
+keywords: 'web sockets, Api Gateway, AWS, serverless, CDK'
+description: 'Learn what is a web socket API and how it differ from RESTful APIs. Understand how to implement a web socket API with AWS Api Gateway to build a small chat application'
 author: 'Sidath Munasinghe'
 URL: '/2023/10/15/Building-WebSocket-APIs-with-AWS-API-Gateway-and-CDK/'
 image: '/images/posts/Building-WebSocket-APIs-with-AWS-API-Gateway-and-CDK/web-sockets-api-gateway.png'
@@ -48,6 +50,7 @@ Amazon API Gateway is a fully managed service that makes it easy for developers 
 AWS API Gateway service utilizes its fundamental concepts, such as models, authorizers, and stages for WebSocket APIs as well. Below are the additional concepts we need to know when using WebSocket APIs.
 
 ### Routes
+
 In a WebSocket API, incoming JSON messages are directed to backend integrations based on routes you configure, similar to the endpoints in RestFul APIs. API Gateway provides three predefined routes as below.
 
 - **$connect:** Triggers when a persistent connection between the client and a WebSocket API is initiated.
@@ -89,6 +92,7 @@ Now let’s create a very simple WebSocket API using AWS CDK with Typescript to 
 6. Test the API
 
 ### Lambda functions
+
 Let’s first create the three lambda functions so we can directly integrate them when creating the WebSockets API routes. The below code snippet shows how to create the mentioned Lambda functions using the NodejsFunction construct in CDK.
 
 ```

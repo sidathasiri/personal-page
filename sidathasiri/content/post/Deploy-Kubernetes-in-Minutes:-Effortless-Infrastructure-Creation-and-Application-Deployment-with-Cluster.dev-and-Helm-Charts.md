@@ -4,6 +4,8 @@ title: 'Deploy Kubernetes in Minutes: Effortless Infrastructure Creation and App
 # subtitle:   "Hello World, Hello Blog"
 date: 2024-02-17
 author: 'Sidath Munasinghe'
+keywords: 'kubernetes, cluster.dev, AWS, IaC, cloud computing, devops, jenkins, helm'
+description: 'Learn how to create a Kubernetes cluster on AWS and deploy a Jenkins service via Helm within minutes using Cluster.dev'
 URL: '/2024/02/17/Deploy-Kubernetes-in-Minutes:-Effortless-Infrastructure-Creation-and-Application-Deployment-with-Cluster.dev-and-Helm-Charts/'
 image: '/images/posts/Deploy-Kubernetes-in-Minutes:-Effortless-Infrastructure-Creation-and-Application-Deployment-with-Cluster.dev-and-Helm-Charts/k8-with-helm.png'
 relcanonical: 'https://medium.com/@sidathasiri/deploy-kubernetes-in-minutes-effortless-infrastructure-creation-and-application-deployment-with-94141697fd59'
