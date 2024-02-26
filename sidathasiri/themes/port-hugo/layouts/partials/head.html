@@ -8,6 +8,12 @@
     name="description"
     content="{{ with .Params.Description }}{{ . }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}"
   />
+
+  <meta
+    name="keywords"
+    content="{{ with .Params.keywords }}{{ . }}{{ else }}{{ with .Site.Params.keywords }}{{ . }}{{ end }}{{ end }}"
+  />
+
   {{ with .Site.Params.author }}
     <meta name="author" content="{{ . }}" />
   {{ end }}
