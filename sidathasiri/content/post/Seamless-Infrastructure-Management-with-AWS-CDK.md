@@ -3,8 +3,8 @@ layout: post
 title: 'Seamless Infrastructure Management with AWS CDK'
 date: 2023-01-20
 author: 'Sidath Munasinghe'
-keywords: 'aws, ias, cdk, cloud, infrastructure'
-description: 'Learn to deploy securely on AWS with GitHub Actions using OpenID Connect. This approach removes the need to manage AWS credentials, bolstering your deployment security.'
+keywords: 'aws, IaC, cdk, cloud, infrastructure'
+description: 'Learn to master the AWS Cloud Development Kit (CDK) to effortlessly provision your AWS infrastructure. Embrace the power of programming languages within Infrastructure as Code (IaC), transforming how you manage and deploy resources with unparalleled precision and flexibility.'
 URL: '/2023/01/20/Seamless-Infrastructure-Management-with-AWS-CDK/'
 image: '/images/posts/Seamless-Infrastructure-Management-with-AWS-CDK/main-logo.png'
 relcanonical: 'https://medium.com/99xtechnology/seamless-infrastructure-management-with-aws-cdk-d4fab550c96f'
