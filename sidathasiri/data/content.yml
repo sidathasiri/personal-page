@@ -4,7 +4,7 @@ hero:
 
   # animated text loop
   occupations:
-    - 'Technical Lead'
+    - 'Senior Technical Lead'
     - 'AWS Certified Solutions Architect'
     - 'Technical Content Writer'
     - 'BSc Engineering Honours'
@@ -33,9 +33,14 @@ experience:
   enable: true
   title: 'EXPERIENCE'
   experience_list:
+    - name: Senior Technical Lead
+      company: 99x
+      duration: 'March 2024 - Present'
+      content: Leading a team in modernizing a platform by creating a serverless, cost-effective solution on AWS cloud. Coordinating and leading efforts to ensure strategic planning aligns with business objectives for innovation and efficiency.
+
     - name: Technical Lead
       company: 99x
-      duration: 'Jul 2023 - Present'
+      duration: 'Jul 2023 - March 2024'
       content: Leading a team to deliver innovative solutions through strategic planning and effective architecture. With a focus on excellence, I bring expertise in AWS and a proven track record in aligning technology with business goals.
 
     - name: Associate Technical Lead
