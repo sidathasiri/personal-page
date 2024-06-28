@@ -26,9 +26,9 @@
   {{ end }}
 
   {{ with .Params.relcanonical }}
-  <link rel="canonical" href="{{ . | relLangURL }}" itemprop="url" />
+  <link rel="canonical" href="{{ . | relLangURL }}" />
 {{ else -}}
-  <link rel="canonical" href="{{ .Permalink }}" itemprop="url" />
+  <link rel="canonical" href="{{ .Permalink }}" />
 {{ end -}}
 
   {{ "<!-- Main Stylesheet -->" | safeHTML }}
