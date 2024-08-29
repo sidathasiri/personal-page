@@ -7,7 +7,7 @@
 
 ## Build static files
 
-`hugo -t hugo-theme-cleanwhite`
+`hugo -t port-hugo`
 
 ## Deploy
 
