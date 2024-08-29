@@ -1,36 +1,34 @@
 ---
 layout: post
-title: 'Unleashing the Power of CDK and Terraform in Cloud Deployments'
+title: 'Maximizing Cloud Infrastructure Efficiency with AWS CDK and Terraform'
 date: 2024-06-22
 author: 'Sidath Munasinghe'
-keywords: 'cdk, terraform, iac, typescript, devops'
+keywords: 'cdk, terraform, cloud, devops, infrastructure as code'
 description: "Uncover the art of integrating CDK and Terraform for seamless synergy in cloud deployments. Explore how these powerful tools streamline infrastructure as code, leading to faster and more efficient cloud deployment processes."
 URL: '/2024/06/22/Unleashing-the-Power-of-CDK-and-Terraform-in-Cloud-Deployments/'
 image: '/images/posts/Unleashing-the-Power-of-CDK-and-Terraform-in-Cloud-Deployments/main-cover-image.png'
-relcanonical: 'https://medium.com/@sidathasiri/unleashing-the-power-of-cdk-and-terraform-in-cloud-deployments-b7871c7e340d'
 ---
 
-## Introduction
 Deploying applications to the cloud has become a cornerstone of modern software development. AWS offers CloudFormation as a service to facilitate cloud deployments and tools like the AWS Cloud Development Kit (CDK). At the same time, Terraform has emerged as a powerful solution for Infrastructure as Code (IaC), enabling faster deployments to multiple cloud providers. In this article, we’ll explore the benefits of using AWS CDK and Terraform together and walk through a practical example of creating a REST API with CDK in TypeScript.
 
-## What is Terraform and CDK?
+## Terraform and CDK
 
 Terraform and CDK are prominent tools that empower the definition of infrastructure as code. Each solution possesses its own set of advantages and disadvantages. Let's delve into a bit more information on both.
 
 ### Terraform
 Terraform is a tool created by HashiCorp that allows you to define your infrastructure in a high-level configuration language called HCL (HashiCorp Configuration Language). Terraform is cloud-agnostic and can manage infrastructure across various cloud providers, including AWS, Azure, and Google Cloud Platform. It also enables faster deployments when compared to CloudFormation, specifically for AWS.
 
-### AWS CDK
+### CDK
 The AWS Cloud Development Kit (CDK) is an open-source software development framework for defining cloud infrastructure in code and provisioning it through AWS CloudFormation. CDK uses familiar programming languages, including TypeScript, to model your applications. Underneath, CDK generates plain CloudFormation templates to create the infrastructure using the code we implement with CDK. The advantage is due to this abstraction, we could generate very lengthy CloudFormation templates within a few lines using high-level CDK constructs. So, it helps developers implement and maintain infrastructure code conveniently with their favourite programming language.
 
-## Benefits of Using Terraform and CDK Together
+## Advantages of Using Terraform and CDK Together
 Using both tools together, we can enjoy the benefits of both worlds. Although Terraform uses HCL, it may not be very convenient for developers. CDK solves this by providing high-level reusable CDK constructs to implement the infrastructure within a few lines. Also, since we use a very familiar programming language, it feels so close to the developers.
 
 On the other hand, CDK uses CloudFormation behind the scenes, which is usually slower than Terraform. However, when we use CDK and Terraform together, we can make much faster cloud deployments since we use Terraform to perform the deployments.
 
 > We can achieve this through the use of [CDK for Terraform](https://developer.hashicorp.com/terraform/cdktf), which is introduced as Cloud Development Kit for Terraform (CDKTF), allowing us to utilise familiar programming languages to define and provision infrastructure.
 
-## Setting up a Project
+## Project Setup
 Let’s set up a Terraform project with CDK using Typescript as the language. We need to set up a few prerequisites for using CDK for Terraform.
 
 - [Terraform CLI](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
@@ -48,7 +46,7 @@ Then we can initiate a project with below CLI command. Here we are going to use 
 
 Once the project is initialized, we can update the main.ts file to define the infrastructure we need. Within the main.ts file, it has created a CDK app as well as a Stack. We can update the resources within the stack as needed to deploy. Let’s build a simple hello world REST API using API Gateway and a Lambda function.
 
-## Building a REST API
+## Creating a REST API
 Before adding any AWS resources, let’s configure the AWS provider in Terraform since we will use AWS as the cloud provider. Further, we can use a S3 bucket to store the Terraform backend and track the deployment states.
 
 We can simply configure this by adding the necessary CDK constructs (AwsProvider, S3Backend) with the required parameters like below.
