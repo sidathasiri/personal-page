@@ -27,9 +27,7 @@
 
   {{ with .Params.relcanonical }}
   <link rel="canonical" href="{{ . | relLangURL }}" />
-{{ else -}}
-  <link rel="canonical" href="{{ .Permalink }}" />
-{{ end -}}
+  {{ end -}}
 
   {{ "<!-- Main Stylesheet -->" | safeHTML }}
 
