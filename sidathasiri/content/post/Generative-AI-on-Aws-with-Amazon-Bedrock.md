@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 'Generative AI on AWS with Amazon Bedrock'
+title: 'Generative AI on AWS with Amazon Bedrock Service'
 # subtitle:   "Hello World, Hello Blog"
 date: 2024-05-01
 author: 'Sidath Munasinghe'
@@ -8,7 +8,6 @@ keywords: 'bedrock, aws, ai, generative ai, amazon'
 description: "Explore the exciting world of generative AI with Bedrock. Whether you're a beginner or an expert, this post will guide you through the platform's powerful features and the endless possibilities of generative AI."
 URL: '/2024/05/01/Generative-AI-on-AWS-with-Amazon-Bedrock/'
 image: '/images/posts/Generative-AI-on-Aws-with-Amazon-Bedrock/main-logo.png'
-relcanonical: 'https://medium.com/towards-aws/generative-ai-on-aws-with-bedrock-4b59c0756e95'
 ---
 
 Amazon Bedrock is a managed service that provides high-performing foundation models (FMs) from leading AI companies using a single interface. With Bedrock, we don’t need to worry about hosting and managing the infrastructure for the foundation models. We can directly jump into consuming these models with its APIs and start building apps. Further, we can customize these foundation models to fit our use cases and also integrate them with knowledge bases and agents to provide enhanced features.
@@ -20,7 +19,7 @@ Here are some key features of Amazon Bedrock
 - Integrate knowledge bases and tailor and augment foundation models to specific tasks or domains
 - Integrate agents and enrich reasoning capabilities to trigger intelligent actions
 
-## Foundation Models
+## Meet Foundation Models
 
 Foundation models are the basic building block of Bedrock. The following diagram shows a few foundation models provided by different AI companies on Bedrock. This list will continue to grow as AWS adds more models. Each model is specific for certain tasks, and depending on your use case, the most appropriate one needs to be selected. Further, each model has different pricing models.
 
@@ -76,7 +75,7 @@ Once the script is run, we can see that it is giving us responses.
 
 This can be seamlessly integrated into any app and further expanded by customizing the prompt based on specific use cases. See how using Bedrock to fulfil the generative AI needs is effortless.
 
-## Custom Models
+## Creating Custom Models
 
 A common drawback with generative AI is that it’s too generic, meaning it’s trained with outdated data or doesn’t have specific knowledge of a given domain. We can enhance a foundation model’s performance for particular tasks by training it with more data and imparting it with more knowledge using the custom model capability.
 
@@ -102,7 +101,7 @@ Below is the output of the Titan foundation model after performing the customiza
 
 Further, it’s not just a rule-based training to provide the given answer for the given prompt. If you see the prompt in the given dataset and what I have asked are not exactly the same but they are similar. The model has been trained properly to answer similar types of queries as well, which is really great.
 
-## Knowledge Bases
+## Creating Knowledge Bases
 
 Knowledge bases can be utilized to provide foundational AI models with additional contextual information, enabling them to generate customized or more accurate responses akin to custom models without the need for extensive retraining. So we don’t need to spend much time retraining the models with additional data.
 
@@ -123,7 +122,7 @@ I have created a knowledge base using the AWS documentation for bedrock using it
 
 ![Testing the created knowledge base](https://miro.medium.com/v2/resize:fit:870/format:webp/1*NQHVY5FLK4sls4IcrRcqJA.png)
 
-## Agents
+## Creating Agents
 
 Bedrock agents allow the triggering of actions based on specific inputs and the creation of autonomous agents. For instance, you could create an agent to accept hotel room reservations from customers by configuring an agent with a knowledge base of room availability and other relevant data and the respective backend to place reservations. When configuring the backend, we need to provide an OpenAPI specification of the backend services so that it knows which endpoints to call to satisfy the request.
 
@@ -144,7 +143,7 @@ Besides these, Bedrock offers additional features for developing responsible AI 
 
 In conclusion, Amazon Bedrock offers a powerful platform for leveraging generative AI capabilities on AWS. With its Foundation models and easy-to-use APIs, developers can quickly integrate AI-driven features into their applications. Additionally, the ability to create custom models, knowledge bases, and agents opens up endless possibilities for tailoring AI solutions to specific needs. By harnessing the power of Bedrock, developers can unlock new levels of innovation and create intelligent, personalized experiences for their users.
 
-## Read more
+## Learn More
 
 - [What is Amazon Bedrock?](https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html)
 - [Custom Models](https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html)
