@@ -1,21 +1,20 @@
 ---
 layout: post
-title: 'Harnessing Feature Flags on AWS AppConfig for Seamless Software Evolution'
+title: 'Feature Flags on AWS Using AppConfig for Seamless Software Evolution'
 # subtitle:   "Hello World, Hello Blog"
 date: 2023-12-20
 author: 'Sidath Munasinghe'
-keywords: 'feature flags, AWS, AppConfig, CDK, release, continuos deployment'
+keywords: 'feature flags, aws, appconfig, cdk, release, continuos deployment'
 description: 'Learn what are feature flags and how to use AWS AppConfig service to implement feature flags. Get hands on experience by integrating feature flags with AWS Lambda using CDK'
 URL: '/2023/12/20/Harnessing-Feature-Flags-on-AWS-AppConfig-for-Seamless-Software-Evolution/'
 image: '/images/posts/Harnessing-Feature-Flags-on-AWS-AppConfig-for-Seamless-Software-Evolution/main-logo.png'
-relcanonical: 'https://aws.plainenglish.io/harnessing-feature-flags-on-aws-appconfig-for-seamless-software-evolution-b20eeff0d091'
 ---
 
 In the fast-paced realm of software development, agility and adaptability are not just a virtue but a necessity. Feature flagging is a versatile technique that offers a strategic approach for releasing features to end users, enabling rapid software development while giving more control to teams to evolve products.
 
 Feature flags decouple feature deployment from code deployment, allowing teams to release features incrementally and independently. Due to this, teams can do frequent code deployments darkly, although the entire feature development is incomplete. Once the entire feature development is complete and ready to enable users, it can be released on demand as needed. This promotes a continuous deployment approach, enabling faster time-to-market without disrupting the entire application.
 
-## Advantages of Feature Flags
+## Feature Flags
 
 Incorporating feature flags introduces a lot of advantages to the software development process as well as to the software releases.
 
@@ -38,7 +37,7 @@ AWS AppConfig is a service that facilitates deploying and managing application c
 - **Rollback:** When there is a need to change the flag status, AppConfig provides a built-in capability to rollback configuration to previous versions.
 - **Manage Environments:** AppConfig has a concept called environment, which can be used to control feature flag values per each product environment. This helps to test the feature flag capabilities in non-prod environments first and then use them in production as needed.
 
-## Data Retrieval in AppConfig Feature Flags
+## Retrieving State in AppConfig Feature Flags
 
 The real magic behind the feature flags is we don’t need to redeploy applications to get the latest configuration changes. When we update the configuration settings, all the applications will get the latest changes automatically. Applications can get this capability by establishing a configuration session with the AppConfig server and polling for configuration changes. The sequence diagram below summarizes the overall communication flow.
 
@@ -50,7 +49,7 @@ The real magic behind the feature flags is we don’t need to redeploy applicati
 
 Here, the important thing is that the token can be used only once. So, the application needs to keep track of the latest token it received and use it in the subsequent request.
 
-## Integration Options
+## Available Integration Options
 
 Since implementing this polling mechanism to get the flag status/configuration is not as straightforward, AWS has provided simplified integration options for common compute services.
 
@@ -86,7 +85,7 @@ To implement this setup, we need to create the below resources on AWS.
 
 Let’s see each component and how to implement them with CDK constructs.
 
-### AppConfig Application
+### Creating AppConfig Application
 
 An AppConfig Application refers to a logical entity that utilizes AWS AppConfig for managing its configuration settings. This could be any software application or service that benefits from dynamic and centralized configuration management.
 
@@ -98,7 +97,7 @@ const application = new CfnApplication(scope, `AppConfig Application`,
 });
 ```
 
-### AppConfig Environment
+### Creating AppConfig Environment
 
 An AppConfig Environment is a deployment environment within an AWS AppConfig application where the configurations are managed independently from each other. Environments provide a way to separate configurations for different stages of development, testing, and production, allowing for controlled and efficient management of configurations across different deployment scenarios.
 
@@ -111,7 +110,7 @@ const environment = new CfnEnvironment(scope, `AppConfig Environment`, {
 });
 ```
 
-### AppConfig Configuration Profile
+### Creating AppConfig Configuration Profile
 
 A configuration profile helps to define what kind of configuration (feature flag/freeform) will be created and optionally defines any validators to ensure the configuration data is syntactically and semantically correct.
 
@@ -130,7 +129,7 @@ const configurationProfile = new CfnConfigurationProfile(
 );
 ```
 
-### AppConfig Configuration Version
+### Creating AppConfig Configuration Version
 
 An AppConfig Configuration Version represents a specific snapshot or version of a configuration. As configurations may evolve over time, different versions allow for tracking and managing changes. Each version is associated with a unique identifier.
 
@@ -161,7 +160,7 @@ const configurationVersion = new CfnHostedConfigurationVersion(
 );
 ```
 
-### Lambda Function
+### Creating Lambda Function
 
 Now, we can create the lambda function and attach the lambda layer to integrate it with AppConfig. The lambda function must be configured with proper environment variables so the agent can connect with the required AppConfig application, environment and configuration profile, as shown in the code snippet below. Further, we must grant permissions via IAM to the lambda function to access AppConfig and fetch the configurations.
 
@@ -238,7 +237,7 @@ In conclusion, adopting feature flags, particularly through AWS AppConfig, empow
 
 Different integration options underscore AppConfig’s flexibility in catering to diverse development environments. Altogether, leveraging feature flags on AWS AppConfig enhances development agility, allowing teams to respond dynamically to evolving requirements and user feedback, ultimately fostering a resilient and user-centric software evolution.
 
-## Further Reading
+## Learn More
 
 - [Retrieving configuration data using the AWS AppConfig Agent Lambda extension](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html)
 - [Retrieving configuration data from Amazon EC2 instances](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-ec2.html)
