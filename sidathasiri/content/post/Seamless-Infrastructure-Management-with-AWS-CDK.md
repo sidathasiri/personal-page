@@ -1,16 +1,13 @@
 ---
 layout: post
-title: 'Seamless Infrastructure Management with AWS CDK'
+title: 'AWS CDK for Seamless Infrastructure Management'
 date: 2023-01-20
 author: 'Sidath Munasinghe'
-keywords: 'aws, IaC, cdk, cloud, infrastructure'
+keywords: 'aws, iac, cdk, cloud, infrastructure, code, typescript'
 description: 'Learn to master the AWS Cloud Development Kit (CDK) to effortlessly provision your AWS infrastructure. Embrace the power of programming languages within Infrastructure as Code (IaC), transforming how you manage and deploy resources with unparalleled precision and flexibility.'
 URL: '/2023/01/20/Seamless-Infrastructure-Management-with-AWS-CDK/'
 image: '/images/posts/Seamless-Infrastructure-Management-with-AWS-CDK/main-logo.png'
-relcanonical: 'https://medium.com/99xtechnology/seamless-infrastructure-management-with-aws-cdk-d4fab550c96f'
 ---
-
-## Introduction
 
 The heart of any software solution is its infrastructure and administering it appropriately is very crucial. At present, it can be seen that the majority of software vendors have moved towards using cloud platforms and serverless architectures to mitigate the complexity of maintaining infrastructure. Still, things like provisioning the infrastructure in diverse environments and keeping them in sync need enormous effort if done manually.
 
@@ -24,17 +21,17 @@ IaC is supported by almost all cloud vendors at present through their own interf
 
 Often, a declarative definition is used here to outline resources and the configuration via JSON or YAML files. These files can be uploaded to the cloud provider repeatedly varying the necessary configurations to provision different environments quickly and consistently.
 
-## What is AWS CDK
+## AWS CDK
 
 AWS Cloud Development Kit (AWS CDK) is a supplementary interface that permits developers to provision infrastructure on AWS in addition to CloudFormation. In contrast to CloudFormation, CDK allows developers to define infrastructure in a handy manner using popular programming languages like TypeScript. This offer more expressive power to developers to define reusable components and establish the infrastructure of an entire application with a few lines of code.
 
-## Anatomy of a CDK Application
+## Structure of a CDK Application
 
 A CDK application can be recognized as a tree of constructs (discussed more below). The bottom of the tree holds low-level constructs symbolizing individual AWS resources while the top of the tree denotes the composition of low-level constructs uncovering the entire infrastructure of the application. This helps to put together a very complex infrastructure favorably using different abstraction layers. At the same time, it helps to strengthen the explainability of the entire application infrastructure.
 
 ![Image description](/images/posts/Seamless-Infrastructure-Management-with-AWS-CDK/cdk-anatomy.png)
 
-## Key Concepts
+## Principles
 
 Following are the key concepts that anyone should have when getting started with CDK.
 
@@ -109,15 +106,15 @@ A set of AWS resources bundled for a single deployment is called a Stack. This i
 
 App is a special construct that can be only used as the root of a CDK application/construct tree. Due to that, the App construct doesn’t need any initialization argument and it functions as the container for any number of stacks. App construct provides the initial scope to the stacks that it contains and stacks can further pass it down to low-level constructs to create the construct tree.
 
-## Advantages of AWS CDK
+## Benefits of AWS CDK
 
 There are numerous advantages of using AWS CDK and below are a few of them.
 
-### Customized reusable abstractions
+### Customized Reusable Abstractions
 
 CDK allows defining our own constructs wrapping up the built-in constructs. This authorizes enforcing certain rules to create infrastructure such as tagging standards, naming conventions, etc. Further, the capability to share and reuse these constructs enables to compel those rules across an entire organization reducing code duplication at the same time.
 
-### Power of programming languages
+### Power of Programming Languages
 
 A CDK app can be modeled from multiple languages such as TypeScript, Python, Java, .NET, and Go. This permits using the special capabilities of programming languages such as static type checks, validations, etc going beyond just scripting. This aids to identify issues upfront and fixing them even before an attempt to deploy.
 
@@ -125,7 +122,7 @@ A CDK app can be modeled from multiple languages such as TypeScript, Python, Jav
 
 The AWS CDK CLI provides features such as synthesizing a CloudFormation template, showing the differences between the running stack and proposed changes, and confirming security-related changes prior to deployment. Further CDK can be integrated into development tools such as [Visual Studio Code](https://aws.amazon.com/visualstudiocode/) providing more intuition of the application, stacks, resources, policies, etc. All of this help to enhance the confidence in doing changes and evolving the infrastructure of an application.
 
-### Fast development
+### Fast Development
 Development with CDK gets extremely fast mainly due to the ability to reuse constructs. Further, it is more convenient to developers due to the usage of programming languages in contrast to scripts like YAML. Extensions for IDEs/Text Editors such as [CDK Snippets](https://marketplace.visualstudio.com/items?itemName=mklein.cdk-snippets) provide suggestions and auto-completion capabilities to define the infrastructure exceptionally fast.
 
 ## Best Practices
