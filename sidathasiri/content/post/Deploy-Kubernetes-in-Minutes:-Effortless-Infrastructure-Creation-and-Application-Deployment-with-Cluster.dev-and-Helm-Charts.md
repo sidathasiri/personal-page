@@ -1,10 +1,10 @@
 ---
 layout: post
-title: 'Deploy Kubernetes in Minutes: Effortless Infrastructure Creation and Application Deployment with Cluster.dev and Helm Charts'
+title: 'Effortless Kubernetes Infrastructure Provisioning and Application Deployment with Cluster.dev and Helm Charts'
 # subtitle:   "Hello World, Hello Blog"
 date: 2024-02-17
 author: 'Sidath Munasinghe'
-keywords: 'kubernetes, cluster.dev, AWS, IaC, cloud computing, devops, jenkins, helm'
+keywords: 'kubernetes, cluster.dev, aws, amazon, iac, cloud, devops, helm'
 description: 'Learn how to create a Kubernetes cluster on AWS and deploy a Jenkins service via Helm within minutes using Cluster.dev'
 URL: '/2024/02/17/Deploy-Kubernetes-in-Minutes:-Effortless-Infrastructure-Creation-and-Application-Deployment-with-Cluster.dev-and-Helm-Charts/'
 image: '/images/posts/Deploy-Kubernetes-in-Minutes:-Effortless-Infrastructure-Creation-and-Application-Deployment-with-Cluster.dev-and-Helm-Charts/k8-with-helm.png'
@@ -15,7 +15,7 @@ Kubernetes has quickly become the leading orchestration tool for containerized a
 
 This guide is designed to demystify the process, showing you how to set up a Kubernetes infrastructure swiftly and without hassle. We aim to transform the perceived daunting task of Kubernetes deployment into a streamlined and straightforward process so you don’t want to struggle with its complexities. By the end of this article, you’ll be equipped to utilize the full power of Kubernetes, making infrastructure deployment not just feasible but also simple, efficient, and repeatable. Let’s embark on this journey to simplify Kubernetes deployment, turning obstacles into opportunities for growth and innovation.
 
-## Complexities with Kubernetes
+## Challenges with Kubernetes
 If you have tried to create your own Kubernetes cluster, you know the pain behind the complexities of that. The biggest problem is having a highly available and scalable control plane for cluster management. The easiest way to solve this challenge is to hand over that complexity to a managed service by a cloud provider so that you don’t need to worry about it.
 ![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/z1m55xa6e3fhkm5ue9vm.png)
 
@@ -25,7 +25,7 @@ We now have an operational Kubernetes cluster ready to accept deployments. If yo
 
 [Helm](https://helm.sh/) is a package manager that automates Kubernetes applications' creation, packaging, configuration, and deployment by combining your configuration files into a single reusable package. This eliminates the requirement to create the mentioned Kubernetes resources by ourselves since they have been implemented within the Helm chart. All we need to do is configure it as needed to match our requirements. From the public Helm chart repository, we can get the charts for common software packages like Consul, Jenkins SonarQube, etc. We can also create our own Helm charts for our custom applications so that we don’t need to repeat ourselves and simplify deployments.
 
-## Setting up a Jenkins Service with Cluster.dev and Helm on Kubernetes
+## Deploying Jenkins with Cluster.dev and Helm on Kubernetes
 
 ![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/ig85dkbwukorl7429d80.png)
 
@@ -99,10 +99,9 @@ In conclusion, leveraging Cluster.dev alongside Helm charts offers a streamlined
 1. [Revolutionizing Infrastructure Management with Cluster.dev: A Journey into Effortless Orchestration](https://medium.com/aws-in-plain-english/revolutionizing-infrastructure-management-with-cluster-dev-a-journey-into-effortless-orchestration-759b9379cebe)
 2. [Streamlining SonarQube on AWS ECS: Simplified Deployment Using Cluster.dev](https://aws.plainenglish.io/streamlining-sonarqube-on-aws-ecs-simplified-deployment-using-cluster-dev-0b988536fff0)
 
-## Further Reading
+## Additional Resources
 
 - [Getting started guide with EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html)
 - [Cluster.dev documentation](https://docs.cluster.dev/)
 - [What is Helm? A complete guide](https://circleci.com/blog/what-is-helm/)
-- [Learn Kube
-rnetes Basics](https://kubernetes.io/docs/tutorials/kubernetes-basics/)
+- [Learn Kubernetes Basics](https://kubernetes.io/docs/tutorials/kubernetes-basics/)
