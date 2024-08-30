@@ -1,21 +1,18 @@
 ---
 layout: post
-title: 'Secure Cloud Deployments to AWS with GitHub Actions using OpenID Connect'
+title: 'Secure Deployments to AWS with GitHub Actions via OpenID Connect'
 # subtitle:   "Hello World, Hello Blog"
 date: 2023-03-04
 author: 'Sidath Munasinghe'
-keywords: 'github, github actions, ci/cd, openid connect, aws'
+keywords: 'github, github actions, ci/cd, openid connect, aws, cloud'
 description: 'Learn to deploy securely on AWS with GitHub Actions using OpenID Connect. This approach removes the need to manage AWS credentials, bolstering your deployment security.'
 URL: '/2023/03/04/Secure-Cloud-Deployments-to-AWS-with-GitHub-Actions-using-OpenID-Connect/'
 image: '/images/posts/Secure-Cloud-Deployments-to-AWS-with-GitHub-Actions-using-OpenID-Connect/main-logo.png'
-relcanonical: 'https://engineering.99x.io/secure-cloud-deployments-to-aws-with-github-actions-using-openid-connect-ea3188f57a10'
 ---
-
-## Introduction
 
 GitHub Actions is a platform to perform automated tasks upon triggering an event in GitHub. This is being used extensively to govern continuous integration and continuous delivery (CI/CD) workflows once code changes are pushed to a repository. But GitHub Actions has capabilities beyond that to automate a lot of stuff such as tagging releases, sending notifications when creating issues, repository migrations, etc.
 
-## Why you should use GitHub Actions for CI/CD?
+## Why GitHub Actions for CI/CD?
 
 There are several benefits to using GitHub Actions for Continuous Integration and Continuous Deployment (CI/CD):
 
@@ -27,7 +24,7 @@ There are several benefits to using GitHub Actions for Continuous Integration an
 
 _When using GitHub Actions to deploy changes to a cloud provider, the most crucial requirement is providing only the necessary and least access to GitHub to access the cloud provider and execute the deployment successfully. This can be accomplished comfortably by using the OpenID Connect protocol to request access from the cloud provider._
 
-## How does it work?
+## How Does It Work?
 
 This approach works principally by building a trust relationship between AWS and GitHub and granting GitHub to assume an IAM role with the necessary permissions. This can be fulfilled by defining some rules in AWS to run against the claims included in the OIDC token sent by GitHub. Below are the high-level steps of how this procedure.
 
@@ -47,7 +44,7 @@ This approach works principally by building a trust relationship between AWS and
 
 ![Image description](/images/posts/Secure-Cloud-Deployments-to-AWS-with-GitHub-Actions-using-OpenID-Connect/overall_diagram.png)
 
-## Integrating with AWS
+## Integrating to AWS
 
 _This approach works not only with AWS but also with almost any cloud provider like Azure, Google Cloud, and platforms like Hashicorp Vault as well._
 
@@ -93,7 +90,7 @@ jobs:
 
 Now whenever the workflow is triggered, configure-aws-credentials action will send the generated OIDC token to AWS to get the short-lived access token that grants the permission included in the requested IAM role.
 
-## Benefits of using OpenID Connect
+## Advantages of Using OpenID Connect
 
 1. No need to create AWS users and expose their AWS security credentials
 2. No need to manually rotate credentials to enhance security
@@ -104,7 +101,7 @@ Now whenever the workflow is triggered, configure-aws-credentials action will se
 
 In this article, we discussed how to use GitHub Actions to securely deploy your applications to AWS using OpenID Connect. You can find the below links to find more details.
 
-## Further Reading
+## Learn More
 
 - [Quick Start Guide for GitHub Actions](https://docs.github.com/en/actions/quickstart)
 - [GitHub Actions Market Place](https://github.com/marketplace?type=actions)
