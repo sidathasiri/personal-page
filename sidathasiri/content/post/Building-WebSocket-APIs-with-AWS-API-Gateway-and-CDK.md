@@ -3,7 +3,7 @@ layout: post
 title: 'Building a WebSocket API on AWS'
 # subtitle:   "Hello World, Hello Blog"
 date: 2023-10-15
-keywords: 'web socket, api gateway, aws, cdk, amazon'
+keywords: 'web socket, api gateway, aws, cdk, amazon, sidath, munasinghe'
 description: 'Learn what is a web socket API and how it differ from RESTful APIs. Understand how to implement a web socket API with AWS Api Gateway to build a small chat application'
 author: 'Sidath Munasinghe'
 URL: '/2023/10/15/Building-WebSocket-APIs-with-AWS-API-Gateway-and-CDK/'

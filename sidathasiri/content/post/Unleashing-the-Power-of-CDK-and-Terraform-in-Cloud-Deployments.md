@@ -3,7 +3,7 @@ layout: post
 title: 'Maximizing Cloud Infrastructure Efficiency with AWS CDK and Terraform'
 date: 2024-06-22
 author: 'Sidath Munasinghe'
-keywords: 'cdk, terraform, cloud, devops, infrastructure as code'
+keywords: 'cdk, terraform, cloud, devops, infrastructure as code, sidath, munasinghe'
 description: "Uncover the art of integrating CDK and Terraform for seamless synergy in cloud deployments. Explore how these powerful tools streamline infrastructure as code, leading to faster and more efficient cloud deployment processes."
 URL: '/2024/06/22/Unleashing-the-Power-of-CDK-and-Terraform-in-Cloud-Deployments/'
 image: '/images/posts/Unleashing-the-Power-of-CDK-and-Terraform-in-Cloud-Deployments/main-cover-image.png'

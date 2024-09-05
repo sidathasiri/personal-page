@@ -4,7 +4,7 @@ title: 'Generative AI on AWS with Amazon Bedrock Service'
 # subtitle:   "Hello World, Hello Blog"
 date: 2024-05-01
 author: 'Sidath Munasinghe'
-keywords: 'bedrock, aws, ai, generative ai, amazon'
+keywords: 'bedrock, aws, ai, generative ai, amazon, sidath, munasinghe'
 description: "Explore the exciting world of generative AI with Bedrock. Whether you're a beginner or an expert, this post will guide you through the platform's powerful features and the endless possibilities of generative AI."
 URL: '/2024/05/01/Generative-AI-on-AWS-with-Amazon-Bedrock/'
 image: '/images/posts/Generative-AI-on-Aws-with-Amazon-Bedrock/main-logo.png'

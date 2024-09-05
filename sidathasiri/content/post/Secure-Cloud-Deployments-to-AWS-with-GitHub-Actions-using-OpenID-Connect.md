@@ -4,7 +4,7 @@ title: 'Secure Deployments to AWS with GitHub Actions via OpenID Connect'
 # subtitle:   "Hello World, Hello Blog"
 date: 2023-03-04
 author: 'Sidath Munasinghe'
-keywords: 'github, github actions, ci/cd, openid connect, aws, cloud'
+keywords: 'github, github actions, ci/cd, openid connect, aws, cloud, sidath, munasinghe'
 description: 'Learn to deploy securely on AWS with GitHub Actions using OpenID Connect. This approach removes the need to manage AWS credentials, bolstering your deployment security.'
 URL: '/2023/03/04/Secure-Cloud-Deployments-to-AWS-with-GitHub-Actions-using-OpenID-Connect/'
 image: '/images/posts/Secure-Cloud-Deployments-to-AWS-with-GitHub-Actions-using-OpenID-Connect/main-logo.png'

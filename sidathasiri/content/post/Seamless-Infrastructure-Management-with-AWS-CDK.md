@@ -3,7 +3,7 @@ layout: post
 title: 'AWS CDK for Seamless Infrastructure Management'
 date: 2023-01-20
 author: 'Sidath Munasinghe'
-keywords: 'aws, iac, cdk, cloud, infrastructure, code, typescript'
+keywords: 'aws, iac, cdk, cloud, infrastructure, code, typescript, sidath, munasinghe'
 description: 'Learn to master the AWS Cloud Development Kit (CDK) to effortlessly provision your AWS infrastructure. Embrace the power of programming languages within Infrastructure as Code (IaC), transforming how you manage and deploy resources with unparalleled precision and flexibility.'
 URL: '/2023/01/20/Seamless-Infrastructure-Management-with-AWS-CDK/'
 image: '/images/posts/Seamless-Infrastructure-Management-with-AWS-CDK/main-logo.png'

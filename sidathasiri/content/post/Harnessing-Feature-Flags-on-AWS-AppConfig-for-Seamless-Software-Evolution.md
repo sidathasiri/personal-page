@@ -4,7 +4,7 @@ title: 'Feature Flags on AWS Using AppConfig for Seamless Software Evolution'
 # subtitle:   "Hello World, Hello Blog"
 date: 2023-12-20
 author: 'Sidath Munasinghe'
-keywords: 'feature flags, aws, appconfig, cdk, release, continuos deployment'
+keywords: 'feature flags, aws, appconfig, cdk, release, continuos deployment, sidath, munasinghe'
 description: 'Learn what are feature flags and how to use AWS AppConfig service to implement feature flags. Get hands on experience by integrating feature flags with AWS Lambda using CDK'
 URL: '/2023/12/20/Harnessing-Feature-Flags-on-AWS-AppConfig-for-Seamless-Software-Evolution/'
 image: '/images/posts/Harnessing-Feature-Flags-on-AWS-AppConfig-for-Seamless-Software-Evolution/main-logo.png'
