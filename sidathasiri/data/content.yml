@@ -12,6 +12,7 @@ hero:
     - "BSc Engineering Honours"
     - "MSc in Data Science"
     - "AWS Community Builder"
+    - "AMIE/ECSL"
 
   # hero background image
   bg_image: "images/background.jpg"
@@ -111,7 +112,7 @@ funfacts:
 
     - name: "Tech Blogs"
       image: "images/icons/write.png"
-      count: "26"
+      count: "27"
 
     - name: "Research Publications"
       image: "images/icons/publication.png"
