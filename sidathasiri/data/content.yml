@@ -108,7 +108,7 @@ funfacts:
   funfacts_list:
     - name: "Professional Certifications"
       image: "images/icons/certified.png"
-      count: "3"
+      count: "4"
 
     - name: "Tech Blogs"
       image: "images/icons/write.png"
