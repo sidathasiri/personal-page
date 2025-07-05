@@ -7,7 +7,7 @@ author: 'Sidath Munasinghe'
 keywords: 'kubernetes, cluster.dev, aws, amazon, iac, cloud, devops, helm, sidath, munasinghe'
 description: 'Learn how to create a Kubernetes cluster on AWS and deploy a Jenkins service via Helm within minutes using Cluster.dev'
 URL: '/2024/02/17/Deploy-Kubernetes-in-Minutes:-Effortless-Infrastructure-Creation-and-Application-Deployment-with-Cluster.dev-and-Helm-Charts/'
-image: '/images/posts/Deploy-Kubernetes-in-Minutes:-Effortless-Infrastructure-Creation-and-Application-Deployment-with-Cluster.dev-and-Helm-Charts/k8-with-helm.png'
+image: '/images/posts/Deploy-Kubernetes-in-Minutes-Effortless-Infrastructure-Creation-and-Application-Deployment-with-Cluster.dev-and-Helm-Charts/k8-with-helm.png'
 ---
 
 Kubernetes has quickly become the leading orchestration tool for containerized applications, celebrated for its ability to scale applications robustly and resiliently. Its success lies in a powerful framework that adeptly handles the complex life cycles of distributed applications. Yet, deploying Kubernetes cluster infrastructure, essential for tapping into this platform’s capabilities, presents significant challenges. This complexity requires considerable effort and poses a major hurdle for many seeking to leverage Kubernetes for scalable application deployment.
