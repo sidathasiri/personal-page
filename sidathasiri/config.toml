@@ -18,7 +18,7 @@
 #     - title: About
 #       href: /about
 ######################## default configuration ####################
-baseURL = "https://sidathasiri.github.io/"
+baseURL = "https://www.sidathm.online/"
 title = "Sidath Munasinghe"
 theme = "port-hugo"
 

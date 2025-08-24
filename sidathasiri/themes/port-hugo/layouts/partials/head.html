@@ -31,7 +31,7 @@
 
   {{ "<!-- Main Stylesheet -->" | safeHTML }}
 
-  {{ $styles := resources.Get "css/style.scss" | resources.ToCSS | resources.PostCSS | minify }}
+  {{ $styles := resources.Get "css/style.scss" | css.Sass | css.PostCSS | minify }}
   <link rel="stylesheet" href="{{ $styles.RelPermalink }}" media="screen" />
 
   <link rel="stylesheet" href="/css/customizations.css" media="screen" />
