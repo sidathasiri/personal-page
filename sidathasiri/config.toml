@@ -107,11 +107,3 @@ link = "https://medium.com/@sidathasiri"
 [[params.social]]
 icon = "fab fa-dev"
 link = "https://dev.to/sidathasiri"
-
-contentDir = "content/english"
-weight = 1
-home = "Home"
-
-[taxonomies]
-tag = ""
-category = ""
