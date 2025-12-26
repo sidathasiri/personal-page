@@ -206,6 +206,45 @@ window.toggleProject = toggleProject;
     =============================== -->
 
 <!-- Section Divider -->
+<div class="section-divider"></div>
+
+<!-- =============================
+       Start Certifications
+    =============================== -->
+{{ if .Site.Data.content.certifications.enable }} {{ with .Site.Data.content.certifications }}
+<section class="certifications" id="certifications">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center mb-5">
+        <h2>{{ .title }}</h2>
+      </div>
+    </div>
+    
+    <div class="row">
+      {{ range $index, $cert := .certification_list }}
+      <div class="col-lg-6 col-md-6 col-12 mb-4">
+        <div class="certification-card">
+          <div class="cert-icon">
+            <i class="{{ .icon }}"></i>
+          </div>
+          <div class="cert-content">
+            <h3 class="cert-name">{{ .name }}</h3>
+            <p class="cert-issuer">{{ .issuer }}</p>
+            <p class="cert-date"><i class="far fa-calendar-alt"></i> {{ .date }}</p>
+            <p class="cert-description">{{ .description }}</p>
+          </div>
+        </div>
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }} {{ end }}
+<!-- =============================
+       End Certifications
+    =============================== -->
+
+<!-- Section Divider -->
 <!-- <div class="section-divider"></div> -->
 
 <!-- =============================

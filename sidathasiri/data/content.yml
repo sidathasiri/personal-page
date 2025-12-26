@@ -309,3 +309,32 @@ projects:
         - "Developed automated processes for data extraction from contracts"
         - "Implemented robust search capabilities for contract information"
         - "Validated accuracy and reliability through comprehensive testing"
+
+######################### Certifications #############################
+certifications:
+  enable: true
+  title: "CERTIFICATIONS"
+  certification_list:
+    - name: "AWS Certified Solutions Architect – Associate"
+      issuer: "Amazon Web Services (AWS)"
+      date: "December 2023"
+      description: "Demonstrated comprehensive knowledge of AWS services and best practices for designing distributed systems on AWS. Validated expertise in deploying robust, scalable, and secure applications using AWS technologies, including compute, storage, database, and networking services."
+      icon: "fab fa-aws"
+      
+    - name: "AWS Certified Machine Learning – Specialty"
+      issuer: "Amazon Web Services (AWS)"
+      date: "March 2025"
+      description: "Validated expertise in building, training, tuning, and deploying machine learning models on AWS. Demonstrated proficiency in selecting appropriate ML services including Amazon SageMaker, Amazon Bedrock, and other AI/ML tools to solve business problems with data-driven solutions."
+      icon: "fas fa-brain"
+      
+    - name: "Microsoft Certified: Azure Fundamentals"
+      issuer: "Microsoft"
+      date: "September 2024"
+      description: "Demonstrated foundational knowledge of cloud concepts, core Azure services, security, privacy, compliance, and Azure pricing. Validated understanding of cloud computing fundamentals and how Microsoft Azure implements these concepts across its platform."
+      icon: "fab fa-microsoft"
+      
+    - name: "GitHub Actions"
+      issuer: "GitHub"
+      date: "June 2024"
+      description: "Demonstrated proficiency in automating workflows using GitHub Actions. Validated expertise in creating CI/CD pipelines, implementing automated testing, and streamlining deployment processes. Showcased ability to build efficient DevOps practices using GitHub's native automation platform."
+      icon: "fab fa-github"
