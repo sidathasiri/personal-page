@@ -1,0 +1,75 @@
+<head>
+  <meta charset="utf-8" />
+  <title>{{ if .IsHome }}{{ .Site.Title }} - {{ .Site.Params.description }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
+
+  {{ "<!-- mobile responsive meta -->" | safeHTML }}
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="{{ with .Params.Description }}{{ . }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}"
+  />
+
+  <meta
+    name="keywords"
+    content="{{ with .Params.keywords }}{{ . }}{{ else }}{{ with .Site.Params.keywords }}{{ . }}{{ end }}{{ end }}"
+  />
+
+  {{ with .Site.Params.author }}
+    <meta name="author" content="{{ . }}" />
+  {{ end }}
+
+  {{ "<!-- Canonical URL -->" | safeHTML }}
+  <link rel="canonical" href="{{ .Permalink }}" />
+
+  {{ "<!-- Open Graph / Facebook -->" | safeHTML }}
+  <meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}" />
+  <meta property="og:url" content="{{ .Permalink }}" />
+  <meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}" />
+  <meta property="og:description" content="{{ with .Params.Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}" />
+  <meta property="og:site_name" content="{{ .Site.Title }}" />
+  {{ with .Params.image }}
+  <meta property="og:image" content="{{ . | absURL }}" />
+  {{ else }}
+  <meta property="og:image" content="{{ .Site.BaseURL }}images/profile.png" />
+  {{ end }}
+
+  {{ "<!-- Twitter Card -->" | safeHTML }}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="{{ .Permalink }}" />
+  <meta name="twitter:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}" />
+  <meta name="twitter:description" content="{{ with .Params.Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}" />
+  {{ with .Params.image }}
+  <meta name="twitter:image" content="{{ . | absURL }}" />
+  {{ else }}
+  <meta name="twitter:image" content="{{ .Site.BaseURL }}images/profile.png" />
+  {{ end }}
+
+  <meta name="google-site-verification" content="Os0XiJ_IsnKUGbMIAetAT8jRKYr8ty87olW3V1P0ia4" />
+
+  {{ "<!-- plugins -->" | safeHTML }}
+  {{ range .Site.Params.plugins.css }}
+    <link rel="stylesheet" href="{{ .link | relURL }}" />
+  {{ end }}
+
+  {{ "<!-- Main Stylesheet -->" | safeHTML }}
+
+  {{ $styles := resources.Get "css/style.scss" | css.Sass | css.PostCSS | minify }}
+  <link rel="stylesheet" href="{{ $styles.RelPermalink }}" media="screen" />
+
+  <link rel="stylesheet" href="/css/customizations.css" media="screen" />
+
+  {{ "<!--Favicon-->" | safeHTML }}
+
+  <link rel="icon" type="image/png" href="/images/favicon.ico" />
+
+  {{ with .Site.Params.google_analytics }}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ . }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', '{{ . }}');
+    </script>
+  {{ end }}
+</head>

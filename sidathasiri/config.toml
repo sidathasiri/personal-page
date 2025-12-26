@@ -21,6 +21,8 @@
 baseURL = "https://www.sidathm.online/"
 title = "Sidath Munasinghe"
 theme = "port-hugo"
+enableRobotsTXT = true
+canonifyURLs = true
 
 ############################# Plugins ##############################
 
