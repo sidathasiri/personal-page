@@ -64,10 +64,15 @@ name = "About me"
 URL = "#about"
 weight = 2
 
- [[menu.main]]
- name = "Blog"
- URL = "/post"
- weight = 3
+[[menu.main]]
+name = "Projects"
+URL = "#projects"
+weight = 3
+
+[[menu.main]]
+name = "Blog"
+URL = "/post"
+weight = 4
 
 
 #################### default parameters ################################

@@ -1,0 +1,252 @@
+{{ define "main" }} {{- partial "menu.html" . -}} {{- partial "header.html" .
+-}}
+
+<!-- =============================
+       Start About Me
+    =============================== -->
+<section class="about-me" id="about">
+  <div class="container">
+    {{ if .Site.Data.content.about.enable }} {{ with .Site.Data.content.about }}
+    <div class="row about-me-holder">
+      <div
+        class="
+          col-lg-6 col-md-6 col-sm-6
+          about-me-text
+          d-flex
+          align-self-center
+        "
+      >
+        <div class="text-holder">
+          <h1>{{ .title | safeHTML }}</h1>
+          <p>{{ .content | markdownify | emojify }}</p>
+          {{ if .button.enable }} {{ with .button }}
+          <a
+            href="{{ .link | relURL }}"
+            target="_blank"
+            rel="noreferrer"
+            class="button download-cv"
+          >
+            {{ .label }} <i class="fa fa-download"></i
+          ></a>
+          {{ end }} {{ end }}
+        </div>
+      </div>
+      {{ with .image }}
+      <div class="col-lg-6 col-sm-6 col-9 about-me-images">
+        <img src="{{ . | relURL }}" alt="about-me" />
+      </div>
+      {{ end }}
+    </div>
+    {{ end }} {{ end }}
+
+    <div class="section-divider"></div>
+
+    <div class="row experience-skill">
+      {{ if .Site.Data.content.experience.enable }} {{ with
+      .Site.Data.content.experience }}
+      <div class="col-lg-6 col-sm-6 col-11 experience">
+        <h2>{{ .title }}</h2>
+        <ul class="experience-chart">
+          {{ range .experience_list }}
+          {{ if not (eq .enable false) }}
+            <li>
+              <div class="single-experience">
+                <h3>{{ .name | markdownify }}</h3>
+                {{ with .company }}
+                <span>{{ . | markdownify }} |</span>
+                {{ end }} {{ with .duration }}
+                <span>{{ . | markdownify }}</span>
+                {{ end }} {{ with .content }}
+                <p>{{ . | markdownify }}</p>
+                {{ end }}
+              </div>
+            </li>
+          {{ end }}
+          {{ end }}
+        </ul>
+      </div>
+      {{ end }} {{ end }} {{ if .Site.Data.content.skill.enable }} {{ with
+      .Site.Data.content.skill }}
+      <div class="col-lg-6 col-sm-6 col-11 skill">
+        <h2>{{ .title }}</h2>
+        <div class="skill-progress-bar">
+          {{ range .skill_list }}
+          <div class="clearfix">
+            <span class="skillbar-title">{{ .name }}</span>
+            {{ if .Site.Data.content.skill.showpercent }}
+            <span class="skill-bar-percent">{{ .percentage }}</span>
+            {{ end }}
+            <div class="skillbar" data-percent="{{ .percentage }}">
+              <div class="skillbar-bar"></div>
+            </div>
+          </div>
+          {{ end }}
+        </div>
+      </div>
+      {{ end }} {{ end }}
+    </div>
+  </div>
+</section>
+<!-- =============================
+      End About Me
+    =============================== -->
+
+<!-- Section Divider -->
+<div class="section-divider"></div>
+
+{{ if .Site.Data.content.funfacts.enable }} {{ with .Site.Data.content.funfacts
+}}
+<div class="fun-facts container pt-5">
+  {{ range .funfacts_list }}
+  <div class="fun-fact-holder">
+    <img class="img-fluid" src="{{ .image | relURL }}" alt="{{ .name }}" />
+    <p class="fact-counter count" data-count="{{ .count }}">0</p>
+    <p>{{ .name }}</p>
+  </div>
+  {{ end }}
+</div>
+{{ end }} {{ end }}
+
+<!-- Section Separator -->
+<!-- <div class="section-separator">
+  <span class="section-separator-icon">
+    <i class="fas fa-briefcase"></i>
+  </span>
+</div> -->
+
+<div class="section-divider"></div>
+
+<!-- =============================
+       Start Projects
+    =============================== -->
+{{ if .Site.Data.content.projects.enable }} {{ with .Site.Data.content.projects }}
+<section class="projects" id="projects">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center mb-5">
+        <h2>{{ .title }}</h2>
+      </div>
+    </div>
+    
+    {{ range $index, $project := .project_list }}
+    <div class="row project-item mb-3">
+      <div class="col-lg-12">
+        <div class="project-card collapsible">
+          <div class="project-header" onclick="toggleProject({{ $index }})">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="flex-grow-1">
+                <h3 class="project-name mb-2">{{ .name }}</h3>
+                <p class="project-duration mb-0"><i class="far fa-calendar-alt"></i> {{ .duration }}</p>
+              </div>
+              <div class="toggle-icon">
+                <i class="fas fa-chevron-down" id="icon-{{ $index }}"></i>
+              </div>
+            </div>
+          </div>
+          
+          <div class="project-details" id="project-{{ $index }}" style="display: none;">
+            <div class="row mt-3">
+              <div class="col-lg-12">
+                <p class="project-description">{{ .description | markdownify }}</p>
+                
+                <div class="project-tech-stack mt-3">
+                  <h5>Tech Stack:</h5>
+                  <div class="tech-tags">
+                    {{ range .tech_stack }}
+                    <span class="tech-tag">{{ . }}</span>
+                    {{ end }}
+                  </div>
+                </div>
+                
+                <div class="project-responsibilities mt-3">
+                  <h5>Key Responsibilities:</h5>
+                  <ul class="responsibilities-list">
+                    {{ range .responsibilities }}
+                    <li>{{ . | markdownify }}</li>
+                    {{ end }}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{ end }}
+  </div>
+</section>
+
+<script>
+function toggleProject(index) {
+  const details = document.getElementById('project-' + index);
+  const icon = document.getElementById('icon-' + index);
+  
+  if (!details || !icon) {
+    console.error('Project elements not found for index:', index);
+    return;
+  }
+  
+  if (details.style.display === 'none' || details.style.display === '') {
+    details.style.display = 'block';
+    icon.classList.remove('fa-chevron-down');
+    icon.classList.add('fa-chevron-up');
+  } else {
+    details.style.display = 'none';
+    icon.classList.remove('fa-chevron-up');
+    icon.classList.add('fa-chevron-down');
+  }
+}
+
+// Ensure the function is globally available
+window.toggleProject = toggleProject;
+</script>
+{{ end }} {{ end }}
+<!-- =============================
+       End Projects
+    =============================== -->
+
+<!-- Section Divider -->
+<!-- <div class="section-divider"></div> -->
+
+<!-- =============================
+       Start Portfolio
+    =============================== -->
+{{ if .Site.Data.content.portfolio.enable }} {{ with
+.Site.Data.content.portfolio }}
+<section class="portfolio" id="portfolio">
+  <div class="container-fluid text-center">
+    <div class="row portfolio-holder text-left">
+      <div class="col-12 text-center">
+        <h2>{{ .title }}</h2>
+      </div>
+      <ul id="og-grid" class="og-grid">
+        {{ range .portfolio_list }} {{ $image := resources.Get .image }} {{
+        $big_image := $image.Fill "780x500 jpg" }} {{ $sm_image := $image.Fill
+        "395x250 jpg" }} {{ $parsed_name := replace .name "." "" }}
+        <li>
+          <p id="description-{{ $parsed_name | urlize }}" class="hidden">
+            {{ .description | markdownify }}
+          </p>
+          <a
+            href="{{ .url }}"
+            data-largesrc="{{ $big_image.RelPermalink }}"
+            data-title="{{ .name }}"
+            data-buttontext="SEE SITE"
+          >
+            <img
+              src="{{ $sm_image.RelPermalink }}"
+              alt="{{ $parsed_name }} image"
+            />
+          </a>
+        </li>
+        {{ end }}
+      </ul>
+    </div>
+  </div>
+</section>
+{{ end }} {{ end }}
+<!-- =============================
+       End Portfolio
+    =============================== -->
+
+{{- partial "footer.html" . -}} {{ end }}
