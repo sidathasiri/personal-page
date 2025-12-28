@@ -64,17 +64,17 @@ weight = 1
 
 [[menu.main]]
 name = "About me"
-URL = "#about"
+URL = "/#about"
 weight = 2
 
 [[menu.main]]
 name = "Projects"
-URL = "#projects"
+URL = "/#projects"
 weight = 3
 
 [[menu.main]]
 name = "Certifications"
-URL = "#certifications"
+URL = "/#certifications"
 weight = 4
 
 [[menu.main]]

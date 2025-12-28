@@ -2,6 +2,67 @@
    MODERN STYLING OVERRIDES
    =================================== */
 
+/* Navigation Menu Fixes */
+.menu-item {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 30px;
+  height: 100%;
+  padding-top: 15px;
+}
+
+.menu-item a {
+  text-decoration: none !important;
+  border-bottom: none !important;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #fff;
+  padding-bottom: 5px;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.hvr-underline-from-left {
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-transform: perspective(1px) translateZ(0);
+  transform: perspective(1px) translateZ(0);
+  position: relative;
+  overflow: visible;
+}
+
+.hvr-underline-from-left:before {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 1 !important;
+  left: 0 !important;
+  right: 100% !important;
+  bottom: -2px !important;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)) !important;
+  height: 3px !important;
+  border-radius: 2px !important;
+  -webkit-transition: right 0.3s ease-out !important;
+  transition: right 0.3s ease-out !important;
+}
+
+.hvr-underline-from-left:hover:before,
+.hvr-underline-from-left:focus:before,
+.hvr-underline-from-left:active:before {
+  right: 0 !important;
+}
+
+.desktop-menu {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 55px;
+}
+
+.desktop-menu .menu-item a {
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
 /* Root Variables for Consistent Modern Design */
 :root {
   --primary-color: #667eea;
