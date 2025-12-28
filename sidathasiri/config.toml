@@ -18,11 +18,14 @@
 #     - title: About
 #       href: /about
 ######################## default configuration ####################
-baseURL = "https://www.sidathm.online/"
+baseURL = "/"
 title = "Sidath Munasinghe"
 theme = "port-hugo"
 enableRobotsTXT = true
-canonifyURLs = true
+canonifyURLs = false
+
+[pagination]
+pagerSize = 9
 
 ############################# Plugins ##############################
 

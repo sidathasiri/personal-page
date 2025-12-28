@@ -1,0 +1,84 @@
+{{ define "main" }}
+  {{- partial "menu.html" . -}}
+  <div class="col-12 text-center blog under-menu">
+    <h1>{{ .Title }}</h1>
+    <div class="container">
+      <div class="posts-grid mt-4">
+        {{ $paginator := .Paginate .Pages }}
+        {{ range $paginator.Pages }}
+          <a href="{{ .RelPermalink }}" class="post-grid-link">
+            <div class="post-grid-card">
+              <div class="post-grid-image">
+                <img src="{{ .Params.image }}" alt="{{ .Title }}" />
+              </div>
+              <div class="post-grid-content">
+                <span class="post-grid-date">{{ .Date.Format "Jan 2, 2006" }}</span>
+                <h2>{{ .Title }}</h2>
+                <p>{{ .Description }}</p>
+              </div>
+            </div>
+          </a>
+        {{ end }}
+      </div>
+    </div>
+    
+    <!-- Pagination -->
+    {{ if gt $paginator.TotalPages 1 }}
+    <div class="pagination-container">
+      <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+          <!-- First Page -->
+          {{ if gt $paginator.PageNumber 1 }}
+          <li class="page-item">
+            <a class="page-link" href="{{ $paginator.First.URL }}" aria-label="First">
+              <span aria-hidden="true">&laquo;&laquo;</span>
+            </a>
+          </li>
+          {{ end }}
+          
+          <!-- Previous Page -->
+          {{ if $paginator.HasPrev }}
+          <li class="page-item">
+            <a class="page-link" href="{{ $paginator.Prev.URL }}" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          {{ end }}
+          
+          <!-- Page Numbers -->
+          {{ range $paginator.Pagers }}
+            {{ if eq . $paginator }}
+            <li class="page-item active">
+              <span class="page-link">{{ .PageNumber }}</span>
+            </li>
+            {{ else }}
+            <li class="page-item">
+              <a class="page-link" href="{{ .URL }}">{{ .PageNumber }}</a>
+            </li>
+            {{ end }}
+          {{ end }}
+          
+          <!-- Next Page -->
+          {{ if $paginator.HasNext }}
+          <li class="page-item">
+            <a class="page-link" href="{{ $paginator.Next.URL }}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+          {{ end }}
+          
+          <!-- Last Page -->
+          {{ if lt $paginator.PageNumber $paginator.TotalPages }}
+          <li class="page-item">
+            <a class="page-link" href="{{ $paginator.Last.URL }}" aria-label="Last">
+              <span aria-hidden="true">&raquo;&raquo;</span>
+            </a>
+          </li>
+          {{ end }}
+        </ul>
+      </nav>
+    </div>
+    {{ end }}
+  </div>
+  {{- partial "footer.html" . -}}
+{{ end }}

@@ -741,11 +741,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Posts Grid Container */
-.posts {
-  padding: 40px 0;
-  background: transparent;
+.posts-grid {
   display: grid;
-  gap: 40px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 35px;
+  padding: 40px 20px;
   animation: fadeIn 0.6s ease-out;
 }
 
@@ -756,6 +756,146 @@ h1, h2, h3, h4, h5, h6 {
   to {
     opacity: 1;
   }
+}
+
+/* Grid Card Styling */
+.post-grid-link {
+  text-decoration: none;
+  display: block;
+  height: 100%;
+}
+
+.post-grid-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  transition: var(--transition-smooth);
+  overflow: hidden;
+  border: 2px solid rgba(102, 126, 234, 0.15);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  animation: slideUp 0.5s ease-out backwards;
+}
+
+.post-grid-card:nth-child(1) { animation-delay: 0.1s; }
+.post-grid-card:nth-child(2) { animation-delay: 0.2s; }
+.post-grid-card:nth-child(3) { animation-delay: 0.3s; }
+.post-grid-card:nth-child(4) { animation-delay: 0.4s; }
+.post-grid-card:nth-child(5) { animation-delay: 0.5s; }
+.post-grid-card:nth-child(6) { animation-delay: 0.6s; }
+.post-grid-card:nth-child(n+7) { animation-delay: 0.7s; }
+
+.post-grid-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+  z-index: 2;
+}
+
+.post-grid-link:hover .post-grid-card {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+  border-color: rgba(102, 126, 234, 0.4);
+}
+
+.post-grid-image {
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  position: relative;
+}
+
+.post-grid-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition-smooth);
+  filter: brightness(0.92) saturate(1.1);
+}
+
+.post-grid-link:hover .post-grid-image img {
+  transform: scale(1.1);
+  filter: brightness(1) saturate(1.2);
+}
+
+.post-grid-content {
+  padding: 30px 25px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.post-grid-date {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--light-text);
+  font-weight: 600;
+  margin-bottom: 15px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+  border-radius: 25px;
+  border-left: 4px solid var(--primary-color);
+  width: fit-content;
+  transition: var(--transition-smooth);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+.post-grid-date::before {
+  content: '📅';
+  margin-right: 8px;
+  font-size: 0.9rem;
+}
+
+.post-grid-link:hover .post-grid-date {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+}
+
+.post-grid-content h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--dark-text);
+  margin-bottom: 15px;
+  line-height: 1.4;
+  transition: var(--transition-smooth);
+}
+
+.post-grid-link:hover .post-grid-content h2 {
+  transform: translateX(5px);
+}
+
+.post-grid-content p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #5a6c7d;
+  margin-bottom: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.3s ease;
+}
+
+.post-grid-link:hover .post-grid-content p {
+  color: var(--dark-text);
+}
+
+/* Old list styles - keeping for backward compatibility */
+.posts {
+  padding: 40px 0;
+  background: transparent;
+  display: grid;
+  gap: 40px;
+  animation: fadeIn 0.6s ease-out;
 }
 
 /* Modern Blog Card with Glassmorphism */
@@ -921,6 +1061,62 @@ h1, h2, h3, h4, h5, h6 {
 .post.card:hover .content::after {
   opacity: 1;
   transform: translateX(0);
+}
+
+/* Pagination Styling */
+.pagination-container {
+  margin: 60px auto 40px;
+  max-width: 800px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pagination .page-item {
+  list-style: none;
+}
+
+.pagination .page-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 45px;
+  height: 45px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--dark-text);
+  background: white;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: var(--transition-smooth);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.pagination .page-link:hover {
+  color: white;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-color: transparent;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.pagination .page-item.active .page-link {
+  color: white;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-color: transparent;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  cursor: default;
+}
+
+.pagination .page-item.active .page-link:hover {
+  transform: none;
 }
 
 /* Single Post Page */
@@ -1141,6 +1337,14 @@ h1, h2, h3, h4, h5, h6 {
   border-bottom: none;
 }
 
+/* Responsive Design for Grid - Medium Screens */
+@media (max-width: 1200px) and (min-width: 769px) {
+  .posts-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+}
+
 /* Responsive Design for Blog Posts */
 @media (max-width: 768px) {
   .blog.under-menu {
@@ -1162,6 +1366,34 @@ h1, h2, h3, h4, h5, h6 {
   .blog.under-menu h1::after {
     width: 80px;
     height: 4px;
+  }
+
+  .posts-grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding: 20px 15px;
+  }
+
+  .post-grid-image {
+    height: 200px;
+  }
+
+  .post-grid-content {
+    padding: 20px 18px;
+  }
+
+  .post-grid-content h2 {
+    font-size: 1.3rem;
+  }
+
+  .post-grid-content p {
+    font-size: 0.9rem;
+    -webkit-line-clamp: 3;
+  }
+
+  .post-grid-date {
+    font-size: 0.8rem;
+    padding: 6px 12px;
   }
 
   .posts {
@@ -1211,6 +1443,17 @@ h1, h2, h3, h4, h5, h6 {
 
   .post.card:hover {
     transform: translateY(-8px) scale(1.01);
+  }
+
+  .pagination-container {
+    margin: 40px auto 30px;
+  }
+
+  .pagination .page-link {
+    min-width: 38px;
+    height: 38px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
   }
   
   .post-container {
