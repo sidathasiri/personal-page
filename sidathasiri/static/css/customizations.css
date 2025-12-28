@@ -804,37 +804,10 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 2;
 }
 
-/* Animated gradient border on hover */
-.post.card::after {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), var(--accent-color), var(--primary-color));
-  border-radius: 20px;
-  opacity: 0;
-  z-index: -1;
-  transition: opacity 0.3s ease;
-  background-size: 300% 300%;
-  animation: gradientShift 3s ease infinite;
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
 .post.card:hover {
   transform: translateY(-15px) scale(1.02);
   box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
   border-color: transparent;
-}
-
-.post.card:hover::after {
-  opacity: 1;
 }
 
 .post.card img {
@@ -884,25 +857,8 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-block;
 }
 
-.post.card h2::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 0;
-  height: 3px;
-  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-  transition: width 0.4s ease;
-  border-radius: 2px;
-}
-
 .post.card:hover h2 {
-  color: var(--primary-color);
   transform: translateX(5px);
-}
-
-.post.card:hover h2::after {
-  width: 100%;
 }
 
 .post.card span {
