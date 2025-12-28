@@ -700,6 +700,8 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 35px;
   border: 1px solid rgba(102, 126, 234, 0.1);
   position: relative;
+  display: flex;
+  flex-direction: row;
 }
 
 .post.card::before {
@@ -720,10 +722,13 @@ h1, h2, h3, h4, h5, h6 {
 
 .post.card img {
   width: 100%;
+  min-width: 280px;
+  max-width: 280px;
   height: 220px;
   object-fit: cover;
   transition: var(--transition-smooth);
   filter: brightness(0.95);
+  flex-shrink: 0;
 }
 
 .post.card:hover img {
@@ -998,10 +1003,13 @@ h1, h2, h3, h4, h5, h6 {
   
   .post.card {
     margin-bottom: 25px;
+    flex-direction: column;
   }
   
   .post.card img {
     height: 180px;
+    max-width: 100%;
+    min-width: 100%;
   }
   
   .post.card .content {
