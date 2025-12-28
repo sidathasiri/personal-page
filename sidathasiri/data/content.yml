@@ -84,6 +84,9 @@ skill:
     - name: "React"
       percentage: "85%"
 
+    - name: "Python"
+      percentage: "85%"
+
     - name: "Software Architectural Design"
       percentage: "85%"
 
