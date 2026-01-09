@@ -25,11 +25,11 @@ about:
   image: "images/profile.png"
   title: "THIS IS ME"
   content: A dedicated Technical Lead passionate about enterprise software design and architecture, where I excel at creating efficient and scalable solutions. With a strong expertise in AWS (Amazon Web Services), I leverage its capabilities to drive innovation and deliver robust applications. In addition to my technical role, I have a deep love for tech blogging. Sharing my knowledge and experiences with the tech community is a rewarding way for me to contribute and help others in their professional journeys. I enjoy exploring new concepts and emerging technologies. Through my blog, I strive to provide valuable insights and practical guidance. Continuously staying at the forefront of technology is a priority for me. I always seek new challenges and opportunities to enhance my software development and architecture skills. With a commitment to delivering high-quality solutions and a drive to push boundaries, I aim to impact the tech industry significantly.
-  # button:
-  #   enable: true
-  #   label: 'DOWNLOAD MY RESUME'
-  #   link: #
-  #   icon: 'fa-download'
+  button:
+    enable: true
+    label: 'DOWNLOAD MY RESUME'
+    link: '/sidath_munasinghe_cv.pdf'
+    icon: 'fa-download'
 
 ###########################3 Experience ##############################
 experience:
