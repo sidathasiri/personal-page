@@ -78,9 +78,14 @@ URL = "/#certifications"
 weight = 4
 
 [[menu.main]]
+name = "Accomplishments"
+URL = "/#accomplishments"
+weight = 5
+
+[[menu.main]]
 name = "Blog"
 URL = "/post"
-weight = 5
+weight = 6
 
 
 #################### default parameters ################################

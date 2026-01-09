@@ -341,3 +341,26 @@ certifications:
       date: "June 2024"
       description: "Demonstrated proficiency in automating workflows using GitHub Actions. Validated expertise in creating CI/CD pipelines, implementing automated testing, and streamlining deployment processes. Showcased ability to build efficient DevOps practices using GitHub's native automation platform."
       icon: "fab fa-github"
+
+######################### Accomplishments #############################
+accomplishments:
+  enable: true
+  title: "ACCOMPLISHMENTS"
+  accomplishment_list:
+    - name: "Global Citizenship Award"
+      organization: "99x Annual Awards Ceremony"
+      year: "2024"
+      description: "Recognized for exceptional collaboration and impact while working with external clients across global markets."
+      icon: "fas fa-globe-americas"
+      
+    - name: "Outstanding Team Award"
+      organization: "99x Annual Awards Ceremony"
+      year: "2024"
+      description: "Honored for collective excellence, strong collaboration, and impactful results."
+      icon: "fas fa-users"
+      
+    - name: "Gold Medal, Master of Science in Computer Science"
+      organization: "University"
+      year: ""
+      description: "Awarded for the best research project with a GPA above 4.0."
+      icon: "fas fa-medal"

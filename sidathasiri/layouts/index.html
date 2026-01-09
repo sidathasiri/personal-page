@@ -245,6 +245,49 @@ window.toggleProject = toggleProject;
     =============================== -->
 
 <!-- Section Divider -->
+<div class="section-divider"></div>
+
+<!-- =============================
+       Start Accomplishments
+    =============================== -->
+{{ if .Site.Data.content.accomplishments.enable }} {{ with .Site.Data.content.accomplishments }}
+<section class="accomplishments" id="accomplishments">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center mb-5">
+        <h2>{{ .title }}</h2>
+      </div>
+    </div>
+    
+    <div class="row justify-content-center">
+      {{ range $index, $accomplishment := .accomplishment_list }}
+      <div class="col-lg-10 col-md-12 col-12 mb-4">
+        <div class="accomplishment-card">
+          <div class="accomplishment-icon">
+            <i class="{{ .icon }}"></i>
+          </div>
+          <div class="accomplishment-content">
+            <h3 class="accomplishment-name">{{ .name }}</h3>
+            <div class="accomplishment-meta">
+              <span class="accomplishment-org">{{ .organization }}</span>
+              {{ if .year }}
+              <span class="accomplishment-year">{{ .year }}</span>
+              {{ end }}
+            </div>
+            <p class="accomplishment-description">{{ .description }}</p>
+          </div>
+        </div>
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }} {{ end }}
+<!-- =============================
+       End Accomplishments
+    =============================== -->
+
+<!-- Section Divider -->
 <!-- <div class="section-divider"></div> -->
 
 <!-- =============================

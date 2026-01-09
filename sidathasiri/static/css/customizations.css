@@ -1763,3 +1763,250 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
   }
 }
+/* ===================================
+   ACCOMPLISHMENTS SECTION - MODERN DESIGN
+   =================================== */
+.accomplishments {
+  padding: 100px 0;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.accomplishments::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.accomplishments::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -5%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(118, 75, 162, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.accomplishments .container {
+  position: relative;
+  z-index: 1;
+}
+
+.accomplishments h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--dark-text);
+  margin-bottom: 4rem;
+  position: relative;
+  display: inline-block;
+}
+
+.accomplishments h2::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  border-radius: 2px;
+}
+
+/* Accomplishment Card - Premium Design */
+.accomplishment-card {
+  display: flex;
+  align-items: flex-start;
+  background: #ffffff;
+  border-radius: var(--border-radius);
+  padding: 35px;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+  border-left: 5px solid transparent;
+}
+
+.accomplishment-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
+  transition: var(--transition-smooth);
+}
+
+.accomplishment-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--card-shadow-hover);
+  border-left-color: var(--primary-color);
+}
+
+.accomplishment-card:hover::before {
+  width: 8px;
+}
+
+/* Icon Styling */
+.accomplishment-icon {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 25px;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  transition: var(--transition-smooth);
+}
+
+.accomplishment-card:hover .accomplishment-icon {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+}
+
+.accomplishment-icon i {
+  font-size: 2.2rem;
+  color: #ffffff;
+}
+
+/* Content Styling */
+.accomplishment-content {
+  flex: 1;
+}
+
+.accomplishment-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--dark-text);
+  margin-bottom: 12px;
+  line-height: 1.4;
+  transition: var(--transition-smooth);
+}
+
+.accomplishment-card:hover .accomplishment-name {
+  color: var(--primary-color);
+}
+
+.accomplishment-meta {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.accomplishment-org {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--secondary-color);
+  background: rgba(102, 126, 234, 0.1);
+  padding: 6px 15px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.accomplishment-year {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--light-text);
+  background: rgba(127, 140, 141, 0.1);
+  padding: 6px 15px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.accomplishment-year::before {
+  content: '📅';
+  margin-right: 5px;
+}
+
+.accomplishment-description {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--dark-text);
+  margin-bottom: 0;
+  text-align: justify;
+}
+
+/* Responsive Design for Accomplishments */
+@media (max-width: 991px) {
+  .accomplishments {
+    padding: 80px 0;
+  }
+  
+  .accomplishments h2 {
+    font-size: 2.2rem;
+  }
+  
+  .accomplishment-card {
+    padding: 30px;
+  }
+  
+  .accomplishment-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 2rem;
+  }
+  
+  .accomplishment-name {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .accomplishments h2 {
+    font-size: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .accomplishment-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 25px;
+  }
+  
+  .accomplishment-icon {
+    width: 65px;
+    height: 65px;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    margin-right: 0;
+  }
+  
+  .accomplishment-name {
+    font-size: 1.2rem;
+  }
+  
+  .accomplishment-meta {
+    justify-content: center;
+  }
+  
+  .accomplishment-org {
+    font-size: 1rem;
+  }
+  
+  .accomplishment-year {
+    font-size: 0.95rem;
+  }
+  
+  .accomplishment-description {
+    font-size: 1rem;
+    text-align: center;
+  }
+}
