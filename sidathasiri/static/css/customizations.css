@@ -367,11 +367,12 @@ code {
   padding: 0;
   border-radius: var(--border-radius);
   box-shadow: var(--card-shadow);
-  transition: var(--transition-smooth);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   border-left: 5px solid var(--primary-color);
   margin-bottom: 25px;
   overflow: hidden;
   position: relative;
+  transform-origin: left center;
 }
 
 .project-card::before {
@@ -382,25 +383,50 @@ code {
   width: 5px;
   height: 100%;
   background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
-  transition: var(--transition-smooth);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+/* Decorative gradient overlay on hover */
+.project-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.08) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .project-card:hover {
-  box-shadow: var(--card-shadow-hover);
-  transform: translateX(5px);
+  box-shadow: 0 20px 60px rgba(102, 126, 234, 0.25), 
+              0 10px 30px rgba(118, 75, 162, 0.15);
+  transform: translateY(-8px) scale(1.01);
+  border-left-color: var(--secondary-color);
 }
 
 .project-card:hover::before {
-  width: 100%;
-  opacity: 0.05;
+  width: 8px;
+  box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+}
+
+.project-card:hover::after {
+  opacity: 1;
+  transform: translate(-25%, -25%);
 }
 
 .project-header {
   padding: 25px 35px;
   cursor: pointer !important;
-  transition: var(--transition-smooth);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.02), rgba(118, 75, 162, 0.02));
+  position: relative;
+  z-index: 2;
 }
 
 .project-header * {
@@ -408,18 +434,19 @@ code {
 }
 
 .project-header:hover {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.08));
+  padding-left: 40px;
 }
 
 .project-header:active {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.12));
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.12));
   transform: scale(0.99);
 }
 
 .toggle-icon {
   font-size: 1.3rem;
   color: var(--primary-color);
-  transition: var(--transition-smooth);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   margin-left: 20px;
   background: rgba(102, 126, 234, 0.1);
   width: 40px;
@@ -428,12 +455,14 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
 }
 
 .project-card:hover .toggle-icon {
-  background: var(--primary-color);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: white;
-  transform: scale(1.1);
+  transform: scale(1.15) rotate(180deg);
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
 }
 
 .project-details {
@@ -457,11 +486,30 @@ code {
   font-weight: 800;
   color: var(--dark-text);
   margin-bottom: 8px;
-  transition: var(--transition-smooth);
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+}
+
+.project-name::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 2px;
 }
 
 .project-card:hover .project-name {
   color: var(--primary-color);
+  transform: translateX(5px);
+}
+
+.project-card:hover .project-name::after {
+  width: 100%;
 }
 
 .project-duration {
@@ -578,12 +626,51 @@ code {
   padding-bottom: 50px;
   margin-bottom: 50px;
   animation: fadeInUp 0.6s ease-out;
+  position: relative;
 }
 
 .project-item:last-child {
   border-bottom: none;
   padding-bottom: 0;
   margin-bottom: 0;
+}
+
+/* Smooth fade-in animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Add stagger animation delay for multiple cards */
+.project-item:nth-child(1) { animation-delay: 0.1s; }
+.project-item:nth-child(2) { animation-delay: 0.2s; }
+.project-item:nth-child(3) { animation-delay: 0.3s; }
+.project-item:nth-child(4) { animation-delay: 0.4s; }
+.project-item:nth-child(5) { animation-delay: 0.5s; }
+
+/* Smooth duration transition on hover */
+.project-duration {
+  transition: all 0.3s ease;
+}
+
+.project-card:hover .project-duration {
+  color: var(--secondary-color);
+  transform: translateX(5px);
+}
+
+.project-card:hover .project-duration i {
+  animation: bounce 0.6s ease infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
 }
 
 @media (max-width: 991px) {
@@ -659,6 +746,100 @@ ul.experience-chart li:after {
 ul.experience-chart li:hover:after {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
   box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.2), 0 0 20px rgba(102, 126, 234, 0.4);
+}
+
+/* ===================================
+   SKILL PROGRESS BARS - PURPLE GRADIENT
+   =================================== */
+
+/* Skill Bar Container */
+.skillbar {
+  background: rgba(102, 126, 234, 0.05) !important;
+  border: 2px solid rgba(102, 126, 234, 0.2) !important;
+  height: 20px !important;
+  border-radius: 25px !important;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.3s ease !important;
+}
+
+.skillbar:hover {
+  border-color: rgba(102, 126, 234, 0.4) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(102, 126, 234, 0.15) !important;
+}
+
+/* Skill Bar Fill - Purple Gradient */
+.skillbar-bar {
+  height: 100% !important;
+  margin: 0 !important;
+  background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+  border-radius: 25px !important;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+  transition: width 1.5s ease-in-out !important;
+}
+
+/* Animated Shimmer Effect */
+.skillbar-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.3), 
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Skill Bar Text */
+.skillbar-title {
+  color: var(--dark-text) !important;
+  font-weight: 700 !important;
+  font-size: 1.05rem !important;
+  margin-bottom: 10px !important;
+  transition: color 0.3s ease !important;
+}
+
+.skill-bar-percent {
+  color: var(--secondary-color) !important;
+  font-weight: 700 !important;
+  font-size: 1.05rem !important;
+  margin-bottom: 10px !important;
+}
+
+/* Hover Effect for Skill Section */
+.skill .clearfix:hover .skillbar-title {
+  color: var(--primary-color) !important;
+}
+
+/* Smooth Progress Animation */
+.skillbar-bar {
+  animation: fillBar 1.5s ease-in-out;
+}
+
+@keyframes fillBar {
+  from {
+    width: 0;
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Download CV Button - Modern */
