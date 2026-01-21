@@ -22,10 +22,13 @@ baseURL = "https://www.sidathm.online/"
 title = "Sidath Munasinghe"
 theme = "port-hugo"
 enableRobotsTXT = true
-canonifyURLs = false
+canonifyURLs = true
 
 [pagination]
 pagerSize = 9
+
+[permalinks]
+post = "/:year/:month/:day/:title/"
 
 ############################# Plugins ##############################
 
