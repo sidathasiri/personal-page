@@ -111,7 +111,7 @@ funfacts:
   funfacts_list:
     - name: "Professional Certifications"
       image: "images/icons/certified.png"
-      count: "4"
+      count: "5"
 
     - name: "Tech Blogs"
       image: "images/icons/write.png"
@@ -329,6 +329,12 @@ certifications:
       date: "March 2025"
       description: "Validated expertise in building, training, tuning, and deploying machine learning models on AWS. Demonstrated proficiency in selecting appropriate ML services including Amazon SageMaker, Amazon Bedrock, and other AI/ML tools to solve business problems with data-driven solutions."
       icon: "fas fa-brain"
+      
+    - name: "Microsoft Certified: Azure Developer Associate"
+      issuer: "Microsoft"
+      date: "March 2026"
+      description: "Demonstrated expertise in designing, building, testing, and maintaining cloud applications and services on Microsoft Azure. Validated proficiency in implementing Azure compute solutions, developing for Azure storage, implementing Azure security, monitoring and optimizing Azure solutions, and connecting to and consuming Azure services and third-party services."
+      icon: "fab fa-microsoft"
       
     - name: "Microsoft Certified: Azure Fundamentals"
       issuer: "Microsoft"

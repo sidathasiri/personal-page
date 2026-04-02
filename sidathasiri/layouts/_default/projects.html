@@ -1,0 +1,78 @@
+{{ define "main" }}
+{{- partial "menu.html" . -}}
+
+<!-- Projects Page Custom Styles -->
+<link rel="stylesheet" href="{{ "/css/projects-page.css" | relURL }}" />
+
+<!-- =============================
+     Start Projects Page Hero
+    =============================== -->
+<section class="projects-page-hero">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-12">
+        <h1 class="projects-page-title">My Projects Portfolio</h1>
+        <p class="projects-page-subtitle">A comprehensive showcase of my technical journey and contributions</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================
+     Start Projects Grid
+    =============================== -->
+{{ with .Site.Data.content.projects }}
+<section class="projects-grid-section">
+  <div class="container">
+    <div class="row">
+      {{ range $index, $project := .project_list }}
+      <div class="col-lg-6 col-md-6 col-12 mb-4">
+        <div class="project-tile">
+          <div class="project-tile-header">
+            <h3 class="project-tile-name">{{ .name }}</h3>
+            <p class="project-tile-duration">
+              <i class="far fa-calendar-alt"></i> {{ .duration }}
+            </p>
+          </div>
+          
+          <div class="project-tile-body">
+            <p class="project-tile-description">{{ .description | markdownify }}</p>
+            
+            <div class="project-tile-tech">
+              <h5><i class="fas fa-layer-group"></i> Tech Stack</h5>
+              <div class="tech-tags-grid">
+                {{ range .tech_stack }}
+                <span class="tech-tag-modern">{{ . }}</span>
+                {{ end }}
+              </div>
+            </div>
+            
+            <div class="project-tile-responsibilities">
+              <h5><i class="fas fa-tasks"></i> Key Contributions</h5>
+              <ul class="responsibilities-modern">
+                {{ range .responsibilities }}
+                <li>{{ . | markdownify }}</li>
+                {{ end }}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}
+
+<!-- =============================
+     Back to Home CTA
+    =============================== -->
+<section class="back-to-home-section">
+  <div class="container text-center">
+    <a href="/" class="btn-back-home">
+      <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+  </div>
+</section>
+
+{{ end }}

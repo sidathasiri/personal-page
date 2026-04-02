@@ -128,7 +128,7 @@
       </div>
     </div>
     
-    {{ range $index, $project := .project_list }}
+    {{ range $index, $project := first 3 .project_list }}
     <div class="row project-item mb-3">
       <div class="col-lg-12">
         <div class="project-card collapsible">
@@ -175,6 +175,18 @@
     {{ end }}
   </div>
 </section>
+
+<!-- View All Projects CTA -->
+<div class="container">
+  <div class="view-all-projects-cta">
+    <h3 style="font-size: 1.8rem; font-weight: 700; color: var(--dark-text); margin-bottom: 25px;">
+      Want to see more of my work?
+    </h3>
+    <a href="/projects" class="btn-view-all-projects">
+      View All Projects <i class="fas fa-arrow-right"></i>
+    </a>
+  </div>
+</div>
 
 <script>
 function toggleProject(index) {

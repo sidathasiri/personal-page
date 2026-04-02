@@ -72,7 +72,7 @@ weight = 2
 
 [[menu.main]]
 name = "Projects"
-URL = "/#projects"
+URL = "/projects"
 weight = 3
 
 [[menu.main]]
