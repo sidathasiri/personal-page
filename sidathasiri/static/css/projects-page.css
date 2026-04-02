@@ -1,0 +1,788 @@
+/* ===================================
+   PROJECTS PAGE - ENHANCED STYLING
+   =================================== */
+
+/* Projects Page Hero Section */
+.projects-page-hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  padding: 140px 0 100px;
+  margin-top: 80px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.15);
+}
+
+.projects-page-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15), transparent);
+  border-radius: 50%;
+  animation: float 8s ease-in-out infinite;
+}
+
+.projects-page-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -15%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(240, 147, 251, 0.2), transparent);
+  border-radius: 50%;
+  animation: float 10s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translateY(-40px) rotate(8deg) scale(1.05);
+  }
+}
+
+.projects-page-title {
+  color: white;
+  font-size: 4rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.3), 0 3px 10px rgba(0, 0, 0, 0.2);
+  letter-spacing: 2px;
+  animation: fadeInUp 0.8s ease-out;
+  position: relative;
+  z-index: 1;
+  text-transform: uppercase;
+}
+
+.projects-page-subtitle {
+  color: rgba(255, 255, 255, 0.98);
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: 0;
+  text-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
+  animation: fadeInUp 1s ease-out;
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.7;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Projects Grid Section */
+.projects-grid-section {
+  padding: 90px 0 70px;
+  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 30%, #f8f9fa 70%, #ffffff 100%);
+  position: relative;
+}
+
+.projects-grid-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+}
+
+/* Project Tile Card */
+.project-tile {
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 12px 45px rgba(0, 0, 0, 0.08), 0 4px 15px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(102, 126, 234, 0.08);
+  position: relative;
+  transform-origin: center center;
+}
+
+.project-tile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+  background-size: 200% 100%;
+  transition: all 0.5s ease;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.project-tile:hover {
+  transform: translateY(-15px) scale(1.02);
+  box-shadow: 0 30px 70px rgba(102, 126, 234, 0.25), 
+              0 18px 45px rgba(118, 75, 162, 0.2),
+              0 8px 20px rgba(240, 147, 251, 0.15);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+.project-tile:hover::before {
+  height: 8px;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
+  animation-duration: 1.5s;
+}
+
+/* Project Tile Header */
+.project-tile-header {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.06), rgba(118, 75, 162, 0.06));
+  padding: 35px 40px;
+  border-bottom: 2px solid rgba(102, 126, 234, 0.12);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.project-tile-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: right 0.6s ease;
+}
+
+.project-tile:hover .project-tile-header {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.12));
+  border-bottom-color: rgba(102, 126, 234, 0.25);
+}
+
+.project-tile:hover .project-tile-header::after {
+  right: 100%;
+}
+
+.project-tile-name {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #2c3e50;
+  margin-bottom: 14px;
+  line-height: 1.4;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+}
+
+.project-tile-name::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 2px;
+}
+
+.project-tile:hover .project-tile-name {
+  color: #667eea;
+}
+
+.project-tile:hover .project-tile-name::after {
+  width: 100%;
+}
+
+.project-tile-duration {
+  font-size: 1.05rem;
+  color: #7f8c8d;
+  margin-bottom: 0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.project-tile-duration i {
+  color: #667eea;
+  font-size: 1.15rem;
+  transition: all 0.3s ease;
+}
+
+.project-tile:hover .project-tile-duration i {
+  transform: scale(1.2) rotate(360deg);
+  color: #764ba2;
+}
+
+/* Project Tile Body */
+.project-tile-body {
+  padding: 40px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+}
+
+.project-tile-description {
+  color: #2c3e50;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  margin-bottom: 0;
+  text-align: justify;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+
+/* Tech Stack Section in Tile */
+.project-tile-tech {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.04), rgba(240, 147, 251, 0.04));
+  padding: 22px;
+  border-radius: 16px;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  transition: all 0.3s ease;
+}
+
+.project-tile:hover .project-tile-tech {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(240, 147, 251, 0.08));
+  border-color: rgba(102, 126, 234, 0.2);
+  transform: translateY(-2px);
+}
+
+.project-tile-tech h5 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.project-tile-tech h5 i {
+  color: #667eea;
+  font-size: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.project-tile:hover .project-tile-tech h5 i {
+  transform: rotate(180deg) scale(1.2);
+  color: #764ba2;
+}
+
+.tech-tags-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tech-tag-modern {
+  display: inline-block;
+  padding: 10px 18px;
+  background: white;
+  color: #667eea;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 2px solid rgba(102, 126, 234, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-tag-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transition: left 0.5s ease;
+}
+
+.tech-tag-modern:hover {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  transform: translateY(-4px) scale(1.08);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
+  border-color: transparent;
+}
+
+.tech-tag-modern:hover::before {
+  left: 100%;
+}
+
+/* Responsibilities Section in Tile */
+.project-tile-responsibilities {
+  background: linear-gradient(135deg, rgba(240, 147, 251, 0.04), rgba(102, 126, 234, 0.04));
+  padding: 22px;
+  border-radius: 16px;
+  border: 1px solid rgba(240, 147, 251, 0.15);
+  transition: all 0.3s ease;
+}
+
+.project-tile:hover .project-tile-responsibilities {
+  background: linear-gradient(135deg, rgba(240, 147, 251, 0.08), rgba(102, 126, 234, 0.08));
+  border-color: rgba(240, 147, 251, 0.25);
+  transform: translateY(-2px);
+}
+
+.project-tile-responsibilities h5 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.project-tile-responsibilities h5 i {
+  color: #764ba2;
+  font-size: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.project-tile:hover .project-tile-responsibilities h5 i {
+  transform: scale(1.2) rotate(-10deg);
+  color: #f093fb;
+}
+
+.responsibilities-modern {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.responsibilities-modern li {
+  padding-left: 35px;
+  margin-bottom: 14px;
+  position: relative;
+  color: #2c3e50;
+  font-size: 1rem;
+  line-height: 1.7;
+  transition: all 0.3s ease;
+  font-weight: 400;
+}
+
+.responsibilities-modern li:last-child {
+  margin-bottom: 0;
+}
+
+.responsibilities-modern li::before {
+  content: '\f00c';
+  font-family: 'Font Awesome 5 Pro';
+  font-weight: 900;
+  position: absolute;
+  left: 0;
+  color: white;
+  font-size: 0.75rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+  top: 2px;
+}
+
+.responsibilities-modern li:hover {
+  padding-left: 40px;
+  color: #667eea;
+  font-weight: 500;
+}
+
+.responsibilities-modern li:hover::before {
+  background: linear-gradient(135deg, #f093fb, #764ba2);
+  transform: scale(1.25) rotate(360deg);
+  box-shadow: 0 5px 18px rgba(240, 147, 251, 0.5);
+}
+
+/* Back to Home Section */
+.back-to-home-section {
+  padding: 70px 0 90px;
+  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+  position: relative;
+}
+
+.back-to-home-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+}
+
+.btn-back-home {
+  display: inline-block;
+  padding: 18px 45px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.35);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  letter-spacing: 0.5px;
+}
+
+.btn-back-home::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #764ba2, #f093fb);
+  transition: all 0.5s ease;
+  z-index: -1;
+}
+
+.btn-back-home::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn-back-home:hover {
+  transform: translateY(-6px) scale(1.06);
+  box-shadow: 0 18px 45px rgba(102, 126, 234, 0.45), 0 10px 25px rgba(118, 75, 162, 0.3);
+  color: white;
+  text-decoration: none;
+}
+
+.btn-back-home:hover::before {
+  left: 0;
+}
+
+.btn-back-home:hover::after {
+  width: 400px;
+  height: 400px;
+}
+
+.btn-back-home i {
+  margin-right: 12px;
+  transition: all 0.3s ease;
+}
+
+.btn-back-home:hover i {
+  transform: translateX(-8px);
+  animation: bounceLeft 0.6s ease infinite;
+}
+
+@keyframes bounceLeft {
+  0%, 100% {
+    transform: translateX(-8px);
+  }
+  50% {
+    transform: translateX(-15px);
+  }
+}
+
+/* View All Projects Button for Home Page */
+.view-all-projects-cta {
+  text-align: center;
+  margin-top: 60px;
+  padding-top: 50px;
+  border-top: 2px solid rgba(102, 126, 234, 0.15);
+  position: relative;
+}
+
+.view-all-projects-cta::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 50%;
+  box-shadow: 0 0 0 8px rgba(102, 126, 234, 0.1), 0 0 20px rgba(102, 126, 234, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    box-shadow: 0 0 0 8px rgba(102, 126, 234, 0.1), 0 0 20px rgba(102, 126, 234, 0.3);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.3);
+    box-shadow: 0 0 0 12px rgba(102, 126, 234, 0.05), 0 0 30px rgba(102, 126, 234, 0.5);
+  }
+}
+
+.view-all-projects-cta h3 {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 25px;
+  animation: fadeIn 1s ease-out;
+}
+
+.btn-view-all-projects {
+  display: inline-block;
+  padding: 20px 55px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.35);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.btn-view-all-projects::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #764ba2, #f093fb);
+  transition: all 0.5s ease;
+  z-index: -1;
+}
+
+.btn-view-all-projects::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn-view-all-projects:hover {
+  transform: translateY(-10px) scale(1.08);
+  box-shadow: 0 25px 60px rgba(102, 126, 234, 0.5), 0 15px 35px rgba(118, 75, 162, 0.3);
+  color: white;
+  text-decoration: none;
+}
+
+.btn-view-all-projects:hover::before {
+  left: 0;
+}
+
+.btn-view-all-projects:hover::after {
+  width: 350px;
+  height: 350px;
+}
+
+.btn-view-all-projects i {
+  margin-left: 14px;
+  transition: all 0.3s ease;
+  font-size: 1.35rem;
+}
+
+.btn-view-all-projects:hover i {
+  transform: translateX(10px);
+  animation: bounceRight 0.6s ease infinite;
+}
+
+@keyframes bounceRight {
+  0%, 100% {
+    transform: translateX(10px);
+  }
+  50% {
+    transform: translateX(18px);
+  }
+}
+
+/* Responsive Design for Projects Page */
+@media (max-width: 992px) {
+  .projects-page-hero {
+    padding: 120px 0 80px;
+  }
+
+  .projects-page-title {
+    font-size: 3.2rem;
+    letter-spacing: 1.5px;
+  }
+  
+  .projects-page-subtitle {
+    font-size: 1.3rem;
+  }
+  
+  .project-tile-name {
+    font-size: 1.45rem;
+  }
+  
+  .tech-tags-grid {
+    gap: 10px;
+  }
+  
+  .tech-tag-modern {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .projects-page-hero {
+    padding: 100px 0 70px;
+  }
+  
+  .projects-page-title {
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+  }
+  
+  .projects-page-subtitle {
+    font-size: 1.15rem;
+  }
+  
+  .projects-grid-section {
+    padding: 70px 0 50px;
+  }
+  
+  .project-tile-header {
+    padding: 28px;
+  }
+  
+  .project-tile-body {
+    padding: 28px;
+    gap: 24px;
+  }
+  
+  .project-tile-name {
+    font-size: 1.3rem;
+  }
+  
+  .project-tile-duration {
+    font-size: 0.95rem;
+  }
+  
+  .project-tile-description {
+    font-size: 1rem;
+    text-align: left;
+  }
+  
+  .btn-view-all-projects {
+    padding: 16px 40px;
+    font-size: 1.05rem;
+    letter-spacing: 1px;
+  }
+  
+  .btn-back-home {
+    padding: 15px 35px;
+    font-size: 1.05rem;
+  }
+
+  .project-tile-tech,
+  .project-tile-responsibilities {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 576px) {
+  .projects-page-hero {
+    padding: 80px 0 60px;
+  }
+  
+  .projects-page-title {
+    font-size: 2rem;
+    letter-spacing: 0.5px;
+  }
+
+  .projects-page-subtitle {
+    font-size: 1rem;
+  }
+  
+  .project-tile {
+    margin-bottom: 30px;
+  }
+
+  .project-tile-header {
+    padding: 24px;
+  }
+
+  .project-tile-body {
+    padding: 24px;
+  }
+  
+  .project-tile-name {
+    font-size: 1.2rem;
+  }
+  
+  .responsibilities-modern li {
+    font-size: 0.95rem;
+  }
+  
+  .tech-tag-modern {
+    padding: 7px 12px;
+    font-size: 0.85rem;
+  }
+
+  .btn-view-all-projects {
+    padding: 14px 30px;
+    font-size: 0.95rem;
+  }
+
+  .btn-back-home {
+    padding: 13px 28px;
+    font-size: 0.95rem;
+  }
+}
