@@ -86,9 +86,14 @@ URL = "/#accomplishments"
 weight = 5
 
 [[menu.main]]
+name = "Testimonials"
+URL = "/#testimonials"
+weight = 6
+
+[[menu.main]]
 name = "Blog"
 URL = "/post"
-weight = 6
+weight = 7
 
 
 #################### default parameters ################################

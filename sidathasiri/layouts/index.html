@@ -300,6 +300,216 @@ window.toggleProject = toggleProject;
     =============================== -->
 
 <!-- Section Divider -->
+<div class="section-divider"></div>
+
+<!-- =============================
+       Start Testimonials
+    =============================== -->
+{{ if .Site.Data.content.testimonials.enable }} {{ with .Site.Data.content.testimonials }}
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center mb-4">
+        <h2>{{ .title }}</h2>
+        {{ with .subtitle }}<p class="testimonials-subtitle">{{ . }}</p>{{ end }}
+      </div>
+    </div>
+
+    <!-- Client Reviews -->
+    {{ with .client_reviews }}
+    <div class="testimonials-group">
+      <div class="testimonials-group-header">
+        <h3><i class="fas fa-star"></i> {{ $.Site.Data.content.testimonials.reviews_title }}</h3>
+        {{ with $.Site.Data.content.testimonials.reviews_note }}<p>{{ . }}</p>{{ end }}
+      </div>
+      <div class="testi-carousel" data-desktop="2" data-tablet="1" data-mobile="1">
+        <div class="testi-viewport">
+          <div class="testi-track">
+            {{ range . }}
+            <div class="testi-slide">
+              <div class="review-card">
+                <div class="review-card-top">
+                  <div class="review-stars" aria-label="{{ .rating }} out of 5 stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <span class="review-rating">{{ .rating }}</span>
+                  </div>
+                  <span class="review-period"><i class="far fa-calendar-alt"></i> {{ .period }}</span>
+                </div>
+                <h4 class="review-title">{{ .title }}</h4>
+                <p class="review-quote">{{ .quote }}</p>
+                <div class="review-footer">
+                  <span class="review-endorse"><i class="fas fa-check-circle"></i> Endorsed by client</span>
+                  {{ with .tags }}
+                  <div class="review-tags">
+                    {{ range . }}<span class="review-tag">{{ . }}</span>{{ end }}
+                  </div>
+                  {{ end }}
+                </div>
+              </div>
+            </div>
+            {{ end }}
+          </div>
+        </div>
+        <button class="testi-arrow testi-prev" type="button" aria-label="Previous reviews"><i class="fas fa-chevron-left"></i></button>
+        <button class="testi-arrow testi-next" type="button" aria-label="Next reviews"><i class="fas fa-chevron-right"></i></button>
+        <div class="testi-dots" aria-hidden="true"></div>
+      </div>
+    </div>
+    {{ end }}
+
+    <!-- Kind Words From My Team -->
+    {{ with .colleague_words }}
+    <div class="testimonials-group">
+      <div class="testimonials-group-header">
+        <h3><i class="fas fa-heart"></i> {{ $.Site.Data.content.testimonials.words_title }}</h3>
+        {{ with $.Site.Data.content.testimonials.words_note }}<p>{{ . }}</p>{{ end }}
+      </div>
+      <div class="testi-carousel" data-desktop="2" data-tablet="1" data-mobile="1">
+        <div class="testi-viewport">
+          <div class="testi-track">
+            {{ range . }}
+            <div class="testi-slide">
+              <div class="word-card">
+                <span class="word-quote-icon"><i class="fas fa-quote-left"></i></span>
+                <p class="word-text">{{ .content | emojify }}</p>
+                {{ with .author }}<p class="word-author">{{ . }}</p>{{ end }}
+              </div>
+            </div>
+            {{ end }}
+          </div>
+        </div>
+        <button class="testi-arrow testi-prev" type="button" aria-label="Previous messages"><i class="fas fa-chevron-left"></i></button>
+        <button class="testi-arrow testi-next" type="button" aria-label="Next messages"><i class="fas fa-chevron-right"></i></button>
+        <div class="testi-dots" aria-hidden="true"></div>
+      </div>
+    </div>
+    {{ end }}
+  </div>
+</section>
+
+<script>
+(function () {
+  function slidesPerView(root) {
+    var w = window.innerWidth;
+    if (w <= 768) return parseInt(root.getAttribute('data-mobile'), 10) || 1;
+    if (w <= 991) return parseInt(root.getAttribute('data-tablet'), 10) || 1;
+    return parseInt(root.getAttribute('data-desktop'), 10) || 1;
+  }
+
+  function initCarousel(root) {
+    var viewport = root.querySelector('.testi-viewport');
+    var track = root.querySelector('.testi-track');
+    var slides = Array.prototype.slice.call(root.querySelectorAll('.testi-slide'));
+    var prev = root.querySelector('.testi-prev');
+    var next = root.querySelector('.testi-next');
+    var dotsWrap = root.querySelector('.testi-dots');
+    if (!track || slides.length === 0) return;
+
+    var perView = 1, pageCount = 1, page = 0;
+
+    function measureHeights() {
+      // Reset to natural heights to measure accurately (flex-start avoids
+      // align-items:stretch reporting the global max height for every card).
+      // Measure the slide (not the card) so its vertical padding is included,
+      // otherwise the tallest card overflows the track height by that padding.
+      var prevAlign = track.style.alignItems;
+      track.style.height = 'auto';
+      track.style.alignItems = 'flex-start';
+      slides.forEach(function (s) { s.firstElementChild.style.height = 'auto'; });
+      void track.offsetHeight; // force reflow
+      var heights = slides.map(function (s) { return s.offsetHeight; });
+      slides.forEach(function (s) { s.firstElementChild.style.height = ''; });
+      track.style.alignItems = prevAlign;
+      return heights;
+    }
+
+    function render(animate) {
+      var vw = viewport.clientWidth;
+      var slideW = vw / perView;
+      slides.forEach(function (s) { s.style.width = slideW + 'px'; });
+
+      var heights = measureHeights();
+      var start = page * perView;
+      var remaining = slides.length - start;
+      var h = 0;
+      for (var i = start; i < start + perView && i < slides.length; i++) {
+        if (heights[i] > h) h = heights[i];
+      }
+      // Center a trailing page that isn't completely full (e.g. a lone card)
+      var centerOffset = (remaining < perView) ? ((perView - remaining) * slideW) / 2 : 0;
+      track.style.transition = animate ? 'transform 0.5s cubic-bezier(0.4,0,0.2,1), height 0.4s ease' : 'none';
+      track.style.height = h + 'px';
+      track.style.transform = 'translateX(' + (-page * vw + centerOffset) + 'px)';
+
+      // Dots active state
+      Array.prototype.slice.call(dotsWrap.children).forEach(function (d, i) {
+        d.classList.toggle('active', i === page);
+      });
+      // Hide controls entirely when everything fits on one page
+      var single = pageCount <= 1;
+      [prev, next, dotsWrap].forEach(function (el) { el.style.display = single ? 'none' : ''; });
+    }
+
+    function buildDots() {
+      dotsWrap.innerHTML = '';
+      for (var i = 0; i < pageCount; i++) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'testi-dot';
+        b.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+        (function (idx) { b.addEventListener('click', function () { page = idx; render(true); }); })(i);
+        dotsWrap.appendChild(b);
+      }
+    }
+
+    function recompute() {
+      var pv = slidesPerView(root);
+      perView = Math.max(1, pv);
+      pageCount = Math.ceil(slides.length / perView);
+      if (page > pageCount - 1) page = pageCount - 1;
+      buildDots();
+      render(false);
+    }
+
+    prev.addEventListener('click', function () { page = (page - 1 + pageCount) % pageCount; render(true); });
+    next.addEventListener('click', function () { page = (page + 1) % pageCount; render(true); });
+
+    // Touch / swipe support
+    var startX = null;
+    viewport.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+    viewport.addEventListener('touchend', function (e) {
+      if (startX === null) return;
+      var dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40) {
+        if (dx < 0) page = (page + 1) % pageCount; else page = (page - 1 + pageCount) % pageCount;
+        render(true);
+      }
+      startX = null;
+    }, { passive: true });
+
+    var t;
+    window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(recompute, 150); });
+    // Images/fonts can shift heights; recompute after full load
+    window.addEventListener('load', recompute);
+    recompute();
+  }
+
+  function initAll() {
+    Array.prototype.slice.call(document.querySelectorAll('.testi-carousel')).forEach(initCarousel);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
+  }
+})();
+</script>
+{{ end }} {{ end }}
+<!-- =============================
+       End Testimonials
+    =============================== -->
+
+<!-- Section Divider -->
 <!-- <div class="section-divider"></div> -->
 
 <!-- =============================

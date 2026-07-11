@@ -353,6 +353,12 @@ accomplishments:
   enable: true
   title: "ACCOMPLISHMENTS"
   accomplishment_list:
+    - name: "Outstanding Team Award - Top Nominees"
+      organization: "99x Annual Awards Ceremony"
+      year: "2025"
+      description: "Recognized as a top nominee for outstanding team contribution and collaborative excellence."
+      icon: "fas fa-users"
+      
     - name: "Global Citizenship Award"
       organization: "99x Annual Awards Ceremony"
       year: "2024"
@@ -370,3 +376,78 @@ accomplishments:
       year: ""
       description: "Awarded for the best research project with a GPA above 4.0."
       icon: "fas fa-medal"
+
+######################### Testimonials #############################
+testimonials:
+  enable: true
+  title: "TESTIMONIALS"
+  subtitle: "Kind words from the clients and teammates I've had the privilege to work with"
+
+  # Verified freelance client reviews (Upwork)
+  reviews_title: "Client Reviews"
+  reviews_note: "Verified 5-star reviews from freelance clients on Upwork"
+  client_reviews:
+    - title: "Backend Developer with AWS Serverless and NodeJS Expertise"
+      rating: "5.0"
+      period: "Sep 17, 2025 - Mar 17, 2026"
+      quote: "I love his work. His works are clean and accurate. He communicates well and he delivers fast."
+      tags:
+        - "Reliable"
+        - "Committed to Quality"
+        - "Solution Oriented"
+        - "Clear Communicator"
+        - "Detail Oriented"
+
+    - title: "Backend Developer Needed (GraphQL, MongoDB, Prisma) – Invite Feature Integration"
+      rating: "5.0"
+      period: "Jan 19, 2026 - Mar 16, 2026"
+      quote: "He is a trustworthy & professional freelancer that TRULY knows his expertise and is committed to quality in the work being turned in. HIGHLY RECOMMENDED!"
+      tags:
+        - "Committed to Quality"
+        - "Clear Communicator"
+        - "Accountable for Outcomes"
+        - "Professional"
+
+    - title: "AWS - Legal Data Analysis using LLM"
+      rating: "5.0"
+      period: "Jan 28, 2026 - Jan 31, 2026"
+      quote: "The project involved developing an MVP under tight time constraints, as the client demo was scheduled for the very next morning. He worked tirelessly through the night and not only met but exceeded expectations. He was sincere, quickly grasped the requirements, and delivered spectacular results. I would definitely rehire him without hesitation."
+      tags:
+        - "Committed to Quality"
+        - "Clear Communicator"
+
+    - title: "Python Developer in AWS"
+      rating: "5.0"
+      period: "Aug 24, 2025 - Sep 24, 2025"
+      quote: "Sidath is very professional person. Highly recommend him."
+      tags:
+        - "Professional"
+
+    - title: "AWS Instance Software Connection"
+      rating: "5.0"
+      period: "Jul 18, 2025"
+      quote: "Great guy and responsible. I will rehire him again."
+      tags:
+        - "Accountable for Outcomes"
+
+  # Farewell words from teammates
+  words_title: "Kind Words From My Team"
+  words_note: "Farewell messages from my teammates on the Raintree project"
+  colleague_words:
+    - author: "Teammate, Raintree Project"
+      content: "It feels like just yesterday that I joined the Raintree project and met you. Since day one, you've been incredible, both as a person and as a professional. Throughout all this time, I've looked up to you. Thank you for your countless contributions, including the non-technical ones, like keeping the team's spirits up and helping create such an amazing work environment. Things will feel a bit awkward for a while without you, almost like a puzzle missing a piece."
+
+    - author: "Teammate, Raintree Project"
+      content: "Brother Sidath.. no words can describe you. You are one of the very, very rare human beings with lots of human qualities. The project will not be the same without you. The only thing I can say is we will definitely miss you.. and we love you. ❤️"
+
+    - author: "Teammate, Raintree Project"
+      content: "Working with you was honestly so comfortable. I always felt like I could openly say when I didn't know something, and you never made it awkward. You've been a great teacher and gave your absolute best to the project. Wishing you all the very best ahead."
+
+    - author: "Teammate, Raintree Project"
+      content: "Really appreciate all the support and guidance you've given me, especially during the time I joined — it meant a lot. Wishing you all the very best for your future. I'm sure you'll do amazing wherever you go. Thanks again for everything!"
+
+    - author: "Teammate, Raintree Project"
+      content: "It's really hard to say goodbye, Sidath. You have meant so much to this team, and things truly won't be the same without you. I'm really grateful for everything you've done and for all the support you have given. Wishing you all the happiness and success in this new chapter."
+
+    - author: "Engineering Leader, 99x"
+      content: "I really appreciate the leadership you provided, not just within the project, but across the company through many architectural initiatives. Your clarity of thinking and ability to bring structure to complexity was remarkable. A true Forward Deployed Architect! I'm sure you'll continue to do amazing things."
