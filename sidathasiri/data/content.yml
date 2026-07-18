@@ -36,9 +36,14 @@ experience:
   enable: true
   title: "EXPERIENCE"
   experience_list:
+    - name: Technical Lead
+      company: Avida
+      duration: "April 2026 - Present"
+      content: Full-stack technical lead on a fitness-coaching SaaS platform, delivering growth, payments, and coaching features across a ReactJS web app, React Native mobile app, and Firebase/GCP serverless backend. Built a mass SMS outreach platform, automated lost-lead re-engagement, ML-driven lead scoring, and enhanced Stripe checkout experiences.
+
     - name: Senior Technical Lead
       company: 99x
-      duration: "March 2024 - Present"
+      duration: "March 2024 - April 2026"
       content: Leading a team in modernizing a platform by creating a serverless, cost-effective solution on AWS cloud. Coordinating and leading efforts to ensure strategic planning aligns with business objectives for innovation and efficiency.
 
     - name: Technical Lead
@@ -76,6 +81,9 @@ skill:
       percentage: "90%"
 
     - name: "JavaScript"
+      percentage: "90%"
+
+    - name: "TypeScript"
       percentage: "90%"
 
     - name: "AWS"
