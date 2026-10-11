@@ -1,60 +1,60 @@
 ---
 layout: post
-title: "Beyond the 15-Minute Wall: A Guide to AWS Lambda Durable Functions in TypeScript"
+title: "Long-Running Workflows in Plain TypeScript: Getting Started with AWS Lambda Durable Functions"
 date: 2026-01-04
 author: "Sidath Munasinghe"
-keywords: "aws lambda, durable functions, typescript, serverless, aws, cloud computing, state management, sidath, munasinghe"
-description: "Learn how AWS Lambda Durable Functions enables stateful, long-running workflows in TypeScript without Step Functions complexity. Build workflows that can run for up to a year with automatic checkpointing and state management."
+keywords: "aws lambda durable functions, long-running workflows, typescript, serverless orchestration, checkpointing, step functions alternative, aws, sidath, munasinghe"
+description: "Build stateful, long-running TypeScript workflows with AWS Lambda Durable Functions: checkpoints, replay, waits, callbacks and the gotchas to avoid."
 URL: "/2026/01/04/Beyond-the-15-Minute-Wall-A-Guide-to-AWS-Lambda-Durable-Functions-in-TypeScript/"
 image: "/images/posts/Beyond-the-15-Minute-Wall-A-Guide-to-AWS-Lambda-Durable-Functions-in-TypeScript/main-cover-image.png"
 ---
 
-Let's be real: we've all had that moment where our AWS Lambda function hit the dreaded 15-minute timeout, and we died a little bit inside.
+Every serverless developer eventually writes a Lambda that does "just one more thing", and one day it runs for 15 minutes and gets killed halfway through. If you've watched a CloudWatch log end abruptly with `Task timed out`, you know the feeling.
 
-Up until recently, if you wanted to build a long-running process — say, a 30-day trial onboarding flow or a multi-step document processing pipeline — you had two choices:
+The trouble is that plenty of real business processes don't finish in minutes. Think of a month-long trial onboarding sequence, or a document pipeline that hands off to a human reviewer. Until recently, the options for workflows like that on AWS weren't great:
 
-1. **AWS Step Functions**: Powerful, but you had to learn Amazon States Language (ASL). Let's just say writing logic in 500 lines of JSON/YAML isn't exactly "fun."
-2. **The "DIY" State Machine**: Manually saving state to DynamoDB, triggering SQS queues, and praying your retry logic didn't create an infinite loop.
+| Approach | What you get | What it costs you |
+| --- | --- | --- |
+| **AWS Step Functions** | A powerful, managed orchestrator | Your logic lives in Amazon States Language, which quickly grows into hundreds of lines of JSON/YAML |
+| **Hand-rolled state machine** | Full control | You persist state in DynamoDB yourself, chain SQS queues together, and hope the retries never loop forever |
 
-But the game changed at re:Invent 2025. Enter **AWS Lambda Durable Functions**. We can finally write stateful, long-running workflows directly in TypeScript or in other supported languages. No YAML, no external state management, just pure code.
+AWS announced a third option at re:Invent 2025: **AWS Lambda Durable Functions**. You write the stateful, long-running workflow as ordinary code, in TypeScript or one of the other supported languages. You don't write a state machine definition or build your own persistence layer.
 
-## What is "Durable Execution" Anyway?
+## The Core Idea: Checkpoint, Sleep, Replay
 
-Imagine you're reading a massive 1,000-page book. If you have to put it down to sleep, you don't start from page one the next morning — you use a bookmark.
+Here's the analogy I find most useful. When you stop halfway through a long novel, you don't start again from chapter one the next day. You put a bookmark in and carry on from there.
 
-Durable Functions act as that bookmark for your code. When your function hits a "wait", AWS "checkpoints" the progress and shuts down the compute. When the event is ready, it "replays" the function, skips the parts it already finished, and picks up exactly where it left off. The idea is very simple but it's very powerful.
+A durable function keeps a bookmark for your code. When the workflow reaches a point where it has to wait, AWS records how far it got and releases the compute. Later, when it's time to continue, Lambda invokes the function again. The function runs from the top, but every step that already finished is skipped using its recorded result, so execution effectively resumes at the bookmark. The idea is simple, and it changes a lot about what you can build.
 
-I know what you're thinking: "Is Step Functions dead?" Not quite. If you are building complex micro-service choreography between 10 different AWS services, Step Functions' visual designer is still king. But if you are building application logic that just needs to be stateful, Durable Functions is your new best friend.
+Does this make Step Functions obsolete? No. If you're orchestrating ten AWS services and your team relies on the visual designer, Step Functions is still the better tool. Where durable functions shine is *application logic* that needs to remember where it was.
 
-## Order Processing With Durable Functions
+## A Worked Example: Reserve, Charge, Ship
 
-Let's look at a real-world scenario: An e-commerce workflow that needs to validate an order, wait for payment, and then ship the goods.
-
-Here is how you would write this using the new `@aws-sdk/client-lambda-durable` in TypeScript.
+Let's take a typical e-commerce flow. We reserve stock for the order, charge the customer, and then create a shipment. Here's what that looks like with the durable execution SDK (`@aws/durable-execution-sdk-js`) in TypeScript:
 
 ```typescript
 import { DurableContext, withDurableExecution } from "@aws/durable-execution-sdk-js";
 
-// Imagine these services interact with your DB and APIs
+// Placeholder services that talk to your database and external APIs
 import { inventoryService, paymentService, shippingService } from "./services";
 
 export const handler = withDurableExecution(
   async (event: any, context: DurableContext) => {
     const { orderId, amount, items } = event;
     
-    // 1. Reserve inventory
-    // If this fails, the SDK handles the retry. If it succeeds, the result is checkpointed
+    // 1. Hold stock for the order
+    // On failure the SDK retries this step; on success its return value is checkpointed
     const inventory = await context.step("reserve-inventory", async () => {
       return await inventoryService.reserve(items);
     });
     
-    // 2. Process payment
+    // 2. Charge the customer
     const payment = await context.step("process-payment", async () => {
       return await paymentService.charge(amount);
     });
     
-    // 3. Create shipment
-    // This step only runs once the previous two are successfully checkpointed.
+    // 3. Book the shipment
+    // Reached only after both earlier steps have been checkpointed
     const shipment = await context.step("create-shipment", async () => {
       return await shippingService.createShipment(orderId, inventory);
     });
@@ -69,126 +69,112 @@ export const handler = withDurableExecution(
 );
 ```
 
-This code represents a significant shift in how we build on AWS. By using the `@aws-durable-execution-sdk-js`, you are moving away from "fire-and-forget" functions toward **Stateful Workflows**.
+It looks like a normal async handler, and that's the point. But this is no longer a fire-and-forget function. It's a **stateful workflow**, and three mechanisms make that work.
 
-Here is a breakdown of what is actually happening under the hood while this code runs.
+### How the handler is wrapped
 
-### 1. The Wrapper (`withDurableExecution`)
+`withDurableExecution` does more than decorate the handler. It supervises the execution, records every call you make through `context`, and keeps a running history of the workflow.
 
-This isn't just a decorator; it's a manager. It tracks every interaction you have with the `context` object. It maintains a "History Log" of your execution.
+### What happens at each step
 
-### 2. Checkpointing (`context.step`)
+When execution reaches `context.step("reserve-inventory", ...)`, the SDK:
 
-When your code hits `await context.step("reserve-inventory", ...)`:
+1. runs the function you passed in,
+2. takes its return value (here, `inventory`) and persists it to a state store that AWS manages for you, and
+3. treats the step as complete from then on. If the Lambda environment dies a few seconds later, the platform already knows the reservation succeeded.
 
-- **Execution**: The SDK runs your code.
-- **Persistence**: Once the code returns the `inventory` object, the SDK saves that result into a managed state store (hidden from you).
-- **Reliability**: If the Lambda crashes 10 seconds later, AWS knows that "reserve-inventory" is already done.
+### How a resumed run catches up
 
-### 3. The Replay Mechanism
+Say `process-payment` runs slowly, or the execution environment gets recycled. Lambda invokes the handler again, from the first line. When the code reaches `reserve-inventory`, the SDK finds that step in the history, skips the callback and returns the stored value. `inventory` ends up with exactly the same data as before, and the workflow moves on to the step that hasn't completed yet.
 
-If your `process-payment` step takes too long or the Lambda environment restarts, AWS triggers the function again.
+## Beyond Sequential Steps
 
-- The code starts from the very first line.
-- When it hits `context.step("reserve-inventory")`, the SDK looks at the history log and says: "I already have the result for this!"
-- Instead of running the inventory code again, it simply injects the saved result into the `inventory` variable and moves to the next line.
+A linear list of steps is only the start. The SDK gives you a handful of primitives for non-linear flows. Your code still reads like one script, but it behaves like a distributed state machine.
 
-## Other Powerful Features
+**`context.wait`: pausing without paying.** This isn't a `sleep()`. Your function actually stops running. AWS stores the state and schedules a new invocation for later. You aren't charged compute while the workflow waits. You can wait for seconds, hours, or until a specific `Date`, and a single workflow can stay paused for up to a year.
 
-Once you move beyond basic sequential steps, the `@aws-durable-execution-sdk-js` reveals its true power. It allows you to build complex, non-linear systems that feel like a single script but behave like a distributed state machine.
+**`context.waitForCallback`: waiting for a person or another system.** This is how you implement human-in-the-loop flows. The call produces a unique `taskToken`, which you hand to something outside the workflow, such as a Slack approval bot, an email link or a button in a React app. The workflow stays paused until that system calls the `SendDurableExecutionCallback` API with the token.
 
-Here is a breakdown of the advanced primitives you can use to orchestrate high-scale applications.
+**`context.parallel`: concurrency that survives failures.** Running a plain `Promise.all()` inside a Lambda is risky, because one slow promise can push the whole invocation past its timeout. With `context.parallel`, AWS manages the concurrent durable operations for you. Each branch is checkpointed on its own, so if one branch fails, the finished branches keep their results and a retry re-runs only the failed one.
 
-### `context.wait`: The Time-Traveler
+**`context.invoke`: composing workflows.** You can call another Lambda function, durable or regular, as a child of the current workflow. That lets you build small reusable sub-workflows (a `sendEmailWorkflow`, for example) and call them from any parent. Because AWS tracks the parent-child relationship, it can clean up child invocations when the parent is cancelled.
 
-This is more than just a `sleep()` command. When you call `wait`, your Lambda function stops executing entirely. AWS saves the state and schedules a fresh invocation for the future.
+## Rules to Live By (and Traps to Avoid)
 
-- **Cost Efficiency**: You are charged $0.00 for the time spent waiting.
-- **Precision**: You can wait for seconds, hours, or even a specific `Date`.
-- **Max Duration**: A single workflow can wait for up to 1 year.
+These primitives are powerful, but they come with rules. Ignore them and you'll get errors that are hard to diagnose.
 
-### `context.waitForCallback`: The Human Bridge
+### Keep the orchestration code deterministic
 
-This is the "Human-in-the-Loop" pattern. It pauses the code until an external system tells it to continue.
+This is the most important rule. When a workflow resumes, say after a seven-day wait, the handler runs again from the top to find its place. If the code takes a different path or produces different values on that replay, the SDK raises a Non-Deterministic Error.
 
-- **How it works**: When called, it generates a unique `taskToken`. You send this token to an external service (like a Slack bot, an Email, or a React UI).
-- **The Resume**: The code stays "frozen" until your external system calls the `SendDurableExecutionCallback` API with that specific token.
-
-### `context.parallel`: The Turbo-Charger
-
-Standard `Promise.all()` is dangerous in serverless because one long-running promise could time out the whole Lambda. `context.parallel` is different. It tells AWS to manage multiple durable operations simultaneously.
-
-- **Persistence**: Each branch in the parallel array is checkpointed individually.
-- **Resilience**: If one branch fails, the other branches' results are already saved, so a retry only re-runs the failed path.
-
-### `context.invoke`: The Modular Architect
-
-This allows you to call other Lambda functions (durable or standard) as a child process of your current workflow.
-
-- **Encapsulation**: You can build a library of "Micro-Workflows" (e.g., a `sendEmailWorkflow`) and call them from any parent.
-- **Parent-Child Link**: If the parent is canceled, AWS can automatically handle the cleanup of child invocations.
-
-## Best Practices & Gotchas
-The durable functions are so powerful. But at the same time you'll need to follow the best practices to avoid the chaos.
-
-### The Golden Rule: Orchestration Must Be Deterministic
-
-When your function "wakes up" from a 7-day wait, it runs from the very beginning to find its place. If your code produces a different result during this replay, the SDK will throw a Non-Deterministic Error.
-
-**The Mistake**: Using `new Date()` or `Math.random()` in the main body.
+The usual cause is calling something non-deterministic, such as `Math.random()` or `new Date()`, directly in the handler body:
 
 ```typescript
-// ❌ BAD: This will be different every time the function replays
+// ❌ BAD: a new value is produced on every replay
 const requestId = Math.random();
 ```
 
-**The Fix**: Wrap these calls in `context.step()`. This ensures the value is generated once, saved in the checkpoint, and then "replayed" as the exact same value.
+The fix is to put the call inside a step. The value is generated once, stored in the checkpoint, and returned unchanged on every replay:
 
 ```typescript
-// ✅ GOOD: The result is saved to the history after the first run
+// ✅ GOOD: generated on the first run, then read back from history
 const requestId = await context.step("get-id", async () => Math.random());
 ```
 
-### The "15-Minute" Misconception
+### The 15-minute limit still exists, just at a different level
 
-It's a common trap to think the 15-minute Lambda limit is gone. It isn't.
+People often assume the timeout has disappeared. It hasn't. It now applies per invocation rather than per workflow:
 
-- **Workflow Limit**: Can last up to 1 year.
-- **Step Limit**: Any single `context.step` must finish within the 15-minute Lambda timeout.
+- the **workflow** as a whole can last up to a year;
+- any single **`context.step`** still has to finish inside the normal 15-minute Lambda timeout.
 
-### State Size & The "Fat Payload" Problem
+If one step could run longer than that, split it into smaller steps.
 
-AWS stores your execution history (the results of every `context.step`) in a managed state store.
+### Return small values from steps
 
-- **Limit**: This history is typically limited
-- **Gotcha**: If you return a massive JSON object from `inventoryService.reserve()`, the checkpointing will fail.
-- **Solution**: Store large data in S3 and return only the `S3_URL` from your steps.
+Every step result goes into the execution history, and that history has a size limit. If `inventoryService.reserve()` returns a huge JSON document, checkpointing will fail. Write large payloads to S3 and return only a reference such as the `S3_URL`.
 
-### Avoiding "Zombie" Workflows
+### Don't leave workflows waiting forever
 
-Since workflows can live for a year, it's easy to accidentally leave thousands of executions "Waiting" and racking up state storage costs.
+A workflow can live for a year, so it's easy to end up with thousands of executions sitting in a waiting state and adding to your state storage bill. Two habits help:
 
-- **Best Practice**: Always set a `timeout` in your `waitForCallback` and `wait` operations.
-- **Retention Policy**: Configure your `RetentionPeriodInDays` in the `DurableConfig` so that finished histories are automatically scrubbed.
+- Always set a `timeout` on `wait` and `waitForCallback` operations, so nothing waits indefinitely.
+- Set `RetentionPeriodInDays` in the `DurableConfig`, so the histories of finished executions are cleaned up automatically.
 
-## Conclusion
+### More pitfalls worth knowing
 
-With the release of AWS Lambda Durable Functions, the boundary between "simple functions" and "complex orchestrators" has finally vanished. We no longer have to choose between the simplicity of a single code file and the resilience of a multi-step state machine.
+These aren't in the example above, but they follow from how checkpoint-and-replay works:
 
-### When to Use Durable Functions vs. Step Functions
+- **Design steps to be safe to retry.** A step can fail after its side effect has happened but before the result is checkpointed, and then the SDK retries it. Make external calls idempotent, for example by passing `orderId` as an idempotency key to your payment provider, so a retry can't charge the customer twice.
+- **Treat step names as part of the contract.** Replay matches recorded results to steps by their order and name. Renaming, reordering or removing steps in code that in-flight executions will resume can break those executions. Ship incompatible changes as a new published version or alias and let old executions finish on the old code.
+- **Don't do side effects outside steps.** Any API call, database write or log you care about that sits outside a `context.step` runs again on every replay. Anything that must happen exactly once belongs inside a step.
 
-Even in 2026, Step Functions remains the king of low-code orchestration and massive service integrations (like connecting S3 to Bedrock without any code). However, Durable Functions is now the clear winner for:
+## Choosing Between Durable Functions and Step Functions
 
-- **Pure Developer Workflows**: If you want your logic in TypeScript, not YAML.
-- **Complex Data Handling**: When you need to pass rich objects between steps without JSON serialization headaches.
-- **Fast Iteration**: Testing locally with the `LocalDurableTestRunner` is significantly faster than deploying state machines to the cloud.
+Step Functions is still the strongest low-code orchestration option, especially for direct service integrations such as connecting S3 to Bedrock without writing glue code. Durable functions are the better fit when:
 
-### Monitoring Your "Marathons"
+- you want the workflow logic in **TypeScript rather than YAML/JSON**;
+- your steps pass **rich objects** to each other and you'd rather not fight JSON serialization between states;
+- you care about **fast feedback**: running tests locally with the `LocalDurableTestRunner` is much quicker than deploying a state machine to the cloud for every change.
 
-Because these functions can run for months, AWS introduced a dedicated Durable Executions tab in the Lambda Console. You can now see a visual timeline of every execution, including exactly when a function "went to sleep" and which specific `context.step` is currently running.
+For observability, the Lambda console now has a **Durable Executions** tab. It shows each execution on a visual timeline, including when it went to sleep and which `context.step` is currently running. That matters a lot when a workflow runs for weeks.
 
-### Final Thought: Write Code, Not Config
+## Quick FAQ
 
-The true power of this SDK is that it lets you focus on business logic. You don't have to write "plumbing" code for retries, database checkpoints, or state management. You simply write your function from top to bottom, and AWS ensures that it stays alive until the job is done.
+**Do I pay while a workflow is waiting?**
+You don't pay for compute during a `wait`, because the function isn't running. The stored execution state does have a cost, which is why timeouts and retention settings matter.
 
-The 15-minute wall has been torn down. It's time to start building applications that can truly go the distance.
+**Can I use `Promise.all` inside a durable function?**
+It's safer to use `context.parallel`. It checkpoints each branch, so a failure doesn't throw away the work the other branches already finished.
+
+**What triggers a Non-Deterministic Error?**
+Anything that makes a replay behave differently from the original run. Common causes are random values, timestamps, or reading changing external state outside a `context.step`.
+
+## Key Takeaways
+
+- Durable functions let a Lambda-based workflow run for **up to a year**, using checkpoints and replay.
+- Wrap anything non-deterministic or side-effecting in **`context.step`**, and keep each step **under 15 minutes**.
+- Use **`wait`**, **`waitForCallback`**, **`parallel`** and **`invoke`** for delays, approvals, fan-out and composition.
+- Keep step results small, set timeouts and retention, and make external calls idempotent.
+
+The biggest win is that you spend your time on business logic instead of plumbing. You don't write retry loops, checkpoint tables or state-tracking code yourself. You write the function from top to bottom, and AWS keeps it running until the work is done. The 15-minute limit no longer caps how long a workflow can run, so we can build applications for processes that take days or months.

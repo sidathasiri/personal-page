@@ -1,105 +1,144 @@
 ---
 layout: post
-title: 'Maximizing Cloud Infrastructure Efficiency with AWS CDK and Terraform'
+title: 'CDK for Terraform (CDKTF) in Practice: Building a Serverless REST API with TypeScript'
 date: 2024-06-22
 author: 'Sidath Munasinghe'
-keywords: 'cdk, terraform, cloud, devops, infrastructure as code, sidath, munasinghe'
-description: "Uncover the art of integrating CDK and Terraform for seamless synergy in cloud deployments. Explore how these powerful tools streamline infrastructure as code, leading to faster and more efficient cloud deployment processes."
+keywords: 'cdktf, cdk for terraform, aws cdk, terraform, typescript, api gateway, lambda, infrastructure as code, devops, sidath, munasinghe'
+description: "Combine AWS CDK-style TypeScript with Terraform's fast deployments using CDKTF. Build and deploy an API Gateway and Lambda REST API step by step, with gotchas."
 URL: '/2024/06/22/Unleashing-the-Power-of-CDK-and-Terraform-in-Cloud-Deployments/'
 image: '/images/posts/Unleashing-the-Power-of-CDK-and-Terraform-in-Cloud-Deployments/main-cover-image.png'
 ---
 
-Deploying applications to the cloud has become a cornerstone of modern software development. AWS offers CloudFormation as a service to facilitate cloud deployments and tools like the AWS Cloud Development Kit (CDK). At the same time, Terraform has emerged as a powerful solution for Infrastructure as Code (IaC), enabling faster deployments to multiple cloud providers. In this article, we’ll explore the benefits of using AWS CDK and Terraform together and walk through a practical example of creating a REST API with CDK in TypeScript.
+What if you could write your infrastructure in TypeScript, the way you would with the AWS CDK, but have Terraform deploy it instead of CloudFormation? That's exactly what CDK for Terraform offers, and in this post I'll show you why the combination is worth a look and then build a small serverless REST API with it from start to finish.
 
-## Terraform and CDK
+## Two approaches to infrastructure as code
 
-Terraform and CDK are prominent tools that empower the definition of infrastructure as code. Each solution possesses its own set of advantages and disadvantages. Let's delve into a bit more information on both.
+There are plenty of IaC tools, but two come up all the time in AWS projects. On AWS, CloudFormation is the native deployment engine, and the AWS CDK sits on top of it. Terraform is the popular alternative that works across clouds. Each has clear strengths and weaknesses.
 
-### Terraform
-Terraform is a tool created by HashiCorp that allows you to define your infrastructure in a high-level configuration language called HCL (HashiCorp Configuration Language). Terraform is cloud-agnostic and can manage infrastructure across various cloud providers, including AWS, Azure, and Google Cloud Platform. It also enables faster deployments when compared to CloudFormation, specifically for AWS.
+**Terraform**, from HashiCorp, describes infrastructure in its own declarative language, HCL (HashiCorp Configuration Language). It isn't tied to one cloud: the same tool and workflow can manage AWS, Azure, Google Cloud Platform and many others through providers. On AWS specifically, Terraform deployments also tend to finish faster than the equivalent CloudFormation stack updates.
 
-### CDK
-The AWS Cloud Development Kit (CDK) is an open-source software development framework for defining cloud infrastructure in code and provisioning it through AWS CloudFormation. CDK uses familiar programming languages, including TypeScript, to model your applications. Underneath, CDK generates plain CloudFormation templates to create the infrastructure using the code we implement with CDK. The advantage is due to this abstraction, we could generate very lengthy CloudFormation templates within a few lines using high-level CDK constructs. So, it helps developers implement and maintain infrastructure code conveniently with their favourite programming language.
+**AWS CDK** (Cloud Development Kit) is an open-source framework that lets you describe cloud resources in general-purpose languages such as TypeScript. It doesn't deploy anything itself. Instead, it *synthesises* your code into ordinary CloudFormation templates, and CloudFormation creates the resources. The benefit of this extra layer is that a high-level construct can expand a few lines of code into a very long template, so developers can write and maintain infrastructure in a language they already know.
 
-## Advantages of Using Terraform and CDK Together
-Using both tools together, we can enjoy the benefits of both worlds. Although Terraform uses HCL, it may not be very convenient for developers. CDK solves this by providing high-level reusable CDK constructs to implement the infrastructure within a few lines. Also, since we use a very familiar programming language, it feels so close to the developers.
+Here's how they compare side by side:
 
-On the other hand, CDK uses CloudFormation behind the scenes, which is usually slower than Terraform. However, when we use CDK and Terraform together, we can make much faster cloud deployments since we use Terraform to perform the deployments.
+| | Terraform (HCL) | AWS CDK |
+|---|---|---|
+| Authoring language | HCL, a domain-specific language | TypeScript, Python, Java, C#, Go |
+| Deployment engine | Terraform | CloudFormation |
+| Cloud coverage | Multi-cloud via providers | AWS-focused |
+| Abstraction | Modules | Reusable, high-level constructs |
+| Typical deployment speed on AWS | Faster | Slower |
 
-> We can achieve this through the use of [CDK for Terraform](https://developer.hashicorp.com/terraform/cdktf), which is introduced as Cloud Development Kit for Terraform (CDKTF), allowing us to utilise familiar programming languages to define and provision infrastructure.
+## The case for combining them
 
-## Project Setup
-Let’s set up a Terraform project with CDK using Typescript as the language. We need to set up a few prerequisites for using CDK for Terraform.
+The weaknesses of each tool are mostly the other tool's strengths:
+
+- HCL works, but many developers find it less comfortable than a programming language they use every day. CDK gives you that language, plus reusable constructs that keep infrastructure code short.
+- CDK's reliance on CloudFormation makes deployments slower. If Terraform does the deployment instead, you keep the developer experience and get Terraform's speed.
+
+The bridge between them is [CDK for Terraform](https://developer.hashicorp.com/terraform/cdktf) (CDKTF). You write constructs in a familiar language, CDKTF synthesises them into Terraform configuration, and Terraform provisions the resources.
+
+## Building a hello-world API with CDKTF
+
+Our target is a minimal REST API: one `GET /hello` endpoint on API Gateway, backed by a Lambda function that returns a hello-world response.
+
+### Prerequisites
+
+Before you start, install:
 
 - [Terraform CLI](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 - [NodeJS](https://nodejs.org/en)
 - [TypeScript](https://www.typescriptlang.org/)
 - [CDKTF CLI](https://developer.hashicorp.com/terraform/tutorials/cdktf/cdktf-install)
 
-Once the setup is complete, we can initiate a project. First, let’s create a folder to set up the initial code.
+### Scaffolding the project
 
-![Creating the project folder](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/30cwddrxv9ix2b0m6iks.png)
+Start with an empty directory for the code:
 
-Then we can initiate a project with below CLI command. Here we are going to use TypeScript.
+![Terminal commands that create and enter a new project directory](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/30cwddrxv9ix2b0m6iks.png)
 
-![Initializing the project](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/8uxk1g1zxa5nxlc0q60i.png)
+Then initialise a CDKTF project in it, choosing TypeScript as the language:
 
-Once the project is initialized, we can update the main.ts file to define the infrastructure we need. Within the main.ts file, it has created a CDK app as well as a Stack. We can update the resources within the stack as needed to deploy. Let’s build a simple hello world REST API using API Gateway and a Lambda function.
+![Running the CDKTF init command with the TypeScript template](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/8uxk1g1zxa5nxlc0q60i.png)
 
-## Creating a REST API
-Before adding any AWS resources, let’s configure the AWS provider in Terraform since we will use AWS as the cloud provider. Further, we can use a S3 bucket to store the Terraform backend and track the deployment states.
+The generated `main.ts` already contains a CDKTF app and a single stack. Everything we build goes inside that stack.
 
-We can simply configure this by adding the necessary CDK constructs (AwsProvider, S3Backend) with the required parameters like below.
+### Provider and remote state
 
-![Configuring AWS provider with a S3 backend](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/doykj03sg8vcytzj1xoq.png)
+Since AWS is our target, the first thing to set up is the Terraform AWS provider. I also want Terraform's state stored remotely in an S3 bucket rather than on my laptop, so deployments can be tracked reliably. Both are just constructs (`AwsProvider` and `S3Backend`) in the stack:
 
-Here, we have configured the AWS provider by providing the AWS account ID we need to deploy with the region. Similarly, we have configured the S3 backend by providing the bucket name and other configurations.
+![TypeScript code configuring the AwsProvider with account and region, and an S3Backend for Terraform state](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/doykj03sg8vcytzj1xoq.png)
 
-Now, let’s create an IAM role as the execution role for the Lambda function, including the permissions for a basic lambda execution role.
+The provider gets the target region and the AWS account ID to deploy into. The backend gets the bucket name and the related state settings.
 
-![Creating an IAM role for the Lambda function](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/gdfg5jk1w5od0cd10l0o.png)
+### Lambda execution role
 
-Now, it’s time to create the Lambda function. Let’s add the below code for the Lambda function code inside index.ts file within the src folder. Since we are building a simple hello-world application, the Lambda function is returning a simple hello-world response.
+The function needs an IAM role it can assume, with the permissions of the basic Lambda execution role attached:
 
-![Lambda function handler implementation](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/wt1ywygtlkcptujhy5cb.png)
+![TypeScript code defining an IAM role for Lambda with the basic execution policy attached](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/gdfg5jk1w5od0cd10l0o.png)
 
-Once we have added the Lambda function handler implementation, we can add the CDK implementation to refer to that and create the Lambda function resource.
+### The function itself
 
-![Creating the Lambda function resource](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/fedzswjgoy0dn5qog55m.png)
+The handler lives in `src/index.ts`. Since this is a hello-world app, all it does is return a fixed greeting:
 
-The above definition will create a S3 bucket to hold the function code and create the Lambda function. The role we defined earlier is also provided as the execution role for the function.
+![Lambda handler in src/index.ts returning a hello-world response](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/wt1ywygtlkcptujhy5cb.png)
 
-Once the Lambda function is ready, we can now create the API Gateway REST API and integrate the Lambda function with it.
+Next, we tell the stack about that code and create the Lambda resource:
 
-![Creating the API Gateway REST API](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/qxlwb1bz526kuugzyn1x.png)
+![CDKTF code that packages the handler, uploads it to S3 and creates the Lambda function with the IAM role](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/fedzswjgoy0dn5qog55m.png)
 
-Here, we are defining the constructs for the API Gateway, a resource for the `/hello` path and the `GET` method under that for the `/hello` `GET` endpoint. Finally, we have integrated it with the lambda function we created earlier as a proxy integration.
+This creates an S3 bucket for the function's code package, uploads the code and creates the function, using the role from the previous step as its execution role.
 
-Since things are integrated correctly, we can create a stage in the API Gateway and create a deployment like the one below.
+### Wiring up API Gateway
 
-![API Gateway stage and deployment](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/9pu5d4gvgyh62hbfuca6.png)
+With the function in place, we can expose it through an API Gateway REST API:
 
-We have provided the stage name and API we want to create in the configurations.
+![CDKTF code creating the REST API, the /hello resource, the GET method and a Lambda proxy integration](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/qxlwb1bz526kuugzyn1x.png)
 
-Now, we have created all the resources we need. But there is one more thing we need to do. We need to ensure that the API Gateway service can invoke the provided lambda function. To do that, we must create and attach a resource-based policy to allow that action within the Lambda function. We can do it like below easily using the `LambdaPermission` construct.
+There are four pieces here: the REST API itself, a `/hello` resource, a `GET` method on that resource, and a proxy integration that sends requests to our Lambda function.
 
-![Granting permissions to allow lambda invocation from API Gateway](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/pnbl4gdfld9a3uyfj9mx.png)
+An API isn't reachable until it has been deployed to a stage, so we add a deployment and a stage, giving the stage a name and linking it to the API:
 
-This construct will add the required permissions to the Lambda function to be invoked by the API we created earlier. With this, we are complete with the implementation.
+![CDKTF code creating an API Gateway deployment and a named stage](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/9pu5d4gvgyh62hbfuca6.png)
 
-***The full implementation of this project can be found on this [GitHub repository](https://github.com/sidathasiri/cdk-terraform).***
+### Allowing API Gateway to call Lambda
 
-Now everything is ready to deploy. Ensure you have configured your AWS credentials correctly so the Terraform can access AWS to provision the infrastructure. We can first build the code and then deploy it using the command below.
+It's easy to forget this last step. Even with the integration defined, API Gateway can't invoke the function until the function's resource-based policy allows it. The `LambdaPermission` construct adds that permission for our API:
 
-![Building the code and deploying to AWS](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/x8e5jn5keqohjirj71w8.png)
+![LambdaPermission construct that lets the API Gateway API invoke the Lambda function](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/pnbl4gdfld9a3uyfj9mx.png)
 
-Once the above command is executed, CDK for Terraform will install if there are any missing packages and start the deployment. After the deployment is complete, you can verify the created resources and play with the API.
+That completes the infrastructure code.
 
-![Testing the deployed API](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/fmydxln4kqkll9wkkplz.png)
+***You can browse the complete project in this [GitHub repository](https://github.com/sidathasiri/cdk-terraform).***
 
-Moreover, we can discern that Terraform is executing the deployment significantly faster than CloudFormation, which is incredibly advantageous.
+### Deploying and testing
 
-To delete the resources you created, you can run the cdktf destroy command. This will ensure that all the resources created by the project are properly cleaned up.
+Check that your AWS credentials are configured so Terraform can reach your account. Then build the project and deploy it:
 
-## Conclusion
-Using AWS CDK with Terraform offers several notable benefits for managing cloud infrastructure. CDK’s deep integration with AWS and support for familiar programming languages like TypeScript make defining AWS resources intuitive and maintainable. Terraform’s cloud-agnostic capabilities complement CDK by allowing for seamless management across multiple cloud providers. This combination provides flexibility, ease of use, and modularity, enhancing the overall infrastructure management workflow. By leveraging both tools, you can streamline deployments, improve efficiency, and achieve a more robust and versatile infrastructure management solution.
+![Terminal commands that build the TypeScript project and run the CDKTF deploy](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/x8e5jn5keqohjirj71w8.png)
+
+CDKTF installs any missing packages, synthesises the Terraform configuration and runs the deployment. When it finishes, call the endpoint to confirm everything works:
+
+![Calling the deployed /hello endpoint and receiving the hello-world response](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/fmydxln4kqkll9wkkplz.png)
+
+One thing you'll notice straight away is how fast the deployment is compared with pushing a similar stack through CloudFormation. That speed makes a real difference when you iterate many times a day.
+
+When you're done, `cdktf destroy` removes every resource the project created.
+
+## Gotchas and practical tips
+
+- **The state bucket must exist first.** `S3Backend` stores state in a bucket you name, but it doesn't create that bucket. Create it (ideally with versioning enabled) before your first deploy.
+- **Don't hard-code the account ID.** Keeping the account ID in the provider configuration is a useful safety check, but read it from configuration or environment variables if you deploy to more than one account.
+- **Changing the API needs a new deployment.** API Gateway serves whatever was last *deployed* to a stage. If you add routes later, make sure a new deployment is triggered, or the stage will keep serving the old version.
+- **Watch the `LambdaPermission` source ARN.** If the source ARN doesn't match your API, you'll get a "permission denied" style error from API Gateway even though the integration looks correct.
+- **Constructs aren't interchangeable.** CDKTF uses its own provider bindings (for example, `@cdktf/provider-aws`). Constructs from the AWS CDK's `aws-cdk-lib` can't be used directly, so expect to write some things at a lower level than you would in the AWS CDK.
+
+## Is CDKTF right for you?
+
+**Good fit:** teams that already use Terraform but want to write infrastructure in a real programming language, teams that like the CDK approach but want faster deployments or resources outside AWS, and projects that share TypeScript between application and infrastructure code.
+
+**Think twice:** if your team is happy with plain HCL and modules, CDKTF adds a synthesis step and another toolchain to maintain. If you rely heavily on the AWS CDK's high-level L2/L3 constructs, you'll miss them. And before committing to it long term, check the current support status of CDKTF on HashiCorp's site.
+
+## Key takeaways
+
+Combining CDK-style development with Terraform gives you a strong workflow for cloud infrastructure. You define resources in a language like TypeScript, which keeps the code readable and maintainable, and you get Terraform's cloud-agnostic reach and faster deployments. The result is flexible, modular and convenient for developers, and it makes provisioning infrastructure faster and more dependable day to day.

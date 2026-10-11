@@ -1,147 +1,129 @@
 ---
 layout: post
-title: "Building Intelligent AI Agents with AWS Bedrock"
+title: "How to Build an AI Agent on Amazon Bedrock: A Hands-On Guide"
 date: 2024-12-25
 author: "Sidath Munasinghe"
-keywords: "ai, bedrock, aws, agents, generative ai, sidath, munasinghe"
-description: "Learn how to create smart, scalable AI agents using AWS Bedrock. Discover foundational models, prompt templates, multi-agent systems, guardrails, and more to build your first AI agent in minutes."
+keywords: "amazon bedrock, ai agents, aws, generative ai, lambda, action groups, llm, sidath, munasinghe"
+description: "A practical walkthrough of Amazon Bedrock Agents: models, instructions, action groups and knowledge bases, plus a Lambda-backed appointment booking example."
 URL: "/2024/12/25/Building-Intelligent-AI-Agents-with-AWS-Bedrock/"
 image: "/images/posts/Building-Intelligent-AI-Agents-with-AWS-Bedrock/main-cover-image.png"
 ---
 
-## Introduction
+A plain chat model can only talk. It can explain how to book a doctor's appointment, but it can't look at a calendar, notice a slot is taken or actually make the booking. That gap between *describing* a task and *doing* it is what AI agents fill, and Amazon Bedrock now makes building one a matter of configuration rather than months of plumbing.
 
-Generative AI is revolutionizing industries by streamlining processes, enhancing user interactions, and boosting overall efficiency. Among its most impactful applications is the development of AI agents — intelligent systems capable of autonomously handling tasks based on user input or predefined rules. These agents are now pivotal in areas like customer service, data processing, and even complex decision-making. Thanks to AWS Bedrock, creating and deploying these AI agents has never been easier or more accessible.
+In this post I'll cover what an agent actually is, the building blocks Bedrock gives you, and then build a small agent that manages medical appointments end to end. I've also added a list of gotchas I'd want to know about before trying this myself.
 
-In this article, we’ll explore the concept of AI agents, discuss why AWS Bedrock is an ideal platform for building them, and provide a step-by-step guide to creating your first AI agent with AWS Bedrock.
+## What do we mean by an "AI agent"?
 
-### Understanding AI Agents
+An agent is software that can take a goal from a user (or from a set of rules), decide what steps are needed, and carry them out with little or no human supervision. It talks to people, uses data to make better decisions, and can get better over time.
 
-AI agents are self-governing systems designed to handle tasks or make decisions independently, without requiring constant human oversight. They can engage with users, adapt by learning from data, and even improve their capabilities over time.
+You've almost certainly used one already. Typical examples include:
 
-Here are some common types of AI agents:
+| Agent type | What it does |
+|---|---|
+| Chatbot | Holds a real-time conversation to help a user |
+| Recommender | Studies behaviour and suggests products or content |
+| Personal assistant | Manages calendars, reminders and similar chores |
+| Automation bot | Takes over repetitive work such as data entry or transaction processing |
 
-- **Chatbots:** These agents simulate human conversations to assist users in real-time.
-- **Recommendation Systems:** AI agents that analyze user behavior to suggest relevant products or content.
-- **Personal Assistants:** Tools that aid users by managing schedules, setting reminders, and more.
-- **Automation Bots:** These agents handle repetitive tasks such as data entry or processing transactions, saving valuable time and resources.
+Agents can also be split by *when* they act. A reactive agent waits for a request and responds to it. A proactive agent looks at patterns and past interactions and anticipates what the user will need next. The one we build below is reactive, and it's powered by a foundation model hosted on Bedrock.
 
-AI agents can function in two ways: they may be reactive, responding to specific user inputs, or proactive, predicting user needs based on observed patterns and past interactions. In this guide, we’ll focus on creating an AI agent using AWS Bedrock, leveraging its robust foundational models to build a powerful and adaptable solution.
+## Why I reach for Bedrock
 
-## Why Use AWS Bedrock for AI Agents?
+_New to Bedrock itself? My earlier [introduction to Amazon Bedrock](https://sidathasiri.github.io/2024/05/01/Generative-AI-on-AWS-with-Amazon-Bedrock/) covers the basics._
 
-AWS Bedrock offers a comprehensive suite of tools and services that make creating, customizing, and deploying AI models straightforward and efficient.
+The short version is that Bedrock removes most of the work that has nothing to do with your agent's actual job. In particular, it gives you:
 
-_Not familiar with AWS Bedrock? Check out my previous post [here](https://sidathasiri.github.io/2024/05/01/Generative-AI-on-AWS-with-Amazon-Bedrock/) for an introduction._
+1. **A catalogue of strong foundation models.** Models from providers such as Anthropic, Cohere and Stability AI are ready to call, so you spend your time on behaviour, not on training.
+2. **No servers to run.** Bedrock is fully managed and serverless, so scaling and capacity planning are AWS's problem. That suits a two-person startup as well as a large enterprise.
+3. **Room to customise.** When an off-the-shelf model isn't specific enough, you can fine-tune it on your own data for domains like support or healthcare.
+4. **Native AWS wiring.** Lambda, S3 and the rest of the AWS ecosystem plug in directly, so the agent can reach your existing databases and applications.
+5. **AWS-grade security and compliance.** IAM, encryption and AWS's compliance programmes all apply, which matters when you're working in regulated industries.
 
-Here are some key benefits of using AWS Bedrock for building AI agents:
+## The building blocks of a Bedrock agent
 
-- **Access to Advanced Foundation Models**:  
-  AWS Bedrock provides pre-trained models from leading AI innovators such as Anthropic, Stability AI, and Cohere. These models act as the core of your AI agents, allowing you to focus on refining their functionality instead of building models from scratch.
+Here's the high-level flow of a Bedrock agent. Because the service is serverless, every box in this picture is something you *configure* rather than deploy and operate yourself.
 
-- **Serverless Infrastructure**:  
-  With AWS Bedrock, infrastructure management is handled for you, enabling businesses to develop AI agents without worrying about scalability or resource allocation. This makes it a great option for organizations of any size.
+![Diagram of the Amazon Bedrock Agents architecture showing the foundation model, instructions, action groups, knowledge bases and prompt templates working together](https://miro.medium.com/v2/resize:fit:720/format:webp/1*mP8ajOSb8Ig_fH-ffvfd9A.png)
 
-- **Customizable AI Models**:  
-  While pre-trained models are readily available, AWS Bedrock lets you fine-tune them using your own datasets. This flexibility ensures that your AI agents are tailored to specific use cases, whether it’s customer service, healthcare, or any other domain.
+### The foundation model: raw intelligence
 
-- **Seamless AWS Integration**:  
-  AWS Bedrock integrates effortlessly with other AWS services like Lambda, S3, and more, allowing you to build a fully connected solution capable of interacting with various applications and databases.
+Everything starts with a large pre-trained model. It's the part that understands language and generates text, and it supplies the reasoning the agent uses to plan its steps. Bedrock lets you choose from Amazon's own models as well as those from Anthropic, Cohere, Hugging Face and others, so you never have to train one yourself.
 
-- **Enhanced Security and Compliance**:  
-  By leveraging AWS Bedrock, you gain the robust security and compliance features inherent to AWS, ensuring your AI agents are secure and meet industry-specific regulatory requirements.
+### Instructions: the job description
 
-With these capabilities, AWS Bedrock provides the perfect platform to develop powerful, scalable, and secure AI agents.
+If the model is the raw intelligence, instructions tell it how to use that intelligence. They're natural-language guidance covering three things: who the agent is ("You are a customer service assistant"), how it should behave ("Be polite and skip the jargon"), and what its answers should look like ("Keep replies short"). Good instructions are the cheapest way to make the agent behave the way your application needs.
 
-## Components of an AI Agent
+### Action groups: hands to do things
 
-An AI Agent consists of several essential components. The diagram below showcases the high-level architecture of how Bedrock agents function. AWS Bedrock streamlines these components, enabling developers to build and deploy AI agents with ease.
+Generating text is only half of what an agent does. Action groups let it *act*, for example by calling an API, querying a database or running a calculation. Think of tasks like fetching a customer's record, sending an email or SMS, or crunching some numbers the user supplied.
 
-Let’s dive into each of these components. Since AWS Bedrock operates on a fully serverless architecture, all you need to do is configure each element to ensure the agent works exactly as needed. This simplicity and flexibility make AWS Bedrock a powerful choice for creating intelligent AI systems.
+In Bedrock you describe these operations either as a Lambda function or as an OpenAPI schema that defines the API to call. This is what lets the agent work with real systems instead of only replying with fixed text.
 
-![Bedrock agents architecture](https://miro.medium.com/v2/resize:fit:720/format:webp/1*mP8ajOSb8Ig_fH-ffvfd9A.png)
+### Knowledge bases: domain memory (optional)
 
-Now, let’s take a closer look at each component to understand its purpose and how it contributes to the functionality of an AI agent.
+A knowledge base gives the agent context it wouldn't otherwise have, such as your product catalogue, internal documents or FAQ pages. With that data connected, the agent can answer organisation-specific questions accurately. You don't have to use one, though. Whether you need it depends on how much proprietary context your use case calls for.
 
-### Foundational Model
+### Prompt templates: the glue
 
-The **foundational model** acts as the “backbone” of your AI agent. These pre-trained, large-scale machine learning models deliver capabilities such as natural language understanding, text generation, and more. AWS Bedrock provides access to a variety of foundational models from top providers like Anthropic, Hugging Face, Cohere, Amazon, and others.
+Under the hood, Bedrock wraps every request in a structured prompt that combines the user's message with your instructions and placeholders. There are four default base templates, one for each stage of the agent's run:
 
-This foundational model supplies the core intelligence for your agent, eliminating the need for you to build and train models from scratch.
+- **Pre-processing:** validating and classifying the incoming input
+- **Orchestration:** deciding which actions to take, and in what order
+- **Knowledge base response generation:** turning retrieved content into an answer
+- **Post-processing:** shaping the final reply
 
-### Instructions
+You can override any of them when you need tighter control over format, quality or behaviour.
 
-**Instructions** serve as the “brain” of the AI agent, guiding the foundational model on how to operate. They define the agent’s behavior, tone, and scope, ensuring it aligns with your application's specific needs. Instructions can include:
+## Walkthrough: an appointment-booking agent
 
-- The agent’s role (e.g., “You are a customer service assistant.”).
-- Behavior and restrictions (e.g., “Respond politely and avoid technical jargon.”).
-- Desired outputs (e.g., “Deliver short, concise answers.”).
+To keep things concrete, we'll build an agent that checks, lists and books medical appointments.
 
-By providing well-crafted instructions, you can ensure that the foundational model performs tasks precisely as required for your use case.
+There's a **Conversational Builder** in the console that asks you questions and generates an agent for you, and it's the quickest route. I'll configure everything by hand instead, because that shows how each piece fits together.
 
-### Action Groups
+### Step 1: Enable an agent-compatible model
 
-Action groups enable the AI agent to perform specific tasks or trigger actions beyond text generation. These could include API calls, database queries, or interactions with other systems.
+Agents only work with certain models. I'm using **Nova Pro** here. Request access to it under **Model Access** on the Bedrock page of the AWS console.
 
-For example:
+![Amazon Bedrock Model Access page in the AWS console, used to request access to the Nova Pro foundation model](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*Tcll6uYOaBScOgT3k59FuA.png)
 
-- Retrieving user details from a database.
-- Sending notifications via an email or messaging API.
-- Performing calculations or processing data inputs.
+### Step 2: Create the agent shell
 
-Action groups allow the AI agent to go beyond static responses and interact dynamically with external systems, making it more functional and capable of solving real-world problems.
+Open the agent builder and enter a **name** and **description**. This is a single, standalone agent, so leave **multi-agent collaboration** switched off.
 
-In Bedrock, you can integrate a lambda function or OpenAPI schema to define the API operations to invoke an API.
+![Create agent form in the Bedrock console with name and description fields and the multi-agent collaboration toggle turned off](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*M29FXcEHkBJPUbG1e5i7cA.png)
 
-### Knowledge bases
+### Step 3: Attach the model and write the instructions
 
-A **knowledge base** equips the AI agent with domain-specific information, enabling it to handle tasks or answer questions that require contextual understanding. With AWS Bedrock, you can integrate custom datasets, such as documents, product catalogs, or FAQs, as the agent’s knowledge base.
+Still in the **agent builder**, pick the **foundation model** and write the agent's instructions. Spend real time on these. Vague instructions are the most common reason an agent goes off-script or gives inaccurate answers.
 
-This component allows the agent to deliver more accurate and relevant responses tailored to your organization or specific use case. However, the use of a knowledge base is optional, depending on the level of customization and context required.
+![Agent builder screen showing the selected foundation model and the instructions text box for the appointment agent](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*dIuAF0tlIepQX9AzOCB3LQ.png)
 
-### Prompt Templates
+### Step 4: Define the action groups
 
-**Prompt templates** offer a structured approach to sending input to the foundational model. They merge user input with predefined instructions or placeholders, ensuring consistent and accurate responses. AWS Bedrock Agents provide four default base prompt templates, which are used during various stages: pre-processing, orchestration, knowledge base response generation, and post-processing.
+Our agent needs three capabilities, and each one gets its own action group backed by a Lambda function:
 
-By customizing these prompt templates, you can further control the quality, format, and behavior of your AI agent, tailoring its outputs to meet your specific needs.
+- checking whether a specific appointment slot is free
+- listing every open slot
+- booking an appointment
 
-## Creating Your First AI Agent
+If you create the action group in the console, Bedrock can generate the Lambda function for you. You then edit its code to add your real logic.
 
-In this section, we’ll walk through the steps to create an AI agent using AWS Bedrock, showcasing just how simple it is to build one. For this demonstration, we’ll create a basic AI Agent that handles medical appointments to illustrate the platform's capabilities.
+![Action group creation form in the Bedrock console with the option to create a new Lambda function automatically](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*mexD6z4A8DmPg_MF6BeZYg.png)
 
-AWS provides several ways to create agents, but the easiest approach is through the **Conversational Builder**, which interacts with you to gather requirements and automatically creates the agent based on your inputs. However, to deepen our understanding, we’ll manually configure the agent in this guide, allowing us to explore the process in more detail.
+Each function also needs its input parameters declared. The **description** you give each parameter matters a lot: the model reads it to work out which part of the user's message maps to which value before calling the function. A clear description makes extraction more accurate.
 
-1. The first step is to request access to a foundational model that is compatible with agents. In this case, we’ll be using the **Nova Pro** model. You can request access to this model through the **Model Access** section in the AWS Bedrock configuration on the AWS Management Console.
+![Parameter definitions for an action group function, listing names, types and descriptions such as date, time, location and provider name](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*dM1f5oCz2PWZbmK3_Itz5g.png)
 
-![Requesting model access](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*Tcll6uYOaBScOgT3k59FuA.png)
+Do the same for the remaining two actions, and you end up with three action groups:
 
-2. Next, we can begin creating the agent using the builder tools. Start by entering the **agent name** and **description**. Since we are focusing on a single agent and not integrating with multiple agents, we will leave the **multi-agent collaboration** option disabled.
+![List of the three configured action groups attached to the appointment agent](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*xKJL37pGCsjHjwdfQSMEdA.png)
 
-![Creating the agent](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*M29FXcEHkBJPUbG1e5i7cA.png)
+### Step 5: Implement the Lambda handlers
 
-3. After that, we can continue configuring the agent through the **agent builder**. Here, you can attach the **foundational model** to the agent and provide detailed instructions. It's crucial that the instructions are clear and precise to ensure the model performs as expected and delivers accurate results.
+Each of the three action groups now has its own Lambda function, and each needs real logic. In production, these would query a database or call a booking API. To keep the demo self-contained, I've stubbed the data.
 
-![Configure agent with agent builder](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*dIuAF0tlIepQX9AzOCB3LQ.png)
-
-4) Next, we can add **action groups** to enhance the agent's capabilities. In this example, we’ll add three Lambda functions to:
-
-- Check if an appointment is available
-- List available appointments
-- Make an appointment
-
-You can create an action group directly in the console, which will automatically generate the associated Lambda functions. Once created, you can update the logic of these functions as needed to suit your specific use case.
-
-![Creating an action group](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*mexD6z4A8DmPg_MF6BeZYg.png)
-
-Additionally, we need to define the required parameters for the Lambda functions. It’s important to provide a clear and meaningful **description** for each parameter so that the AI model can accurately infer the values from the user’s input and invoke the Lambda function accordingly.
-
-![Parameter definition](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*dM1f5oCz2PWZbmK3_Itz5g.png)
-
-We can follow the same method to create all three action groups.
-
-![Created agents](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*xKJL37pGCsjHjwdfQSMEdA.png)
-
-5) After creating the three action groups, there will be three corresponding Lambda functions, each linked to one of the actions. We now need to update the logic of each Lambda function to execute the desired tasks. Below is a sample Lambda handler implementation to check the availability of a given appointment. You can modify this implementation to query a database or call an API to fetch the results. In this example, the function guarantees that appointments will be available except for **December 31, 2024**. As shown, we can access the previously defined parameters from the Lambda event to tailor the logic based on user input.
+**Checking availability.** The parameters we declared earlier arrive in the event as a list, which the handler turns into a dictionary. For the demo, every date is bookable except **31 December 2024**.
 
 ```js
 import json
@@ -161,7 +143,7 @@ def lambda_handler(event, context):
     print(paramDict['time'])
     print(paramDict['providerName'])
 
-    # Execute your business logic here. For more information, refer to: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html
+    # Put your real availability check here. Event/response format: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html
     if(paramDict['date'] == "31/12/2024"):
         print("Unavailable date")
         responseBody =  {
@@ -193,7 +175,7 @@ def lambda_handler(event, context):
     return dummy_function_response
 ```
 
-Similarly, we can implement a Lambda handler to list available appointments by hardcoding a set of available dates. This implementation can be customized to query a database or an external API to retrieve real-time appointment data, depending on your business requirements. Here’s a sample Lambda handler to list appointments:
+**Listing open slots.** This one returns a fixed set of dates. In a real system you'd swap the string for a lookup against your scheduling data.
 
 ```js
 import json
@@ -206,7 +188,7 @@ def lambda_handler(event, context):
 
     print("Looking for all available slots")
 
-    # Execute your business logic here. For more information, refer to: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html
+    # Replace this hardcoded list with a database or API lookup. Event/response format: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html
     responseBody =  {
         "TEXT": {
             "body": "These are the available slots: On 01/01/2025, an appointment is available in Colombo at 9am with Dr. Silva. Another slot is open on 15/01/2025 in Kandy at 11am with Dr. Fernando."
@@ -228,7 +210,7 @@ def lambda_handler(event, context):
     return dummy_function_response
 ```
 
-Finally, we can implement the Lambda function to create the appointment. For this sample implementation, we will include a simple print statement to confirm the behavior. In a production scenario, this function would typically involve database updates or API calls to schedule the appointment. Here’s a sample Lambda handler to create an appointment:
+**Booking the appointment.** For now this just logs what it received and reports success. A real implementation would write to a database or call a scheduling API.
 
 ```js
 import json
@@ -243,7 +225,7 @@ def lambda_handler(event, context):
 
     print("Placed appointment for:", paramDict)
 
-    # Execute your business logic here. For more information, refer to: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html
+    # Persist the booking here (database write or API call). Event/response format: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html
     responseBody =  {
         "TEXT": {
             "body": "Appointment placed successfully"
@@ -265,50 +247,70 @@ def lambda_handler(event, context):
     return dummy_function_response
 ```
 
-To deploy the Lambda functions with the changes we've made, follow these steps:
+All three handlers share the same response envelope: they echo back `actionGroup` and `function`, wrap the text in `functionResponse.responseBody`, and return the incoming `messageVersion`. Bedrock expects exactly that shape.
 
-1. **Deploy Lambda Functions**: First, make sure the Lambda functions for each action (check availability, list appointments, create appointment) are deployed successfully in AWS. You can do this through the AWS Management Console or using the AWS CLI. After deploying the functions, confirm that they are working as expected by testing them with sample inputs.
+### Step 6: Deploy, save and try it out
 
-2. **Update Bedrock Configuration**: Go back to the AWS Bedrock console and make sure all configurations, including the Lambda action groups, are updated. You should review and save the agent’s configuration after attaching the newly deployed Lambda functions. This ensures that the agent can properly call these functions during its operation.
+With the code written, finish the wiring:
 
-3. **Test the Agent**: With everything deployed and configured, it's time to test the agent. Using the agent builder, initiate test runs where you interact with the AI agent, checking if it can:
-    - Check appointment availability,
-    - List available appointments, and
-    - Create appointments based on user input.
+1. **Deploy the functions.** Publish all three Lambdas from the console or with the AWS CLI, then test each one with a sample event to be sure it behaves.
+2. **Save the agent configuration.** Back in Bedrock, confirm each action group points at the right function, then save the agent so it picks up the latest setup.
+3. **Run some test conversations.** Use the test panel in the agent builder to ask about a specific slot, request the list of open slots, and book one.
 
-By this point, the agent should work seamlessly with the deployed Lambda functions. Since we have skipped the knowledge base and prompt templates for simplicity, you can always integrate these in the future to refine the agent’s behavior further. 
+I left out knowledge bases and custom prompt templates to keep this example small. Both are easy to add later. A knowledge base could hold information about services or clinics, and custom templates would give you tighter control over how inputs are structured and how answers are formatted.
 
-Knowledge bases can store domain-specific data (e.g., medical information, available services) to improve the agent’s responses, while prompt templates ensure consistent formatting and structuring of user inputs. These additions are optional but offer further customization for more complex agents.
+## Seeing it in action
 
-## Demo
-The AI agent we created performs effectively by handling incomplete user input and prompting for any missing details to ensure it can proceed with the requested actions. If a user doesn't provide enough information, the agent asks for clarification, ensuring it gathers the necessary data to continue.
+The agent handles incomplete requests well. When I asked for a booking without giving every detail, it asked for the missing pieces and only then called the Lambda function.
 
-In addition, the agent utilizes the logic defined in the Lambda functions, such as informing the user when there are no available appointments on December 31, 2024. It then uses the `ListAppointments` action to suggest available slots, ensuring that the user is always provided with alternative options. Once the user selects a suitable slot, the agent invokes the `CreateAppointment` action to finalize the booking, confirming the appointment with a simple response.
+It also follows the business rules in our functions. When I asked for 31 December 2024, it said the slot was unavailable, called `ListAppointments` on its own to offer alternatives, and, once I picked one, called `CreateAppointment` and confirmed the booking. Nobody scripted that sequence. The model worked it out from the instructions and the action group definitions.
 
-This demonstrates the powerful capabilities of AWS Bedrock, where you can build an intelligent, responsive AI agent that can handle dynamic user interactions and integrate seamlessly with AWS services like Lambda to perform complex tasks.
+![Bedrock agent test console showing a conversation where the agent rejects 31 December, lists alternative slots and confirms a booking](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*KpXdNDcMRlGQq7y51HVXaA.png)
 
-![Demo](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*KpXdNDcMRlGQq7y51HVXaA.png)
-
-Here is a video demo of the AI agent we created in action. In the demo, you can see how the agent responds to user input, handles missing information, and performs tasks like listing available appointments and creating a booking. 
+If you'd like to watch the whole exchange, including the follow-up questions for missing details, here's a recording:
 
 [*Demo Video*](https://drive.google.com/file/d/1zRQL1sY1j1SVlVcFLOEjbcEiYdf3UR4v/view?usp=sharing&source=post_page-----a638cc12fa1d--------------------------------)
 
-Additionally, by examining the CloudWatch logs, we can confirm that all the parameters entered by the user are captured correctly. This shows that the agent is successfully processing the inputs and interacting with the Lambda functions as intended, providing accurate and dynamic responses. This highlights the seamless integration of AWS Bedrock with AWS Lambda, ensuring smooth operation and data handling for your AI agents.
+The CloudWatch logs for the Lambdas back this up. Every value the user gave (date, time, location, provider) arrives in the event correctly, which confirms that Bedrock is extracting the parameters and passing them to Lambda as intended.
 
-## Advanced Features
-Once you've built a basic AI agent, AWS Bedrock provides a set of advanced features designed to enhance your AI agents, enabling greater flexibility, scalability, and reliability for real-world applications.
+## Gotchas worth knowing before you start
 
-- **Custom Fine-Tuning for Domain-Specific Tasks**: AWS Bedrock gives you the ability to fine-tune foundational models for specific industries by incorporating domain-specific datasets. Whether it's for legal, healthcare, or e-commerce applications, you can adjust the agent's behavior to perform highly specialized tasks with greater accuracy and relevance.
+These aren't in the console walkthrough, but they'll save you some head-scratching:
 
-- **Multi-Agent Systems**: AWS Bedrock also supports the development of multi-agent systems, allowing multiple agents to collaborate on more complex tasks. Each agent can focus on a particular function, and through data and context exchange, they work together to provide enhanced solutions and capabilities.
+- **Re-prepare after every change.** Edits to instructions or action groups only take effect once the agent is *prepared* again, and the console's test window uses the draft version. For real traffic, create an **alias** that points to a stable version.
+- **Lambda permissions.** Bedrock needs a resource-based policy on each function that allows it to invoke the Lambda. The console adds this when it creates the function for you. If you bring your own function, you have to add it yourself.
+- **Parameters arrive as strings.** Values in `parameters` are strings, so the date check above is a plain string comparison against `"31/12/2024"`. If the model sends `2024-12-31` instead, the check won't match. Say which date format you expect in the parameter description and validate it in code.
+- **Keep the response envelope exact.** If `messageVersion`, `actionGroup` or `function` is missing or wrong, the agent run fails, even when your business logic worked.
+- **Watch for missing keys.** The availability handler reads `paramDict['location']` and the other parameters directly. Mark the parameters as required, or use `.get()`, so a parameter the model left out doesn't raise a `KeyError`.
+- **Write descriptions for the model.** Names and descriptions of action groups and parameters are what the model uses to decide what to call. Treat them as part of your prompt.
 
-- **Guardrails for Safe and Responsible AI**: In order to ensure that your AI agents operate ethically and responsibly, AWS Bedrock lets you implement guardrails. These can filter, block, or monitor specific actions, ensuring that the agents remain aligned with business objectives and ethical standards. This feature helps maintain the trustworthiness and safety of your AI-powered applications.
+## Going further
 
-- **Integration with other AWS services**: AWS Bedrock seamlessly integrates with a wide range of AWS services, allowing you to create more comprehensive solutions. You can, for example, leverage AWS Step Functions to incorporate AI capabilities into more complex workflows, expanding the use cases for your AI agents across different business processes.
+After the basic agent works, Bedrock has a few more capabilities that help in production:
 
-## Conclusion
-AI agents powered by AWS Bedrock present vast opportunities for businesses to integrate intelligent automation, enhance user experiences, and drive innovation. By utilizing foundational models, dynamic knowledge bases, guardrails, and multi-agent systems, you can build scalable, secure, and highly adaptable solutions.
+- **Fine-tuning for your domain.** Train a base model on your own legal, healthcare or e-commerce data so it handles specialised tasks with more accuracy.
+- **Multi-agent collaboration.** Split a large problem across several specialised agents that share data and context and work toward one result.
+- **Guardrails.** Filter, block or monitor content and behaviour so the agent stays within your ethical and business boundaries, which is key to keeping users' trust.
+- **Orchestration with other services.** Combine agents with services such as AWS Step Functions to add AI steps to larger business workflows.
 
-AWS Bedrock's robust capabilities make it accessible to teams of all sizes, enabling the development of sophisticated AI solutions without requiring extensive machine-learning expertise. Whether you're automating workflows, developing interactive customer support systems, or analyzing complex data, Bedrock provides the tools and flexibility necessary for success.
+## When an agent is (and isn't) the right tool
 
-As AI continues to advance, adopting these technologies ensures your business stays competitive and prepared for the future. Begin exploring AWS Bedrock today to unlock the full potential of AI agents and accelerate your path to smarter, automated solutions.
+| Good fit | Probably overkill |
+|---|---|
+| Users phrase requests in many different ways | Input is already structured, so a form or API will do |
+| A task needs several steps or tool calls chosen at runtime | A single, fixed sequence of calls every time |
+| Some ambiguity is acceptable and follow-up questions are fine | Results must be fully deterministic and auditable step by step |
+| Answers depend on private documents (add a knowledge base) | A single prompt-and-response with no tools covers the need |
+
+## Key takeaways
+
+- A Bedrock agent is mostly *configuration*: a model, instructions, action groups and optionally knowledge bases and custom prompt templates.
+- Action groups are what turn a chatbot into an agent. Lambda functions with well-described parameters are the simplest way to start.
+- The model handles conversation flow for you, including asking follow-up questions and chaining actions, as long as your instructions and descriptions are clear.
+- Before going to production, plan for aliases, validation of string parameters, IAM permissions and guardrails.
+
+## Wrapping up
+
+Agents on Bedrock give teams a practical route to intelligent automation and better user experiences. Foundation models, knowledge bases, guardrails and multi-agent collaboration are all available without running any infrastructure, and you don't need a background in machine learning to put them together.
+
+Whether you want to automate an internal workflow, build a customer support assistant or make sense of complex data, the building blocks are already there. AI is moving quickly, and getting familiar with these tools now is a good way to stay ahead. Pick a small use case like the appointment example above, build it and grow it from there.

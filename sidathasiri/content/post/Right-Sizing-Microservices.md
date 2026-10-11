@@ -1,120 +1,144 @@
 ---
 layout: post
-title: "Leveraging Integrators and Disintegrators for Right-Sizing Microservices"
+title: "How Big Should a Microservice Be? Using Disintegrators and Integrators to Decide"
 date: 2025-01-19
 author: "Sidath Munasinghe"
-keywords: "microservices, software architecture, design, sidath, munasinghe"
-description: "Discover the art of right-sizing microservices in this comprehensive guide. Learn how to balance disintegration and integration drivers, avoid common pitfalls, and design scalable, maintainable architectures with practical examples and insights.."
+keywords: "microservices, service granularity, software architecture, distributed systems, design, sidath, munasinghe"
+description: "Too big and it's a monolith, too small and it's a distributed mess. Learn how disintegrators and integrators help you choose the right microservice size."
 URL: "/2025/01/19/Right-Sizing-Microservices/"
 image: "/images/posts/Right-Sizing Microservices/main-cover-image.png"
 ---
 
-## Introduction
+"How big should this service be?" is one of the hardest questions in a microservices project, and one of the most expensive to get wrong. Teams adopt microservices for independent scaling, flexibility and faster delivery. Draw the boundaries badly, though, and you end up with the opposite: services nobody can reason about, extra moving parts, and operational overhead that keeps growing. Over time that shows up as rising cloud bills, maintenance that drains the team, and an architecture that looks more like a knot than a design.
 
-Microservices have become the go-to approach for building modern software systems because of their promise of scalability, flexibility, and faster development. But behind the hype lies a critical truth: microservices can create more problems than they solve if not planned and sized correctly. Badly designed microservices will lead to confusion, unnecessary complexity, extra overheads, which in turn make your system harder to manage over time. The result? Such are long-term problems: sky-rocketing costs, maintenance headaches, and a system that feels more like a tangled web rather than a streamlined solution.
+In this post I look at service granularity through two sets of forces: **disintegrators**, which push you to split a service, and **integrators**, which pull you to keep things together. Weighing them against each other is a practical way to arrive at services that scale, stay efficient and remain maintainable for years. That holds whether you're designing your first microservices system or untangling an existing one.
 
-In this blog, we look into rightsizing microservices and how integrators and disintegrators will be able to help you create an architecture that is not only scalable and efficient but also sustainable. Whether starting off with microservices or improving an existing setup, this article gives you insights on how to avoid common pitfalls and get it right the first time. Let's build smarter, not harder!
+## Why Size Matters in Both Directions
 
-## Importance of Correct Sizing
+![Illustration of microservice sizing: services that are too large on one side, services that are too small on the other](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*7AGPw_GBCp_YvuVUUWeDMg.jpeg)
 
-![Image description](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*7AGPw_GBCp_YvuVUUWeDMg.jpeg)
+Sizing can go wrong in two directions, and each fails differently.
 
-It pays to get the size of your microservices right, since either extreme can cause serious problems: a service that is too large or too small. When services are too big, they start to resemble monoliths, defeating many of the reasons for moving to a microservices architecture. Large services are harder to scale independently, making them less efficient in handling varying workloads. They cause deployment bottlenecks, too-as even the tiniest change may involve redeployment of the whole service. This will imply slower development cycles, more downtime, and loss of that very flexibility microservices are supposed to confer.
+| | Too large | Too small |
+|---|---|---|
+| What it looks like | A monolith in disguise | A swarm of chatty, tiny services |
+| Scaling | Must scale everything together, even when only one part is busy | Scales finely, but every request crosses many network hops |
+| Deployment | A one-line change means redeploying the whole service | Many pipelines and versions to coordinate |
+| Typical pain | Slow release cycles, more downtime, lost agility | Latency, distributed transactions, hard-to-guarantee consistency |
 
-On the other hand, too small microservices result in a system that is overly fragmented and complex. This often increases the communication overhead between services, introducing latency, possible performance bottlenecks, and difficulties in management. It could also force teams to deal with complex distributed scenarios, such as managing distributed transactions across many services. These scenarios result in significant overhead for development and operations; guaranteeing consistency and reliability will not be trivial. The balance is important to avoid these pitfalls in order to ensure a system that is not only scalable but also maintainable and efficient.
+An oversized service brings back the problems you moved to microservices to escape. An undersized one swaps them for distributed-systems problems, which are usually harder. The goal is the middle ground, where each service can scale and deploy independently without every operation turning into a network conversation.
 
-## Service Disintegrators
-![Image description](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*519JR2SjMiP19kD3tl2eDw.jpeg)
-Breaking down a service into pieces is a crucial decision in microservices architecture; it's not a decision to be taken lightly. Service disintegration should be guided by clear principles and justified by the concrete needs of your system.
+## Forces That Push Toward Splitting (Disintegrators)
 
-In this section, we'll discuss six key drivers that will help in determining when and why you need to split a service. The following drivers would set a systematic frame in which disintegration could be done to identify if it serves scalability, maintainability, and performance goals of the architecture. With knowledge of these factors, one will be informed while making a trade-off decision on flexibility and simplicity in order to avoid over-fragmentation pitfalls.
+![Illustration of a single service being broken apart into smaller services](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*519JR2SjMiP19kD3tl2eDw.jpeg)
 
-### Service Scope and Function
-Probably the most common reasons for breaking down a service into smaller pieces are scope and functionality. To this end, central is consideration of the cohesion of the service-how well its various responsibilities are related to one another. A service with high cohesion is related to one single, well-defined purpose, because it makes maintenance easier and the service more understandable. On the other hand, low cohesion suggests that a service is doing unrelated tasks-a factor that contributes to chaos and confusion, making updates or troubleshooting quite difficult. Size is another important factor in making decisions to split a service. While a service continues to grow, testing its deployability and scaling becomes more difficult.
+Splitting a service is a lasting decision, so it should rest on a concrete reason and not just a feeling that smaller is better. The six drivers below give you a structured way to ask "should this be split?" and to check whether a split would actually improve scalability, maintainability or performance, rather than just fragmenting the system.
 
-For example, let's consider a **"User Management"** service, which is concerned with user registration, authentication, profile updates, and permissions. While these activities are related to each other, they also have distinct purposes. Looking from the perspective of cohesion, we can find that authentication is narrower-it just has to do with the identity of users-whereas profile updates include personal information about the users, and permissions involve the controls on access. So, splitting authentication into its own service keeps the responsibilities clear and cohesion high.
+### 1. Cohesion and scope
 
-Sizing services in this manner would also allow them to keep under control their size. For example, the **"Authentication"** service, in this case, can now be independently scaled for any spikes in login without affecting profile or permissions functionality. That way, services would remain focused, manageable, and conformed to principles of scalable microservices architecture.
+This is the most common reason to split. Look at **cohesion**: how closely related are the things this service does? A highly cohesive service has a single, clear purpose, which makes it easy to understand and change. A service with low cohesion ends up as a grab bag of unrelated jobs, and every fix or feature means wading through code that has nothing to do with it. Raw size matters too. As a service grows, testing, deploying and scaling it all get harder.
 
-### Code Volatility
-Another key determinant may be the aspect of code volatility, that is, the frequency or rate at which the source codes are changed. Many services or components facing high volatility require frequent updates on account of new feature additions, bug fixing, and responding to certain business needs. Maintaining them as separate services ensures minimum risk while providing more maintainability.
+Take a **"User Management"** service that handles registration, authentication, profile updates and permissions. These are related, but they aren't the same thing. Authentication is narrowly about proving identity. Profiles are about personal data. Permissions are about access control. Moving authentication into its own service gives each part a tighter purpose, and it also means the new **"Authentication"** service can scale out during a login surge without touching profiles or permissions.
 
-Consider a service like **"Reporting"** that would normally produce standard reports but also contains a piece responsible for custom reports. If, for example, the logic of custom reporting often changes due to new requirements by clients, then it will be reasonable to extract it into a separate service. In such a case, it is possible to update the volatile component and independently deploy it without disturbing the stable parts of the system.
+### 2. Code volatility
 
-The advantages of such separation aren't small. Independently deployable services mean faster updates without affecting other functionalities. Testing efforts are also confined since the scope is constrained to the particular service. Moreover, the blast radius of a failure can be contained, ensuring that issues in one service cannot bring down the whole system. Controlling code volatility with independent services leads to resilient and flexible architecture.
+Some parts of a codebase change constantly as new features, bug fixes and shifting business rules come in, while others hardly change at all. When a volatile area sits inside an otherwise stable service, every change to it puts the stable parts at risk.
 
-### Scalability and Throughput
-This separation would greatly help any service that sees extreme highs and lows in terms of scalability. Some services can easily require more resources from one part versus another, so the ability to scale different components independently is crucial.
+Picture a **"Reporting"** service that produces a fixed set of standard reports and also supports custom reports. If clients keep asking for changes to custom reporting, pulling it out into its own service lets you change and ship it as often as needed while the standard reports stay untouched. The benefits add up: deployments are independent, testing covers only what changed, and a bad release has a smaller blast radius because it can't take the whole reporting capability down with it.
 
-Consider, for example, a **"Notification"** service that sends both SMS and Email notifications. Typically, the volume of SMS notifications is very high for services at peak usage, such as promotional campaigns or transactional alerts. You can scale the SMS service to cater to the high traffic by separating SMS and email functionalities into different services while keeping the infrastructure of the email service minimal and cost-effective.
+### 3. Scalability and throughput
 
-This provides a number of advantages. First, only those components with greater demand, like SMS, need to scale; therefore, unnecessary infrastructure provisioning for the less demanding email service is avoided. Scaling in this manner provides a great performance but also keeps costs down by making your architecture leaner. You will have a responsive, reliable system that does not overload your infrastructure because you managed scalability and throughput by separating services.
+When parts of a service see very different load, bundling them means you have to provision for the busiest part everywhere.
 
-### Fault Tolerance
-Fault tolerance is a critical factor in your system's reliability, ensuring that an application or some kind of functionality can keep working while a fatal crash occurs. The separation of services according to their fault tolerance requirements facilitates the failover of any failures, which cannot cascade through the whole system in turn.
+A **"Notification"** service that sends both SMS and email is a good example. During promotions or bursts of transactional alerts, SMS volume can jump far above email volume. With SMS and email as separate services, you scale SMS to meet the spike and keep email on small, cheap infrastructure. You get good performance where it's needed without paying for idle capacity elsewhere, so the system stays responsive and lean.
 
-For example, consider a **"Food Delivery"** platform that has one service responsible for placing orders and another one for real-time delivery tracking. If these are tightly coupled, and the latter fails-say, because a third-party API is down or just experiencing very high traffic-it might take the former order placement functionality down with it. If they are split into independent services, even when the delivery tracking service goes down, users can still place orders.
+### 4. Fault tolerance
 
-It also separates the failure of non-critical components from critical operations, such as placing orders. Such isolation of failures allows the system to remain partially operational, reduces downtime for key features, and enhances user experience by minimizing the impact of outages.
+A service boundary is also a failure boundary. Separating components by how critical they are means a fault in one doesn't spread to the others.
 
-### Security
-Security is another important aspect when it comes to designing microservices. Components with higher security requirements can be separated into independent services, thus implementing special security measures without affecting other parts of the system.
+On a **"Food Delivery"** platform, order placement and live delivery tracking might share a service. If tracking fails, perhaps because a third-party maps API is down or overloaded, it can take ordering down with it. Split them, and a tracking outage leaves ordering working. Customers can still pay and place orders while the non-critical feature recovers. That kind of partial availability shortens outages for the features that matter most and softens the impact on users.
 
-For instance, within an **"E-Commerce"** system, payment processing requires higher security access than simple catalog browsing. You can deploy the payment service independently with higher security features such as encryption, tokenization, and more stringent access control, while the catalog browsing service can be deployed with standard security for better performance in safety.
+### 5. Security
 
-The idea is to segregate sensitive operations with the highest security without overburdening the less critical parts. This would make it easier, for example, to follow other regulatory standards like PCI DSS on the overall system to make it highly secure and manage it more effectively. By isolating high-security components, further protection of user data can be attained and vulnerabilities within the architecture minimized.
+Components that need much stricter protection are good candidates for their own service, so you can harden them without slowing everything else down.
 
-### Extensibility
-Extensibility is about the ability of a service to add new functionality as its context or business needs evolve. A well-structured microservice allows for the introduction of new features or updating existing ones without overhauling the entire system or causing disruptions.
+In an **"E-Commerce"** system, payment processing and catalog browsing have very different security needs. A separate payment service can have encryption, tokenization and strict access controls, while the catalog runs with standard controls and stays fast. Isolating the sensitive part also shrinks the scope of compliance work such as PCI DSS, makes user data easier to protect, and reduces the attack surface across the architecture.
 
-For instance, consider a **"Payment"** service that covers various payment methods such as credit cards, PayPal, and bank transfers. The new payment options to be introduced while the business grows are cryptocurrency, mobile wallets, or buy-now-pay-later services. You can extend its functionality without rewriting the whole payment service by composing separate components for every payment method. You will have the advantage of adding a new payment option without affecting existing ones, hence the service will be flexible and scalable.
+### 6. Extensibility
 
-You can also set up the service this way so that it will not be one huge, monolithic component. This is so that adding new methods of payments causes minimal disruption and without constant re-deployments. Extensibility ensures that the system can grow as business needs change, keeping your architecture adaptable and efficient.
+Some services keep growing new variations as the business changes. If each new variation means editing the core of a large service, every addition is risky and needs a full redeploy.
 
-## Service Integrators
-![Image description](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*pZfWy9D-utKbBo5BB4EFKw.jpeg)
+Consider a **"Payment"** service that supports credit cards, PayPal and bank transfers today, with cryptocurrency, mobile wallets and buy-now-pay-later options likely to follow. If each payment method is its own component, adding one doesn't mean rewriting or redeploying the others. The service stays modular, new methods arrive with little disruption, and the architecture can keep up with business demand.
 
-While it is often good to break services into smaller, more manageable pieces, there are certainly times when integrating services makes far more sense than separating them. In this section we'll give guidance and justification on when services should be kept together, or when it may not make as much sense to break a service apart in the first place. Sometimes, this splits a service too early and unnecessarily introduces complexity or overhead that can hurt scaling or even evolution over the long run.
+## Forces That Pull Toward Staying Together (Integrators)
 
-We explore in detail four essential aspects that could help determine whether service integration may be appropriate to carry out a certain task, using factors such as operational complexity, communication overhead, data consistency, and future scalability.
+![Illustration of separate services being combined into one service](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*pZfWy9D-utKbBo5BB4EFKw.jpeg)
 
-### Database Transactions
-Database transactions are essential to maintaining data integrity when multiple operations need to succeed or fail as a single unit of work. Keeping related functionalities within the same service can simplify this process, avoiding the complexity and challenges of distributed transactions when multiple services are involved.
+Splitting isn't always the right call. Sometimes the better design is to keep functionality together, or not to split it in the first place. Breaking a service apart too early adds operational complexity and communication overhead that can hurt scalability and make the system harder to evolve. The four integrators below are the counterweight, and they focus on transactions, workflows, shared code and data relationships.
 
-Consider a service such as **"User Registration"**, which should provide the functionality of user account creation with a set of default permissions. If this is split into, say, separate services, one for account creation and one for permission management, this would require a distributed transaction to ensure that permissions are only assigned if the account was created. Distributed transactions are notoriously difficult to implement and usually involve advanced coordination mechanisms, making the risk of failure greater.
+### 1. Database transactions
 
-By integrating these functionalities into one service, you can manage all database operations in a single transaction: either the user account with its permissions will be created successfully or rolled back if something goes wrong. It would keep your data consistent and make the whole system easier.
+When several operations must succeed or fail together, one service with one database can wrap them in a single local transaction. Spread them across services and you need a distributed transaction, which is hard to build, needs careful coordination, and has many more ways to fail.
 
-### Workflow and Choreography
-In the microservices architecture, most of the workflows are distributed across a set of services by using interservice communication. While this allows flexibility and modularity, excessive communication may lead to performance bottlenecks, increased latency, and reduced fault tolerance.
+Take **"User Registration"**, where creating an account also assigns a set of default permissions. If account creation and permission management live in separate services, you need cross-service coordination to make sure permissions are only granted when the account was actually created. Inside one service it's a single atomic unit: both are written, or both are rolled back. Data stays consistent and the design stays simple.
 
-Take, for instance, an order in a **"Food Delivery"** application. The services involved may have to talk to the order service, the payment service, the restaurant service, and the delivery assignment service. If these services are too decoupled, placing such an order could involve several network calls, increasing the chances of delays or failures. For example, if one single service-the delivery assignment service-goes down, it may block the whole workflow of the order process, and users will not be able to complete their transaction.
+### 2. Workflow and choreography
 
-This will help the services that are tightly coupled in their workflow-for example, order and delivery assignment services-simplify communication, reduce latency, and improve fault tolerance. This means that even in cases of high workload or partial failures, the system is guaranteed to stay responsive and reliable.
+Microservices often have to cooperate to complete a business process. That cooperation is flexible, but each extra hop adds latency and another place where things can break.
 
-### Shared Code
+Placing an order in a **"Food Delivery"** app might involve the order, payment, restaurant and delivery assignment services. If they are too finely split, one order turns into a chain of network calls, and an outage in any link, say delivery assignment, can block the whole flow and stop customers from checking out. When two services are this tightly linked in a workflow, as order handling and delivery assignment are here, merging them cuts the chatter, lowers latency and keeps the process working under heavy load or partial failure.
 
-Shared code in microservices, usually maintained through shared libraries, is often considered one way of simplifying development and maintaining consistency. It may introduce some problems with service sizing and independence, though. Changing a shared library requires all the depending services to align with those changes, which disrupts their deployment cycles and introduces dependencies acting against the autonomy of microservices.
+### 3. Shared code
 
-A **"Customer Management"** system can include a number of services-a profile service, loyalty program service, notification service-all using one common library with the logic related to customers' validation. Such a library should then be updated to implement new rules and such a couple of services will need to realize that update; and not having this done for even a single of those might cause a problem-the consistency of rules would be violated within different components that operate or interact with customers' data.
+Shared libraries look like an easy way to stay consistent, but they create coupling. When the library changes, every service that depends on it has to upgrade and redeploy, so release schedules become linked and service autonomy suffers.
 
-In designing services, one should consider whether the code sharing is appropriate for the level of autonomy desired. Where services are highly independent and have separate lifecycles, it may be preferable to duplicate some logic or use service-specific libraries to avoid coupling and preserve flexibility in deployment and scaling.
+Imagine a **"Customer Management"** domain with profile, loyalty and notification services that all depend on one library of customer validation rules. When the rules change, every one of those services has to pick up the new version. Miss one, and different parts of the system apply different rules to the same customer data. If the services really need to stay in lockstep, that's a sign they may belong together. If they really are independent with separate lifecycles, it's often better to duplicate a little logic or keep service-specific libraries than to accept the coupling.
 
-### Data Relationships
-While good practice in a microservices architecture involves each service having its own database, it brings independence with complicated data relationships. If related data resides in more than one service, it might be difficult to maintain relationships between them. This can bring problems with data integrity and more interservice communication.
+### 4. Data relationships
 
-For instance, a **"Ride-Sharing"** platform will have a driver service to manage drivers' profiles and a ride service to manage trip data. Now, if these services are too fine-grained, storing driver details in one database and trip data in another, operations such as generating the earnings report of any driver or assigning rides to drivers according to their availability will need constant communication between these two services. In this case, unnecessary complexity arises, and often it causes delay when there is heavy traffic.
+Giving each service its own database is good practice, but it makes it harder to work with data that is naturally related. Relationships that cross service boundaries mean more calls between services and more chances for the data to drift out of sync.
 
-Here, that may be overkill; it might suffice to merge driver and ride information into a single service operating on a common database. That would have the positive effect of tighter data consistency, less interservice communication, and thus a more responsive system, again underlining the importance of appropriately sizing services based on data relationships.
+On a **"Ride-Sharing"** platform, splitting a driver service (profiles) from a ride service (trips), each with its own store, means that common operations like calculating a driver's earnings or matching rides to available drivers depend on constant traffic between the two. That adds complexity and slows things down at peak load. If the data is that closely linked, one service over a shared database can be the better choice: consistency is stronger, there are fewer cross-service calls, and the system responds faster.
 
-## Finding the Right Balance
-![Image description](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*qoJFkghLQ11KHOYtr7dWUA.jpeg)
+## Weighing the Two Sides
 
-Sizing a service is a balancing act; the trade-offs between breaking apart services and consolidating them need to be analyzed. While smaller services can provide benefits around scalability and independence, they could add complexity to the system through distributed communication and management. Larger services might simplify the workflows and data relationships at the cost of losing flexibility and autonomy.
+![Illustration of a scale balancing service disintegration against service integration](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*qoJFkghLQ11KHOYtr7dWUA.jpeg)
 
-This requires close collaboration with business stakeholders to get it right. Business priorities-for instance, around the need for agility, fault tolerance, or cost optimization-inform service-sizing decisions. By doing so, technical architecture meets business objectives while maintaining the system scalable, reliable, and manageable in the long run.
+No single driver decides the boundary. It comes from weighing them against each other. Smaller services give you independence and targeted scaling but cost you distributed communication and operational overhead. Larger services make workflows and data handling simpler but cost you flexibility and team autonomy.
 
-## Conclusion
-In other words, the right-sizing of microservices is a journey of striking a balance between considerations of disintegration and integration. While the disintegration of services can offer flexibility, scalability, and fault tolerance, for example, it also presents challenges in terms of increased communication complexity and potential data integrity issues. Integration of services offers simplicity but reduces the agility of the system and creates dependencies that make scaling difficult.
+Here's a quick reference to keep the two lists side by side:
 
-The key to getting service granularity right is the trade-offs between the disintegration drivers and the integration drivers. In close collaboration with the business stakeholders, by understanding their priorities and evaluating the needs of each service, you are able to make the right trade-offs that will guarantee a scalable, maintainable, and cost-effective architecture. If done correctly, microservices can offer the advantages promised without the complexities introduced by poor sizing decisions.
+| Disintegrators (split when...) | Integrators (keep together when...) |
+|---|---|
+| Responsibilities have low cohesion or the service is growing too large | Operations must be atomic in one transaction |
+| One area changes far more often than the rest | A workflow needs many synchronous hops between the parts |
+| Parts have very different load profiles | Services must share and keep in sync the same code |
+| A failure in one part shouldn't take down another | Data is tightly related and constantly joined |
+| Some parts need much stricter security | |
+| New variations are added often | |
+
+This is not purely a technical exercise. Business stakeholders need to be involved, because their priorities (speed of change, uptime for critical features, cost) decide which drivers carry the most weight. When boundaries reflect those priorities, the architecture supports the business and stays scalable, reliable and manageable over time.
+
+## Common Mistakes to Avoid
+
+- **Splitting by noun.** Creating one service per entity (User, Order, Product) without checking the drivers often leads to chatty services that always change together.
+- **Ignoring transactions until late.** If you find out after the split that two services need atomic writes, you'll end up building sagas or compensation logic you didn't plan for.
+- **Splitting for its own sake.** "Smaller is more micro" isn't a reason. If you can't name the disintegrator a split satisfies, leave the service as it is.
+- **Treating boundaries as permanent.** Load, volatility and team structure change. Revisit the drivers when they do; merging services back together is a valid outcome.
+
+## FAQ
+
+**Is there an ideal number of lines of code or endpoints for a microservice?**
+No. Size is one signal under cohesion and scope, but the drivers above are much better guides than any fixed number.
+
+**Should I start with microservices or a monolith?**
+If you aren't sure where the boundaries are yet, starting with a well-modularized monolith and splitting it as disintegrators appear is often the safer route. It is much easier to split along clear module seams than to merge services that were cut in the wrong place.
+
+**Can integrators and disintegrators conflict for the same service?**
+Often, yes. For example, a payment component may need security isolation but also take part in an atomic order transaction. That's where the trade-off conversation, and business priorities, settle it.
+
+## Wrapping Up
+
+Getting microservice size right means balancing the case for splitting against the case for keeping things together. Splitting can bring flexibility, independent scaling and better fault isolation, but it also adds communication complexity and makes data integrity harder. Keeping services together keeps things simple, at the cost of agility and with the risk of dependencies that make scaling harder.
+
+Granularity comes down to weighing disintegration drivers against integration drivers, service by service. If you work closely with business stakeholders, understand what they value most and assess each service on its own needs, you can make trade-offs that lead to a scalable, maintainable and cost-effective architecture. Done well, microservices deliver what they promise without the problems that poor sizing brings.

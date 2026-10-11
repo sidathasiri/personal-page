@@ -1,28 +1,29 @@
 ---
 layout: post
-title: 'Optimizing GraphQL at Scale: Tackling the N+1 Problem in AWS AppSync'
+title: 'Fixing the N+1 Query Problem in AWS AppSync with Batch Resolvers'
 date: 2025-06-11
 author: 'Sidath Munasinghe'
-keywords: 'appsync, graphql, cloud, aws, scalable, sidath, munasinghe'
-description: "Learn how to overcome the notorious N+1 query problem when using GraphQL at scale with AWS AppSync. This post explores efficient resolver strategies and data-fetching patterns that ensure your APIs remain fast and scalable, even under heavy load."
+keywords: 'aws appsync, graphql, n+1 problem, batch resolvers, lambda, performance, aws, sidath, munasinghe'
+description: "Nested GraphQL fields in AWS AppSync can trigger hundreds of resolver calls per query. See how Lambda batch resolvers collapse N+1 lookups into one."
 URL: '/2025/06/11/Optimizing-GraphQL-at-Scale-Tackling-the-N+1-Problem-in-AWS-AppSync/'
 image: '/images/posts/Optimizing-GraphQL-at-Scale-Tackling-the-N+1-Problem-in-AWS-AppSync/cover-image.jpg'
 ---
 
-GraphQL has become a popular alternative to traditional RESTful APIs, offering a more efficient and flexible way for clients to retrieve data. Instead of making multiple calls to various endpoints and receiving fixed response formats—as is common with REST—GraphQL enables clients to request exactly the data they need in a single request. This eliminates issues like over-fetching and under-fetching and gives frontend developers precise control over the data structure.
+A single GraphQL query that returns 100 books with their authors looks harmless. Under the hood, though, it can easily fan out into more than a hundred separate backend calls. That hidden multiplication is the N+1 problem, and if you run GraphQL on AWS AppSync, it is one of the first things that will hurt you as traffic grows.
 
-AWS AppSync is a fully managed service that simplifies the creation of scalable, real-time GraphQL APIs. It integrates smoothly with AWS services like DynamoDB, Lambda, RDS, and OpenSearch, and includes built-in support for features such as real-time subscriptions, offline access, and fine-grained access control. AppSync handles much of the complexity around scalability and security, so developers can focus on defining data models and resolver logic.
+Before getting into the fix, a quick recap of the moving parts.
 
-Resolvers in AppSync are the key components that connect GraphQL fields to underlying data sources. Each field—including nested ones—can have its own resolver, which is triggered when a query is executed. These resolvers can use Velocity Template Language (VTL) or invoke Lambda functions to map requests and responses. While this approach provides flexibility, it can lead to performance issues—especially the N+1 query problem—when dealing with nested relationships.
+With REST, a client usually stitches a screen together from several endpoints, each returning a fixed shape. That tends to mean either pulling down more fields than needed or making extra round trips to fill the gaps. GraphQL flips this around: the client describes the exact shape it wants and gets it back in one response, so the frontend owns the data contract.
 
-In this post, we’ll dive into how the N+1 problem arises in AWS AppSync, why it poses challenges at scale, and how to build optimized resolvers using batching techniques and Lambda-based solutions to improve performance.
+AppSync is AWS's managed GraphQL service. It plugs directly into DynamoDB, Lambda, RDS, OpenSearch and other data sources, and it gives you real-time subscriptions, offline support and fine-grained authorization out of the box. Since AWS takes care of scaling and security, most of your effort goes into the schema and the resolvers.
 
-## The N+1 Problem
-When working with GraphQL, it’s common to request nested data in a single query. AppSync supports this by allowing each field — including deeply nested ones — to have its own resolver that fetches data from a backend data source. While this design provides flexibility and modularity, it can lead to an inefficient execution pattern known as the N+1 problem.
+Resolvers are where the trouble starts. In AppSync, every field, nested ones included, can be backed by its own resolver that runs whenever the field is part of a query. A resolver might use VTL mapping templates or call a Lambda function. That per-field model is very flexible, but with nested relationships it quietly produces the N+1 pattern.
 
-The N+1 problem usually occurs with list queries. When your GraphQL API ends up making one query to fetch the root items (1), and N additional queries for each nested field, where N is the number of root items returned in the list.
+Below I'll walk through how that happens, why it matters at scale, and how AppSync's batching support for Lambda resolvers fixes it.
 
-Let’s take an example to understand this clearly.
+## Where the Extra Calls Come From
+
+The N+1 problem shows up almost entirely in list queries. You make **one** call to fetch the parent items, then **N** more calls to resolve a nested field, one per parent. Here is a typical query:
 
 ```
 query {
@@ -37,16 +38,13 @@ query {
 }
 ```
 
-Here’s what typically happens behind the scenes in AppSync
+And this is roughly how AppSync executes it:
 
-![Image description](/images/posts/Optimizing-GraphQL-at-Scale-Tackling-the-N+1-Problem-in-AWS-AppSync/query-execution-plan.png)
+![Diagram of AppSync resolving a books query: one resolver call for the book list, then a separate author resolver call for each book](/images/posts/Optimizing-GraphQL-at-Scale-Tackling-the-N+1-Problem-in-AWS-AppSync/query-execution-plan.png)
 
-1. books resolver fetches a list of books — let’s say 100 (N) items.
-2. For each of those 100 books, the author resolver is called individually (resulting in 100 calls).
+Suppose the `books` resolver returns 100 items. AppSync then runs the `author` resolver once for every book, which is another 100 calls. For one client request, that adds up to 101 resolver invocations.
 
-In total, that’s 1 + 100 = 101 (N+1) resolver invocations for a single client query.
-
-If you have even more nested queries, this becomes worse. In the below query, there is an additional field (address) that requires more resolver invocations.
+Every extra level of nesting multiplies the work again. Add an `address` field under `author`:
 
 ```
 query {
@@ -65,39 +63,38 @@ query {
 }
 ```
 
-1. books resolver fetches a list of books — let’s say 100 items.
-2. For each of those 100 books, the author resolver is called individually (resulting in 100 calls).
-3. Then for each author, the address resolver is called again (another 100 calls).
+Now the count looks like this:
 
-In total, that’s 1 + 100 + 100 = 301 resolver invocations for a single client query.
+| Resolver | Invocations (100 books) |
+|---|---|
+| `books` | 1 |
+| `author` (once per book) | 100 |
+| `address` (once per author) | 100 |
+| **Total** | **301** |
 
-### Why Is This a Problem?
-This approach scales poorly:
+That is 301 resolver calls to answer a single query.
 
-- Performance degrades linearly with the number of parent items.
-- It results in high latency due to the number of sequential or parallel resolver invocations.
-- It increases backend load and pressure on data sources like Lambda, RDS, or DynamoDB.
-- It can quickly hit throttling limits or increase costs when using Lambda or other pay-per-request services.
+### Why it hurts at scale
 
-While this might be acceptable for small datasets or low traffic, the N+1 pattern becomes a serious performance bottleneck at scale. Imagine serving thousands of queries per second — this inefficient pattern can overwhelm backend systems, increase response times, and degrade the user experience.
+Resolver calls grow in step with the number of parent items, so the cost of a query depends on how much data it happens to return. Every call adds latency, whether the calls run one after another or in parallel. Data sources such as Lambda, RDS and DynamoDB take on a lot more load than the client's request really needs. With pay-per-request services like Lambda, all of that extra traffic also pushes you toward concurrency and throttling limits and raises your bill.
 
-## Solving N+1 with Batch Resolvers in AppSync
+With a small dataset and light traffic you may never notice. At thousands of queries per second, though, the same pattern can swamp your backends, push up response times and give users a sluggish experience.
 
-One of the most effective ways to overcome the N+1 problem in AWS AppSync is by using batch resolvers. The idea is simple: instead of resolving nested fields one-by-one (which results in many resolver calls), we batch them together into a single call , usually handled by a Lambda function.
+## The Fix: Batch Resolvers
 
-Let’s explore how this works and why it’s such a powerful pattern.
+The most effective tool AppSync gives you here is the **batch resolver**. Rather than resolving a nested field once per parent, AppSync collects all of those pending resolutions and sends them to a Lambda function in one invocation.
 
-### How Batch Resolvers Work
+### What changes with batching
 
-In AppSync, each nested field (such as author or address) can have its own resolver, which is typically invoked for each parent object.
+Normally a nested field like `author` or `address` has its resolver called separately for every parent object. With batching turned on:
 
-To convert this into a batch operation:
+1. AppSync gathers the `author` resolutions for all the books (`books[*].author`) into a single Lambda call.
+2. Your function receives an array: one entry per book, from which you can read the book IDs or author IDs.
+3. The function loads all the authors in a single bulk read and returns them, mapped back to the books they belong to.
 
-- Instead of calling the author resolver N times (once for each book), you configure the author field to invoke a single Lambda function that accepts a list of book IDs (or author IDs).
-- This Lambda function fetches all the authors in one go and returns the results mapped back to their respective books.
-Think of it as “fan-in” batching: one resolver invocation processes multiple parent objects.
+You can think of it as fan-in: one invocation serves many parent objects.
 
-Let’s apply this to our previous query and see how this works.
+Using the earlier example again:
 
 ```
 query {
@@ -113,32 +110,26 @@ query {
 
 ```
 
-If you use a batch resolver for the author field:
+With the `author` field batched, the work drops from N+1 calls to just two: one for the book list and one for all the authors. The count also stops depending on how many books come back.
 
-- AppSync groups all books[*].author field resolvers into one Lambda call.
-- You receive an array of bookIds or authorIds within the lambda function.
-- The Lambda fetches and returns the authors in bulk.
+What you gain:
 
-With this optimization, you’ve reduced the number of records from N+1 to just 2, which is a substantial improvement. Moreover, it’s now independent of the number of records.
+- **Far fewer invocations.** Hundreds of resolver calls become one, which keeps you clear of Lambda concurrency limits and takes pressure off downstream services.
+- **Lower latency.** Fewer network hops mean faster responses.
+- **Modularity you keep.** Each field still has its own resolver with a clear job; it simply handles many items at once.
+- **Lower cost.** Fewer Lambda invocations mean a smaller AWS bill.
 
-Here are some additional benefits of this solution:
+## Setting It Up in AppSync
 
-- **Fewer Resolver Invocations:** Reduces hundreds of resolver calls to just one. This saves you from the lambda concurrency limit and also reduces the pressure on downstream services.
-- **Faster Performance:** Lower network overhead and latency.
-- **Clean Separation:** Keeps resolver responsibilities modular while still optimizing performance.
-- **Cost-Efficient:** Fewer Lambda invocations result in reduced AWS costs.
+At the moment, batching only works with Lambda data sources, and you have to opt in. It takes just a few steps:
 
-### Enabling Batch Resolvers
+1. Create a Lambda data source in the usual way.
+2. Create a resolver for the nested field and point it at that data source.
+3. Turn on batching and choose a maximum batch size.
 
-Batch resolvers are currently only compatible with Lambda data sources, and this feature is not enabled by default. However, enabling this is very straightforward.
+![AppSync resolver settings with the batching option turned on and a maximum batch size field](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*otM6fpy9OGD2CvWgoun0yg.png)
 
-1. Create a Lambda datasource as usual
-2. Go to create a resolver and select the created Lambda datasource
-3. Enable batching and set the batching size
-
-![Image description](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*otM6fpy9OGD2CvWgoun0yg.png)
-
-4. Update the resolver request function to use the BatchInvoke operation
+4. In the resolver's request function, change the operation to `BatchInvoke`:
 ```
 export function request(ctx) {
     return {
@@ -149,14 +140,41 @@ export function request(ctx) {
     };
 }
 ```
-5. Now your lambda function will receive not a single context, but an array of contexts for each listed item. You can update the lambda function logic to do a batch get and return the results. You must ensure the returned items are in the same order as the received context order.
+5. Update the Lambda function. It will now receive an **array of contexts**, one for each parent item, instead of a single context. Do one bulk lookup and return the results **in the same order the contexts arrived**, because AppSync matches results to parents by position.
 
-It’s as simple as that, but it offers significant performance gains to your GraphQL service.
+That small configuration change can make a big difference to how your GraphQL API performs.
 
-## Conclusion
+## Gotchas to Watch For
 
-Optimizing GraphQL queries in AWS AppSync is essential when building scalable and performant APIs — especially when dealing with nested data structures. The N+1 problem, while subtle, can lead to serious performance bottlenecks if left unaddressed.
+A few things are easy to miss when you first adopt batch resolvers:
 
-By leveraging batch resolvers, you can drastically reduce the number of resolver calls, minimize round-trips to your data source, and deliver faster, more efficient responses to your clients. Whether you choose direct Lambda resolvers or pipeline resolvers, designing with batching in mind ensures your AppSync APIs are ready to perform at scale.
+- **Ordering is a contract.** If an author can't be found, put a `null` (or an error entry) in that slot instead of skipping it. If the array shifts by even one position, every book after that point gets the wrong author.
+- **Deduplicate keys.** Many books can share an author. Collect the unique IDs before you query, then map the results back to every position that needs them.
+- **Respect data source limits.** Your batch size may be bigger than the downstream API allows. DynamoDB `BatchGetItem`, for example, takes at most 100 keys per request, so a larger batch has to be split into chunks inside the function.
+- **Handle partial results.** Bulk reads can come back incomplete. DynamoDB, for example, can return `UnprocessedKeys`, so retry those before you build the response.
+- **Batch size is a trade-off.** Larger batches mean fewer invocations, but each one runs longer and returns a bigger payload. Start with a moderate value and tune it using your latency metrics.
 
-As your application grows, keeping an eye on resolver patterns and query performance becomes even more important. With the right strategy, tools, and architecture in place, you can build GraphQL services that are both elegant and efficient.
+## When Batching Is (and Isn't) Worth It
+
+**Batching is a good fit when:**
+- A nested field sits under a list that regularly returns tens or hundreds of items.
+- The underlying store supports bulk reads (DynamoDB batch get, SQL `WHERE id IN (...)`, a bulk REST endpoint).
+- You are already running into Lambda concurrency limits, throttling or high per-request costs.
+
+**It may not be worth it when:**
+- The field only ever resolves on a single object, such as a `getBook(id)` query, so there is no N to collapse.
+- The data can already be fetched alongside the parent, for example as a denormalized attribute on the same DynamoDB item, so a separate resolver isn't needed at all.
+- The resolver uses a non-Lambda data source and switching it to Lambda would add more complexity than the batching saves.
+
+## Key Takeaways
+
+- The N+1 problem comes from per-field resolvers running once per parent item in list queries, and each level of nesting multiplies it.
+- AppSync batch resolvers combine those calls into a single Lambda invocation, so the call count no longer grows with the size of the list.
+- Batching requires a Lambda data source, the `BatchInvoke` operation, and a function that returns results in the same order as its input.
+- Whether you use direct Lambda resolvers or pipeline resolvers, keeping batching in mind as the schema grows will save you a painful refactor later.
+
+## Final Thoughts
+
+Nested data is one of the main reasons to use GraphQL, and it is also where AppSync performance most often degrades without anyone noticing. Batch resolvers let you keep that expressive, nested schema while cutting resolver calls and data source round trips to a minimum, so clients get faster responses and your backend has less to do.
+
+As your API and traffic grow, keep watching how your resolvers execute and how long queries take. With batching built into the design, your GraphQL service can stay both clean and efficient.

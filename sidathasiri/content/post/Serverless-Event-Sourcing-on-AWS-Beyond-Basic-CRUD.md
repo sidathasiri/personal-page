@@ -1,136 +1,132 @@
 ---
 layout: post
-title: "Serverless Event Sourcing on AWS: Beyond Basic CRUD"
+title: "Event Sourcing with DynamoDB, Lambda and CQRS: A Practical Serverless Guide"
 date: 2025-09-01
 author: "Sidath Munasinghe"
-keywords: "aws, event sourcing, serverless, dynamodb, lambda, cqrs, event driven architecture, sidath, munasinghe"
-description: "Learn how Event Sourcing transforms applications by storing immutable events instead of just state. Discover how to design event-sourced systems on AWS using DynamoDB, Lambda, and CQRS patterns for better auditability, scalability, and flexibility."
+keywords: "event sourcing, aws serverless, dynamodb event store, dynamodb streams, lambda, cqrs, eventbridge, event driven architecture, sidath, munasinghe"
+description: "Store immutable events instead of overwriting state: design a serverless event-sourced system on AWS with DynamoDB, Lambda and CQRS, plus the trade-offs."
 URL: "/2025/09/01/Serverless-Event-Sourcing-on-AWS-Beyond-Basic-CRUD/"
 image: "/images/posts/Serverless-Event-Sourcing-on-AWS-Beyond-Basic-CRUD/main-cover-image.png"
 ---
 
-When you order something online, a lot happens — order created, payment confirmed, address updated, shipped, delivered. But if the system only stores the final state, you'd know it was delivered but lose the story of how it got there. That's the limitation of traditional CRUD (Create, Read, Update, Delete): it shows the present but erases the past.
+Take a typical online order. It's placed, paid for, the delivery address is changed, it ships, and it arrives. Now look at how most systems store that. A single row ends with `status = "Delivered"`, and every earlier version of the row has been overwritten. You can see where the order is now, but you can't see how it got there.
 
-Event Sourcing flips that model. Every change is stored as an immutable event, giving you a complete, replayable history — like a bank ledger instead of just today's balance. This means better auditing, debugging, analytics, and the ability to evolve your system without rewriting history.
+That's the built-in limitation of the CRUD (Create, Read, Update, Delete) model: each update replaces the previous state. **Event sourcing** works the other way round. You never overwrite anything. Each change is appended as a new, immutable event, and the current state is whatever those events add up to. A bank statement is a good comparison: it lists every transaction, not just today's balance.
 
-And with AWS services like DynamoDB, EventBridge, and Lambda, event sourcing fits naturally into the serverless, event-driven world, where scalability and cost-efficiency are built in.
+Serverless AWS services fit this model well. DynamoDB, Lambda and EventBridge are already event-driven and scale on demand, and you pay only for what you use. In this post I'll explain what event sourcing is, show a reference architecture on AWS, and go through when it's worth the extra complexity and when it isn't.
 
-In this article, we'll explore how to move beyond basic CRUD and design serverless event-sourced systems on AWS — unlocking capabilities that CRUD can't deliver.
+## From Rows to Timelines
 
-## What is Event Sourcing?
+The core idea is simple: **store events, and derive state from them.** Here's the same order in both models:
 
-At its core, Event Sourcing is about storing events instead of just state. Instead of updating a record to reflect the latest value, every change is captured as a new, immutable event.
+| | CRUD model | Event-sourced model |
+| --- | --- | --- |
+| What's stored | One row: `status = "Shipped"` | A timeline: `OrderCreated` → `OrderPaid` → `OrderShipped` |
+| How updates work | Overwrite the row in place | Append a new event |
+| Current state | Read the row | Replay (fold) the events |
+| History | Lost unless you build audit tables | Kept by default |
 
-Think of it like this:
+You can always rebuild the current state by replaying an order's events. The real value, though, is in the history itself, because it answers questions a CRUD table can't:
 
-- In a CRUD system, an order table might just show `status = "Shipped"`
-- In an event-sourced system, you'd see a timeline:
-  - `OrderCreated`
-  - `OrderPaid`
-  - `OrderShipped`
+- When did this order's status change?
+- Who made each change?
+- What did the whole system look like at a particular moment?
 
-The current state can always be reconstructed by replaying these events, but the real power lies in the history. You can answer questions like:
+![Diagram contrasting a CRUD record that holds only the latest order status with an event log recording each change to the order over time](/images/posts/Serverless-Event-Sourcing-on-AWS-Beyond-Basic-CRUD/what-is-event-sourcing.webp)
 
-- When did this order change status?
-- Who made the update?
-- What was the system state at a specific point in time?
+So the database becomes a record of everything that has happened, not just a snapshot of the present. You can replay that record to rebuild views, feed analytics pipelines, or power features nobody had planned when the events were first written, all without touching the original data.
 
-![Image description](/images/posts/Serverless-Event-Sourcing-on-AWS-Beyond-Basic-CRUD/what-is-event-sourcing.webp)
+> A CRUD table tells you where your system is. An event log tells you the whole story of how it got there.
 
-This approach turns your database into a source of truth for the past, present, and future. You can not only see what happened, but also replay events to rebuild projections, feed analytics pipelines, or even drive new features without touching existing data.
+## A Serverless Reference Architecture
 
-> Event Sourcing is not just about data storage — it's about preserving the story of your system.
+Any event-sourced design has to answer two questions: **where do the events live, and who consumes them?**
 
-## Designing an Event-Sourced System on AWS
+### The write side: DynamoDB as the event store
 
-Designing event sourcing comes down to two core questions: how do you store events, and how do you use them?
+DynamoDB is a common choice for the event store on AWS. Event payloads differ by type and tend to change over time, and a schemaless table handles that easily. Every change in the system becomes a new item, appended and never updated.
 
-On AWS, a common approach is to use DynamoDB as the event store. Since events are usually unstructured or vary over time, DynamoDB's schemaless design makes it a natural fit. Every new change in the system is appended to this table as an immutable event.
+### Reacting to events: Streams and Lambda
 
-From there, AWS Lambda acts as the consumer. By enabling DynamoDB Streams, you can automatically trigger a Lambda whenever new events are written. This means your application can react to changes in near real time — for example, updating projections, sending notifications, or publishing to an event bus.
+Enable DynamoDB Streams on the table, and each new event can trigger a Lambda function. That consumer reacts in near real time, for example by updating a view, sending a notification, or forwarding the event to a bus such as EventBridge.
 
-In the diagram below, events arrive through a REST API exposed via API Gateway. The API writes them into the DynamoDB event store. Each new entry then flows through the DynamoDB Stream → Lambda consumer, which processes the event.
+Here's the end-to-end flow. Clients submit events through a REST API on API Gateway. The API appends them to the DynamoDB event store, and each new item flows through the stream to the Lambda consumer.
 
-![Image description](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*vftZJXGV0TxW_R1HEMJHHA.png)
+![Architecture diagram showing API Gateway writing events into a DynamoDB event store, with DynamoDB Streams invoking a Lambda consumer](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*vftZJXGV0TxW_R1HEMJHHA.png)
 
-But there's a challenge. In an event-sourced system, the database doesn't store the final state — only the sequence of events. To answer a simple question like "What's the current status of this order?", you'd have to replay all past events for that aggregate. Doing this repeatedly is both inefficient and expensive.
+### The read side: adding CQRS
 
-This is where the CQRS (Command Query Responsibility Segregation) pattern comes in. With CQRS, you separate writes from reads:
+This design has a problem. The event store holds a sequence of changes, not a final state. To answer something as basic as "what's the current status of this order?", you'd have to load and replay every event for that order, and do it again on every request. That's slow and costly.
 
-- Writes still go to the DynamoDB event store.
-- Reads no longer query the event store directly. Instead, the Lambda consumer takes each event and updates a separate read-optimized database (for example, another DynamoDB table, OpenSearch index, or even Aurora).
+**CQRS (Command Query Responsibility Segregation)** fixes this by separating the write path from the read path:
 
-![Image description](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*7rsb35TRCG9i1RRTxbyaHg.png)
+1. **Commands (writes)** keep appending events to the DynamoDB event store.
+2. **Queries (reads)** never touch the event store. The Lambda consumer applies each new event to a separate read model that's built for querying. That could be another DynamoDB table, an OpenSearch index, or an Aurora database.
 
-This read model looks like a traditional transactional database — fast, queryable, and easy to consume. Clients now query this projection for the latest state, while the event store continues to capture the full history.
+![Architecture diagram of the CQRS variant, where the Lambda consumer projects events from the DynamoDB event store into a separate read-optimized database that clients query](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*7rsb35TRCG9i1RRTxbyaHg.png)
 
-In short:
+To clients, this read model (often called a *projection*) looks like an ordinary transactional database: quick to query and easy to use. Meanwhile the event store keeps the complete history. The event store records what happened, and the projection tells you the current state. Together you get full traceability and fast reads.
 
-- The event store preserves the truth of what happened.
-- The read model gives you quick answers to what is.
+### Implementation details that matter
 
-By combining Event Sourcing + CQRS, you get the best of both worlds: complete historical traceability and efficient real-time reads.
+The diagrams leave out a few things that make the difference in a real system:
 
-## Benefits of Event Sourcing
+- **Model the key around the aggregate.** A common layout uses the aggregate ID (for example, the order ID) as the partition key and an increasing version number as the sort key. Reading one aggregate's history is then a single `Query`, and the events come back in order.
+- **Use conditional writes for optimistic concurrency.** Write each event with a condition that its `(aggregateId, version)` item doesn't already exist. If two requests race to append version 5, one of them fails cleanly instead of silently creating a conflicting history.
+- **Make consumers idempotent.** DynamoDB Streams delivers records at least once, so a Lambda can see the same event twice. Track the last version applied to each projection item and skip events you've already processed.
+- **Don't treat the stream as your replay source.** DynamoDB Streams keeps records for only 24 hours. To rebuild a projection, read the events from the table itself, not from the stream.
+- **Version your events.** Include a schema version in every event and keep older versions readable. You can upgrade old events when you read them, or keep handlers for each version. Never rewrite events that are already stored.
+- **Add snapshots for long-lived aggregates.** If an aggregate builds up thousands of events, store a snapshot of its state from time to time. Rebuilding then starts from the latest snapshot instead of the first event.
 
-Event sourcing isn't just about storing data differently — it unlocks capabilities that traditional CRUD models struggle with.
+## What You Gain
 
-![Image description](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*h9sUfSBlxoemdJoiBCKbVg.jpeg)
+![Illustration summarizing the benefits of event sourcing: auditability, replay, temporal queries, extensibility and event-driven integration](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*h9sUfSBlxoemdJoiBCKbVg.jpeg)
 
-### 1. Complete Audit Trail
+The main benefit is a **built-in audit trail**. Because no event is ever deleted or modified, you always know what changed, when, and who changed it. That's a big advantage in regulated areas such as finance, and it makes compliance checks, debugging and forensic investigations much easier than with a table that only keeps the latest value.
 
-Every event is preserved, giving you a full history of what happened, when, and by whom (ex. finance domain). This makes compliance, debugging, and forensics far easier than with systems that only store the latest state.
+Because the log is immutable, you also get **replay and recovery** for free. If a projection gets corrupted, or you ship a bug that wrote bad data into it, clear the projection and replay the event stream to rebuild it.
 
-### 2. Replayability & Recovery
+You can also run **temporal queries**. A CRUD table can only tell you the state now. With an event log you can ask what an order looked like yesterday at 3 PM, or follow how it changed step by step.
 
-Since events are immutable, you can replay them at any time to rebuild projections or recover from failures. If a read model gets corrupted, just clear it and replay the event stream to restore it.
+It also helps when **requirements change**. A new feature often needs the data viewed in a new way. Instead of migrating a schema, you create a new projection and fill it by replaying the events you already have. The system grows without rewriting its history.
 
-### 3. Temporal Queries
+Finally, it **fits naturally with event-driven architectures**. Events can be published to Amazon EventBridge and consumed by any number of independent services, none of which needs to know about the others.
 
-CRUD can only answer "What is the state now?". Event sourcing lets you ask "What was the state at this point in time?". For example, you can see what an order looked like yesterday at 3 PM or trace how it evolved over time.
+## What It Costs You
 
-### 4. Flexibility & Extensibility
+None of that comes free. Before you commit, weigh these trade-offs carefully.
 
-New features often require new ways of looking at data. With event sourcing, you don't have to redesign your schema — just build a new projection by replaying existing events. This allows you to evolve the system without rewriting history.
+You're taking on **more moving parts**. Storing, ordering and replaying events needs more infrastructure than a CRUD table, and you have to plan for serialization, versioning and schema evolution from day one. **Storage keeps growing**, because immutable events pile up forever unless you use snapshots or a compaction strategy. Reads become **eventually consistent**: projections are updated asynchronously, so they can briefly lag behind the latest write, and the rest of the system has to tolerate that.
 
-### 5. Natural Fit for Event-Driven Architectures
+There's a human side too. **Debugging is harder** when the cause of a problem is spread across a long chain of events instead of a single row you can inspect. And there's a real **learning curve** for teams used to CRUD, because thinking in events takes practice.
 
-Event sourcing aligns perfectly with modern, serverless, event-driven systems. Events can be published to an event bus (like Amazon EventBridge) and consumed by multiple independent services without tight coupling.
+In short, the auditability, traceability and replay are real benefits, but you pay for them in operational overhead and design effort.
 
-## Challenges & Trade-offs
+## Is It Right for Your System?
 
-While event sourcing is powerful, it's not without its complexities. Before adopting it, teams should carefully weigh the trade-offs:
+| Event sourcing is a good fit when… | Stick with CRUD when… |
+| --- | --- |
+| You need a complete, immutable record of every change (banking, healthcare, heavily regulated domains) | The domain is simple and CRUD already meets your needs |
+| Past states drive business decisions, such as dispute resolution, fraud detection or analytics | Running an event store, replay logic and projections would cost more than it gives you |
+| You need to scale out horizontally under heavy load | The team doesn't yet have experience with distributed, event-driven systems |
+| You're already using CQRS, projections or event-driven microservices | |
+| You want to keep raw events so future features and analytics can use them | |
 
-- **Increased Complexity** — Storing, ordering, and replaying events requires additional infrastructure compared to simple CRUD. You'll need to design for schema evolution, versioning, and event serialization.
-- **Storage Growth** — Events are immutable and accumulate indefinitely. Without compaction strategies or snapshots, storage can grow rapidly.
-- **Eventual Consistency** — Since state is derived from replayed events, read models often lag behind writes. Systems need to tolerate eventual consistency.
-- **Debugging & Monitoring** — Tracing issues across a long chain of events can be harder than inspecting a single row in a database.
-- **Learning Curve** — Teams used to CRUD-based systems may need time to adapt to event-driven thinking.
+Event sourcing also doesn't have to be all or nothing. You can apply it to the one bounded context that really needs a history, such as payments or orders, and keep the rest of the application on plain CRUD.
 
-In short, event sourcing unlocks powerful capabilities like auditing, traceability, and replay — but comes with operational overhead and design challenges that need to be managed with care.
+## Frequently Asked Questions
 
-## When to Use or Avoid Event Sourcing
+**Is event sourcing the same as CQRS?**
+No. Event sourcing is about how you *store* state, as a log of events. CQRS is about *separating* the write model from the read model. They're often used together, as in this post, but you can use either one without the other.
 
-Event Sourcing is powerful, but it's not always the right tool. You should consider it when:
+**Is EventBridge my event store?**
+No. EventBridge is a bus for distributing events to other services. It isn't a durable, queryable history you can replay per aggregate. Keep the event store in a database such as DynamoDB, and publish to EventBridge from your consumer.
 
-- **Strong auditability is required** — If your system needs a complete, immutable log of every change (e.g., banking, healthcare, compliance-heavy domains).
-- **Business processes depend on history** — When past states or detailed change history matter (e.g., dispute resolution, fraud detection, analytics).
-- **High scalability is needed** — Event-driven systems can scale horizontally more easily than traditional CRUD-based systems.
-- **CQRS and microservices are in play** — Event sourcing naturally complements CQRS, projections, and event-driven microservices.
-- **Future-proofing** — Storing raw events allows you to build new projections, analytics, or features later without changing how data was originally recorded.
+**How do I fix a wrong event?**
+Don't edit it. Append a compensating event (for example, `PaymentRefunded` or `AddressCorrected`) so the history shows both the mistake and the correction.
 
-When to avoid it:
+## Wrapping Up
 
-- If the system is simple (CRUD suffices).
-- If the operational overhead of managing event stores, replay logic, and projections outweighs the benefits.
-- If teams lack experience with distributed/event-driven architectures.
+Event sourcing changes the question from "what is the state?" to "what happened?" Storing every change as an immutable event gives you auditability, flexibility and scalability, and that suits cloud-native systems on AWS. It also brings challenges, including event ordering, schema evolution and operational complexity, so it needs careful design.
 
-In short: use Event Sourcing when auditability, scalability, and flexibility outweigh the complexity.
-
-## Conclusion
-
-Event Sourcing brings a powerful way of modeling applications by treating state changes as a sequence of immutable events. It enables auditability, flexibility, and scalability, making it a natural fit for modern cloud-native architectures on AWS. However, it also comes with challenges such as event ordering, schema evolution, and operational complexity that require careful design.
-
-When applied in the right context — such as systems needing strong audit trails, historical state reconstruction, or real-time insights — Event Sourcing can significantly elevate the reliability and adaptability of your applications.
-
-In short, Event Sourcing isn't about replacing CRUD everywhere. It's about choosing the right paradigm for the right problem. By combining Event Sourcing with supporting patterns like CQRS, and leveraging AWS services like DynamoDB, EventBridge, Kinesis, and Lambda, teams can build event-driven systems that are both resilient and future-ready.
+Used in the right place, such as systems that need strong audit trails, point-in-time reconstruction or real-time insights, it can make your applications much more reliable and adaptable. Don't use it to replace CRUD everywhere. Pick the model that fits each problem. When event sourcing does fit, combining it with CQRS and building on DynamoDB, EventBridge, Kinesis and Lambda gives you an event-driven system that's resilient and ready for whatever you need next.
