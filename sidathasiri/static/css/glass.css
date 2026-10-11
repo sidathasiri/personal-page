@@ -1,0 +1,893 @@
+/* ===================================
+   DARK GLASS THEME
+   Deep blue wallpaper, smoked-glass panels, high-contrast type.
+   Loaded after customizations.css and overrides it.
+   =================================== */
+
+:root {
+  --g-ink: #ffffff;
+  --g-ink-body: rgba(255, 255, 255, 0.92);
+  --g-ink-meta: rgba(255, 255, 255, 0.72);
+  --g-accent: #8db4ff;
+
+  --g-glass: rgba(12, 18, 36, 0.42);
+  --g-glass-hover: rgba(18, 28, 54, 0.52);
+  --g-glass-inner: rgba(255, 255, 255, 0.06);
+  --g-border: rgba(255, 255, 255, 0.14);
+  --g-border-strong: rgba(255, 255, 255, 0.26);
+  --g-blur: blur(36px) saturate(150%);
+
+  --g-shadow: 0 10px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  --g-shadow-hover: 0 16px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  --g-radius: 24px;
+  --g-radius-inner: 18px;
+
+  --border-radius: 24px;
+  --dark-text: #fff;
+  --primary-color: #6b9bff;
+  --secondary-color: #3f6fd6;
+}
+
+/* ---------- Wallpaper ---------- */
+html {
+  background: none !important;
+  color-scheme: dark;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Rubik', sans-serif;
+  color: var(--g-ink-body);
+  line-height: 1.7;
+  min-height: 100vh;
+  background-color: #05070d;
+  background-image:
+    radial-gradient(ellipse 48% 75% at 8% 55%, rgba(38, 88, 190, 0.80), transparent 70%),
+    radial-gradient(ellipse 30% 40% at 30% 12%, rgba(70, 130, 235, 0.50), transparent 70%),
+    radial-gradient(ellipse 36% 45% at 30% 95%, rgba(28, 66, 160, 0.60), transparent 70%),
+    radial-gradient(ellipse 30% 40% at 95% 5%, rgba(20, 50, 125, 0.40), transparent 70%);
+  background-attachment: fixed;
+}
+
+/* Petal-like fan of soft rays on the left, like the reference wallpaper */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: repeating-conic-gradient(from 245deg at -4% 58%,
+    rgba(80, 135, 230, 0.26) 0deg 7deg, transparent 7deg 19deg);
+  -webkit-mask-image: radial-gradient(circle at -4% 58%, #000 0, rgba(0, 0, 0, 0.5) 30%, transparent 52%);
+  mask-image: radial-gradient(circle at -4% 58%, #000 0, rgba(0, 0, 0, 0.5) 30%, transparent 52%);
+  filter: blur(16px);
+}
+
+.all-container {
+  background: transparent;
+}
+
+/* ---------- Sections are see-through ---------- */
+.about-me,
+.portfolio,
+.blog,
+.blog.under-menu,
+.projects-grid-section,
+.back-to-home-section,
+.accomplishments,
+.certifications,
+.testimonials,
+.projects,
+.fun-facts,
+section,
+.section-divider,
+.section-separator,
+.post-grid-image,
+.post-grid-content,
+.project-tile-body,
+.project-tile-header,
+.cert-content,
+.accomplishment-content {
+  background: transparent !important;
+}
+
+.projects-grid-section::before {
+  background: linear-gradient(90deg, transparent, var(--g-border), transparent);
+}
+
+.blog.under-menu::before,
+.blog.under-menu h1::before,
+.projects-page-hero::before,
+.projects-page-hero::after {
+  display: none !important;
+}
+
+.projects-page-hero {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* ---------- Glass surfaces ---------- */
+.accomplishment-card,
+.certification-card,
+.review-card,
+.word-card,
+.project-card,
+.project-tile,
+.post-grid-card,
+.post.card,
+.post-container,
+.single-experience,
+.fun-fact-holder,
+.view-all-projects-cta,
+.testi-viewport,
+.about-me-text p {
+  background: var(--g-glass) !important;
+  -webkit-backdrop-filter: var(--g-blur);
+  backdrop-filter: var(--g-blur);
+  border: 1px solid var(--g-border) !important;
+  border-radius: var(--g-radius) !important;
+  box-shadow: var(--g-shadow) !important;
+  color: var(--g-ink-body);
+}
+
+.accomplishment-card:hover,
+.certification-card:hover,
+.review-card:hover,
+.word-card:hover,
+.project-card:hover,
+.project-tile:hover,
+.post-grid-card:hover,
+.post.card:hover {
+  background: var(--g-glass-hover) !important;
+  border-color: var(--g-border-strong) !important;
+  box-shadow: var(--g-shadow-hover) !important;
+  transform: translateY(-2px);
+}
+
+/* Theme's coloured top strips */
+.post-container::before,
+.post-grid-card::before,
+.post-grid-card::after,
+.project-tile::before,
+.project-tile::after,
+.fun-fact-holder::before,
+.fun-fact-holder::after,
+.certification-card::before,
+.accomplishment-card::before,
+.review-card::before,
+.project-card::before,
+.word-card::before {
+  display: none !important;
+}
+
+/* Nested glass inside a card: lighter, borderless-feeling */
+.tech-tags-grid,
+.responsibilities-modern,
+.project-tile-tech,
+.project-tile-responsibilities,
+.project-details,
+.project-responsibilities,
+.project-tech-stack {
+  background: var(--g-glass-inner) !important;
+  border: 1px solid var(--g-border) !important;
+  border-radius: var(--g-radius-inner) !important;
+  box-shadow: none !important;
+}
+
+.post-grid-image img,
+.project-tile img {
+  border-radius: var(--g-radius-inner);
+}
+
+/* ---------- Typography (high contrast) ---------- */
+:root body :is(p, li, span, small, label, td, th, dd, dt, figcaption):not(pre *) {
+  color: var(--g-ink-body) !important;
+  text-shadow: none !important;
+}
+
+:root body :is(h1, h2, h3, h4, h5, h6):not(pre *) {
+  color: var(--g-ink) !important;
+  -webkit-text-fill-color: var(--g-ink) !important;
+  background: none !important;
+  text-shadow: none !important;
+  text-transform: none !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Secondary info still comfortably readable (>= 7:1 on the dark glass) */
+:root body :is(.date, .post-grid-date, .project-duration, .project-tile-duration, .cert-issuer, .cert-date,
+  .accomplishment-org, .accomplishment-year, .testimonials-subtitle) {
+  color: var(--g-ink-meta) !important;
+}
+
+.about-me-text h1 {
+  font-size: 2.6rem !important;
+  font-weight: 700 !important;
+  text-align: left !important;
+  padding: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.about-me-text p {
+  padding: 24px 28px;
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.single-experience,
+.cert-content,
+.project-card {
+  line-height: 1.65;
+}
+
+.single-experience {
+  padding: 18px 22px;
+}
+
+.project-description,
+.project-tile-description,
+.post-grid-content p,
+.cert-description,
+.accomplishment-description,
+.review-quote,
+.word-text,
+.single-experience p,
+.post-container .body p,
+.post-container .body li {
+  font-size: 1rem;
+}
+
+a {
+  color: var(--g-accent);
+}
+
+/* Section heading underline accents */
+.blog.under-menu h1::after,
+.experience h2::after,
+.skill h2::after,
+.portfolio h2::after,
+.testimonials h2::after,
+.accomplishments h2::after,
+.certifications h2::after,
+.projects h2::after {
+  background: rgba(255, 255, 255, 0.7) !important;
+  box-shadow: none !important;
+}
+
+/* ---------- Images ---------- */
+.about-me-images img {
+  border: 1px solid var(--g-border-strong);
+  border-radius: 50%;
+  box-shadow: var(--g-shadow-hover);
+}
+
+/* ---------- Skill bars ---------- */
+.skillbar {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border: 0 !important;
+  height: 6px;
+  border-radius: 999px !important;
+  box-shadow: none;
+}
+
+.skillbar-bar {
+  height: 6px;
+  margin: 0;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, #6b9bff, #cfe0ff) !important;
+  box-shadow: none;
+}
+
+/* ---------- Timeline ---------- */
+ul.experience-chart li {
+  border-left: 1px solid var(--g-border-strong) !important;
+}
+
+ul.experience-chart li::after {
+  width: 11px !important;
+  height: 11px !important;
+  left: -6px !important;
+  top: 6px !important;
+  background: #fff !important;
+  border: 2px solid #0b1224 !important;
+  box-shadow: none;
+}
+
+/* ---------- Counters ---------- */
+:root body .fun-fact-holder .fact-counter {
+  background: none !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+/* ---------- Buttons: blue glass with a light edge ---------- */
+:root body .button,
+:root body .button.download-cv,
+:root body .btn-view-all-projects,
+:root body .btn-back-home {
+  color: #fff !important;
+  background: linear-gradient(180deg, rgba(86, 130, 210, 0.85), rgba(40, 72, 140, 0.85)) !important;
+  border: 1px solid var(--g-border-strong) !important;
+  border-radius: 999px !important;
+  padding: 11px 26px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em;
+  text-transform: none !important;
+  text-shadow: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+:root body .button:hover,
+:root body .button.download-cv:hover,
+:root body .btn-view-all-projects:hover,
+:root body .btn-back-home:hover {
+  color: #fff !important;
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+:root body .button i,
+:root body .btn-view-all-projects i,
+:root body .btn-back-home i {
+  color: #fff !important;
+}
+
+.hireMe {
+  color: #fff !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--g-border-strong) !important;
+  background: rgba(255, 255, 255, 0.10) !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+/* ---------- Tags ---------- */
+.tech-tag,
+.tech-tag-modern,
+.review-tag {
+  background: rgba(255, 255, 255, 0.09) !important;
+  border: 1px solid var(--g-border) !important;
+  color: var(--g-ink-body) !important;
+  border-radius: 999px !important;
+  box-shadow: none;
+  font-weight: 500;
+}
+
+/* ---------- Navigation ---------- */
+.menu-container,
+.menu-container-transparent,
+.menu-normal {
+  background: rgba(8, 12, 24, 0.55) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(150%);
+  backdrop-filter: blur(30px) saturate(150%);
+  border-bottom: 1px solid var(--g-border);
+  box-shadow: none;
+}
+
+.menu-item a,
+.menu-item-transparent.menu-item a,
+.menu-slider a {
+  color: #fff !important;
+  font-size: 0.98rem;
+  font-weight: 500;
+  text-shadow: none;
+}
+
+.menu-item a:hover {
+  color: var(--g-accent) !important;
+}
+
+.hvr-underline-from-left:before {
+  background: #fff !important;
+  height: 2px !important;
+  box-shadow: none;
+}
+
+/* The script swaps white/dark logo files on scroll; always render it white. */
+.desktop-menu-logo img,
+.mobile-menu-logo img {
+  filter: none;
+}
+
+.desktop-menu-logo img[src*='S_logo_dark'],
+.mobile-menu-logo img[src*='S_logo_dark'] {
+  filter: invert(1) brightness(2);
+}
+
+.mobile-menu,
+.menu-slider {
+  background: rgba(8, 12, 24, 0.82) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(150%);
+  backdrop-filter: blur(30px) saturate(150%);
+  border-bottom: 1px solid var(--g-border);
+  box-shadow: none;
+}
+
+.mobile-menu-nav span {
+  background: #fff !important;
+}
+
+/* ---------- Hero ---------- */
+.header::after,
+.header .slider::after {
+  background: linear-gradient(180deg, rgba(5, 7, 13, 0.35), rgba(5, 7, 13, 0.65)) !important;
+}
+
+.introduction {
+  letter-spacing: -0.02em;
+}
+
+/* ---------- Footer ---------- */
+.footer hr {
+  border-color: var(--g-border);
+}
+
+.footer-icons .fa {
+  background: var(--g-glass) !important;
+  color: #fff;
+  border: 1px solid var(--g-border);
+  border-radius: 50%;
+  box-shadow: none;
+}
+
+.footer-icons a,
+.footer-icon {
+  color: #fff;
+}
+
+.credit,
+.footer {
+  color: var(--g-ink-meta);
+}
+
+/* ---------- Blog post body ---------- */
+.post-container {
+  padding: 40px 48px;
+  margin-bottom: 40px;
+}
+
+.post-container .body {
+  font-size: 1.05rem;
+  line-height: 1.85;
+}
+
+.post-container .body a {
+  color: var(--g-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.post-container .body blockquote {
+  background: var(--g-glass-inner);
+  border-left: 3px solid var(--g-accent);
+}
+
+.post-container .body table td,
+.post-container .body table th {
+  border-color: var(--g-border);
+}
+
+.post-container .body img {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: var(--g-radius-inner);
+}
+
+pre {
+  background-color: rgba(0, 0, 0, 0.45) !important;
+  border: 1px solid var(--g-border);
+  border-radius: 14px !important;
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* ===================================
+   SPACING SYSTEM
+   Tighter, consistent vertical rhythm + roomier card padding.
+   =================================== */
+:root {
+  --space-section: 56px;
+  --space-title: 2rem;
+  --space-card: 32px;
+}
+
+/* Section rhythm */
+.about-me {
+  padding: 48px 0 24px !important;
+}
+
+.projects,
+.portfolio,
+.certifications,
+.accomplishments,
+.testimonials {
+  padding: var(--space-section) 0 !important;
+}
+
+.fun-facts {
+  padding: 32px 0 !important;
+}
+
+.projects-page-hero {
+  padding: 72px 0 24px !important;
+  margin-top: 56px !important;
+}
+
+.projects-grid-section {
+  padding: 24px 0 48px !important;
+}
+
+.blog.under-menu {
+  padding: 40px 0 56px !important;
+  min-height: 0 !important;
+}
+
+.section-divider {
+  margin: 8px auto !important;
+}
+
+.section-separator {
+  margin: 24px 0 !important;
+}
+
+.experience-skill {
+  margin-top: 24px !important;
+}
+
+.experience-chart {
+  margin-top: 24px !important;
+}
+
+.skill-progress-bar {
+  margin-top: 24px !important;
+}
+
+.skillbar {
+  margin-bottom: 22px !important;
+}
+
+/* Section titles */
+.projects h2,
+.portfolio h2,
+.certifications h2,
+.accomplishments h2,
+.testimonials h2 {
+  margin-bottom: var(--space-title) !important;
+}
+
+.experience h2,
+.skill h2 {
+  margin-bottom: 0.5rem !important;
+}
+
+/* Gaps between stacked project cards (drop the old divider lines) */
+.project-item {
+  border-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 16px !important;
+}
+
+.project-card {
+  margin-bottom: 0 !important;
+}
+
+.view-all-projects-cta {
+  margin-top: 32px !important;
+  padding: 32px !important;
+}
+
+/* Card padding */
+.project-header {
+  padding: 24px var(--space-card) !important;
+}
+
+.project-details {
+  padding: 0 var(--space-card) var(--space-card) !important;
+}
+
+.certification-card,
+.accomplishment-card,
+.review-card {
+  padding: 28px var(--space-card) !important;
+}
+
+.word-card {
+  padding: 28px var(--space-card) 24px !important;
+}
+
+.fun-fact-holder {
+  padding: 28px 20px !important;
+}
+
+.single-experience {
+  padding: 20px 24px !important;
+}
+
+.about-me-text p {
+  padding: 28px 32px !important;
+}
+
+.project-tile-header,
+.project-tile-body {
+  padding: 28px var(--space-card) !important;
+}
+
+.post-grid-content {
+  padding: 24px 28px 28px !important;
+}
+
+.tech-tags-grid,
+.responsibilities-modern,
+.project-tile-tech,
+.project-tile-responsibilities,
+.project-responsibilities,
+.project-tech-stack {
+  padding: 20px 22px !important;
+}
+
+/* Grid gutters */
+.posts-grid,
+.projects-grid-section .row {
+  row-gap: 8px;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --space-section: 36px;
+    --space-card: 20px;
+  }
+  .about-me {
+    padding: 32px 0 16px !important;
+  }
+  .about-me-text p {
+    padding: 20px !important;
+  }
+  .projects-page-hero {
+    padding: 48px 0 16px !important;
+  }
+}
+
+/* ===================================
+   PROJECTS PAGE: three-up grid
+   =================================== */
+@media (min-width: 992px) {
+  .projects-grid-section .container {
+    max-width: 1320px;
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+.project-tile-header,
+.project-tile-body {
+  padding: 24px !important;
+}
+
+.project-tile-name {
+  font-size: 1.25rem;
+}
+
+.project-tile-description,
+.responsibilities-modern li {
+  text-align: left !important;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.projects-grid-section .row {
+  row-gap: 0;
+}
+
+/* ===================================
+   PROJECT TILES: consistent height, expandable details
+   Closed tiles share a fixed-size summary (title, 5-line description,
+   two rows of tech tags). "Key Contributions" expands only that tile.
+   =================================== */
+.projects-grid-section .row {
+  align-items: flex-start;
+}
+
+.project-tile {
+  height: auto !important;
+}
+
+.project-tile-name {
+  min-height: calc(2 * 1.3em);
+  line-height: 1.3 !important;
+}
+
+.project-tile-description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  overflow: hidden;
+  min-height: calc(5 * 1.7 * 0.95rem);
+  margin-bottom: 20px !important;
+}
+
+.project-tile-tech h5 {
+  margin-bottom: 12px !important;
+}
+
+.tech-tags-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 88px;
+  overflow: hidden;
+}
+
+/* Open tile: reveal full description and tech stack too */
+.project-tile:has(details[open]) .project-tile-description {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  min-height: 0;
+}
+
+.project-tile:has(details[open]) .tech-tags-grid {
+  max-height: none;
+}
+
+.project-tile-responsibilities {
+  margin-top: 16px;
+  padding: 0 !important;
+}
+
+.project-tile-responsibilities summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 600;
+  color: var(--g-ink);
+  border-radius: var(--g-radius-inner);
+}
+
+.project-tile-responsibilities summary::-webkit-details-marker {
+  display: none;
+}
+
+.project-tile-responsibilities summary:hover {
+  background: var(--g-glass-inner);
+}
+
+.summary-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--g-ink-meta);
+  font-weight: 500;
+}
+
+.summary-chevron {
+  transition: transform 0.25s ease;
+}
+
+.project-tile-responsibilities[open] .summary-chevron {
+  transform: rotate(180deg);
+}
+
+.project-tile-responsibilities .responsibilities-modern {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 4px 18px 18px !important;
+  margin: 0;
+}
+
+/* Organisation logo in place of the icon (e.g. 99x awards) */
+.accomplishment-icon--logo {
+  background: #000 !important;
+  overflow: hidden;
+  border: 1px solid var(--g-border-strong);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+.accomplishment-icon--logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Light badge for crests with dark linework on a light/transparent background */
+.accomplishment-icon--logo-light {
+  background: #fff !important;
+}
+
+.accomplishment-icon--logo-light img {
+  object-fit: contain;
+  padding: 3px;
+  box-sizing: border-box;
+  transform: scale(1.12);
+}
+
+/* ---------- Fallback without backdrop-filter: stay readable ---------- */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .accomplishment-card,
+  .certification-card,
+  .review-card,
+  .word-card,
+  .project-card,
+  .project-tile,
+  .post-grid-card,
+  .post.card,
+  .post-container,
+  .single-experience,
+  .about-me-text p,
+  .menu-container {
+    background: rgba(14, 22, 44, 0.94) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .post-container {
+    padding: 24px 18px;
+  }
+  .about-me-text h1 {
+    font-size: 2rem !important;
+  }
+  .about-me-text p {
+    padding: 18px 20px;
+  }
+  body {
+    background-attachment: scroll;
+  }
+  body::before {
+    opacity: 0.7;
+  }
+}
+
+/* Tech stack: a single glass panel, not a box inside a box */
+.tech-tags-grid {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  margin-top: 4px;
+}
+
+/* Tag rows: fixed row height so the 2-row preview clips cleanly */
+.tech-tag-modern {
+  padding: 6px 12px !important;
+  line-height: 20px !important;
+  font-size: 0.85rem !important;
+}
+
+.tech-tags-grid {
+  max-height: 86px;
+  padding-bottom: 2px;
+}
+
+.project-tile-description {
+  line-height: 1.7 !important;
+  font-size: 0.95rem !important;
+  min-height: calc(5 * 1.7 * 0.95rem);
+}
+
+/* Hero: light overlay so the background artwork keeps its glow;
+   only the left edge (behind the headline) is shaded. */
+.header::after,
+.header .slider::after {
+  background: linear-gradient(90deg, rgba(2, 6, 16, 0.55) 0%, rgba(2, 6, 16, 0.25) 45%, rgba(2, 6, 16, 0) 75%) !important;
+}

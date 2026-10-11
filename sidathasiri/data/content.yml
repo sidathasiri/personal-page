@@ -15,9 +15,9 @@ hero:
     - "AMIE/ECSL"
 
   # hero background image
-  bg_image: "images/background.jpg"
+  bg_image: "images/hero-bg-mesh.jpg"
   # optional mobile breakpoint background
-  mobile_bg_image: "images/background.jpg"
+  mobile_bg_image: "images/hero-bg-mesh.jpg"
 
 ########################### About ##################################
 about:
@@ -398,18 +398,21 @@ accomplishments:
   accomplishment_list:
     - name: "Outstanding Team Award - Top Nominees"
       organization: "99x Annual Awards Ceremony"
+      logo: "images/logos/99x.png"
       year: "2025"
       description: "Recognized as a top nominee for outstanding team contribution and collaborative excellence."
       icon: "fas fa-users"
       
     - name: "Global Citizenship Award"
       organization: "99x Annual Awards Ceremony"
+      logo: "images/logos/99x.png"
       year: "2024"
       description: "Recognized for exceptional collaboration and impact while working with external clients across global markets."
       icon: "fas fa-globe-americas"
       
     - name: "Outstanding Team Award"
       organization: "99x Annual Awards Ceremony"
+      logo: "images/logos/99x.png"
       year: "2024"
       description: "Honored for collective excellence, strong collaboration, and impactful results."
       icon: "fas fa-users"
@@ -419,6 +422,8 @@ accomplishments:
       year: ""
       description: "Awarded for the best research project with a GPA above 4.0."
       icon: "fas fa-medal"
+      logo: "images/logos/uom.png"
+      logo_theme: "light"
 
 ######################### Testimonials #############################
 testimonials:

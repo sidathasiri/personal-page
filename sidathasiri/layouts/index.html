@@ -275,9 +275,15 @@ window.toggleProject = toggleProject;
       {{ range $index, $accomplishment := .accomplishment_list }}
       <div class="col-lg-10 col-md-12 col-12 mb-4">
         <div class="accomplishment-card">
+          {{ if .logo }}
+          <div class="accomplishment-icon accomplishment-icon--logo{{ if eq .logo_theme "light" }} accomplishment-icon--logo-light{{ end }}">
+            <img src="{{ .logo | relURL }}" alt="{{ .organization }}" loading="lazy" />
+          </div>
+          {{ else }}
           <div class="accomplishment-icon">
             <i class="{{ .icon }}"></i>
           </div>
+          {{ end }}
           <div class="accomplishment-content">
             <h3 class="accomplishment-name">{{ .name }}</h3>
             <div class="accomplishment-meta">
@@ -431,13 +437,12 @@ window.toggleProject = toggleProject;
       var heights = measureHeights();
       var start = page * perView;
       var remaining = slides.length - start;
-      var h = 0;
-      for (var i = start; i < start + perView && i < slides.length; i++) {
-        if (heights[i] > h) h = heights[i];
-      }
+      // Use the tallest slide across ALL pages so the carousel keeps one fixed
+      // height and nothing jumps when paging.
+      var h = Math.max.apply(null, heights);
       // Center a trailing page that isn't completely full (e.g. a lone card)
       var centerOffset = (remaining < perView) ? ((perView - remaining) * slideW) / 2 : 0;
-      track.style.transition = animate ? 'transform 0.5s cubic-bezier(0.4,0,0.2,1), height 0.4s ease' : 'none';
+      track.style.transition = animate ? 'transform 0.5s cubic-bezier(0.4,0,0.2,1)' : 'none';
       track.style.height = h + 'px';
       track.style.transform = 'translateX(' + (-page * vw + centerOffset) + 'px)';
 
