@@ -51,12 +51,20 @@
           {{ if not (eq .enable false) }}
             <li>
               <div class="single-experience">
-                <h3>{{ .name | markdownify }}</h3>
-                {{ with .company }}
-                <span>{{ . | markdownify }} |</span>
-                {{ end }} {{ with .duration }}
-                <span>{{ . | markdownify }}</span>
-                {{ end }} {{ with .content }}
+                <div class="experience-head">
+                  {{ if .logo }}
+                  <img class="experience-logo" src="{{ .logo | relURL }}" alt="{{ .company }} logo" loading="lazy" />
+                  {{ end }}
+                  <div class="experience-head-text">
+                    <h3>{{ .name | markdownify }}</h3>
+                    {{ with .company }}
+                    <span>{{ . | markdownify }} |</span>
+                    {{ end }} {{ with .duration }}
+                    <span>{{ . | markdownify }}</span>
+                    {{ end }}
+                  </div>
+                </div>
+                {{ with .content }}
                 <p>{{ . | markdownify }}</p>
                 {{ end }}
               </div>

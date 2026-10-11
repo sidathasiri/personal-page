@@ -38,36 +38,43 @@ experience:
   experience_list:
     - name: Technical Lead
       company: Avida
+      logo: "images/logos/avida.png"
       duration: "April 2026 - Present"
       content: Full-stack technical lead on a fitness-coaching SaaS platform, delivering growth, payments, and coaching features across a ReactJS web app, React Native mobile app, and Firebase/GCP serverless backend. Built a mass SMS outreach platform, automated lost-lead re-engagement, ML-driven lead scoring, and enhanced Stripe checkout experiences.
 
     - name: Senior Technical Lead
       company: 99x
+      logo: "images/logos/99x.png"
       duration: "March 2024 - April 2026"
       content: Leading a team in modernizing a platform by creating a serverless, cost-effective solution on AWS cloud. Coordinating and leading efforts to ensure strategic planning aligns with business objectives for innovation and efficiency.
 
     - name: Technical Lead
       company: 99x
+      logo: "images/logos/99x.png"
       duration: "Jul 2023 - March 2024"
       content: Leading a team to deliver innovative solutions through strategic planning and effective architecture. With a focus on excellence, I bring expertise in AWS and a proven track record in aligning technology with business goals.
 
     - name: Associate Technical Lead
       company: 99x
+      logo: "images/logos/99x.png"
       duration: "Dec 2022 - Jul 2023"
       content: Adept at fostering collaboration and contributing to strategic planning. Committed to delivering high-quality outcomes and continuous improvement in a dynamic technical environment.
 
     - name: Associate Technical Lead
       company: Sysco LABS Sri Lanka
+      logo: "images/logos/syscolabs.png"
       duration: "Aug 2021 - Dec 2022"
       content: Empowered by a proactive approach, I assumed ownership of critical epics, orchestrating their end-to-end lifecycle to ensure successful delivery. My proactive approach and commitment to excellence played a pivotal role in surpassing project expectations.
 
     - name: Senior Software Engineer
       company: Sysco LABS Sri Lanka
+      logo: "images/logos/syscolabs.png"
       duration: "Sep 2020 - Aug 2021"
       content: Spearheaded contributions to Research and Development projects, and successfully kickstarted initiatives
 
     - name: Software Engineer
       company: Sysco LABS Sri Lanka
+      logo: "images/logos/syscolabs.png"
       duration: "Jan 2019 - Sep 2020"
       content: Known for my collaborative spirit, I have been a steadfast support to teammates, consistently lending a helping hand to ensure collective success. As a strong problem solver, I've made significant contributions by tackling challenges head-on, offering innovative solutions, and fostering a culture of shared success within the team.
 
