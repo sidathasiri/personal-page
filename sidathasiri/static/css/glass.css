@@ -891,3 +891,29 @@ pre {
 .header .slider::after {
   background: linear-gradient(90deg, rgba(2, 6, 16, 0.55) 0%, rgba(2, 6, 16, 0.25) 45%, rgba(2, 6, 16, 0) 75%) !important;
 }
+
+/* ---------- Fun-fact icons: line SVG in a glass badge ---------- */
+.fun-fact-holder .fact-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  color: var(--g-accent);
+  background: linear-gradient(145deg, rgba(107, 155, 255, 0.22), rgba(63, 111, 214, 0.08));
+  border: 1px solid var(--g-border-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 8px 24px rgba(40, 80, 170, 0.25);
+  transition: transform 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.fun-fact-holder .fact-icon svg {
+  width: 36px;
+  height: 36px;
+}
+
+.fun-fact-holder:hover .fact-icon {
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 12px 30px rgba(60, 110, 220, 0.4);
+}

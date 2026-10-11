@@ -118,15 +118,15 @@ funfacts:
   enable: true
   funfacts_list:
     - name: "Professional Certifications"
-      image: "images/icons/certified.png"
+      icon: "award"
       count: "5"
 
     - name: "Tech Blogs"
-      image: "images/icons/write.png"
-      count: "32"
+      icon: "pen"
+      count: "33"
 
     - name: "Research Publications"
-      image: "images/icons/publication.png"
+      icon: "research"
       count: "2"
 
 ######################### Projects #############################

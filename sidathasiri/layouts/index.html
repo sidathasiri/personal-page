@@ -99,7 +99,11 @@
 <div class="fun-facts container pt-5">
   {{ range .funfacts_list }}
   <div class="fun-fact-holder">
+    {{ if .icon }}
+    <div class="fact-icon" aria-hidden="true">{{ partial "funfact-icon.html" .icon }}</div>
+    {{ else }}
     <img class="img-fluid" src="{{ .image | relURL }}" alt="{{ .name }}" />
+    {{ end }}
     <p class="fact-counter count" data-count="{{ .count }}">0</p>
     <p>{{ .name }}</p>
   </div>
