@@ -126,7 +126,7 @@ funfacts:
   funfacts_list:
     - name: "Professional Certifications"
       icon: "award"
-      count: "5"
+      count: "6"
 
     - name: "Tech Blogs"
       icon: "pen"
@@ -368,6 +368,12 @@ certifications:
   enable: true
   title: "CERTIFICATIONS"
   certification_list:
+    - name: "AWS Certified Solutions Architect – Professional"
+      issuer: "Amazon Web Services (AWS)"
+      date: "November 2026"
+      description: "Validated advanced expertise in designing technical strategies to accomplish specific business goals on AWS. Demonstrated the ability to balance best practices and trade-offs based on business context, and to design complex solutions spanning multiple platforms and providers, including architecture, migration, and cloud infrastructure."
+      icon: "fab fa-aws"
+      
     - name: "AWS Certified Solutions Architect – Associate"
       issuer: "Amazon Web Services (AWS)"
       date: "December 2023"
